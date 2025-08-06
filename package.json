@@ -1,0 +1,15 @@
+{
+  "name": "e2e-layer",
+  "private": true,
+  "scripts": {
+    "e2e:init": "playwright install --with-deps",
+    "e2e:test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.1",
+    "@types/node": "^20.19.9"
+  },
+  "dependencies": {
+    "e2e-layer": "file:"
+  }
+}

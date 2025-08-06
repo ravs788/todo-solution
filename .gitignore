@@ -1,0 +1,5 @@
+.idea/
+.oca/
+.vscode/
+
+node_modules/
