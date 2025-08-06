@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "strict": true,
-    "lib": ["esnext"],
-    "types": ["node", "playwright"]
-  },
-  "include": ["e2e/**/*.ts", "playwright.config.ts"]
-}
