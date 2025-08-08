@@ -1,1 +1,3 @@
-cd todo-frontend && npm start
+cd todo-frontend
+npm install
+npm start
