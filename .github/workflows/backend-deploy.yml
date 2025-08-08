@@ -1,12 +1,12 @@
 name: Deploy Backend to Azure App Service
 
-on:
-  push:
-    paths:
-      - 'todo-backend/**'
-      - '.github/workflows/backend-deploy.yml'
-    branches:
-      - main
+# on:
+#   push:
+#     paths:
+#       - 'todo-backend/**'
+#       - '.github/workflows/backend-deploy.yml'
+#     branches:
+#       - main
 
 jobs:
   build-and-deploy:
