@@ -1,12 +1,17 @@
+# =========================
+# DO NOT ALLOW ANY LOG FILES IN THIS REPOSITORY
+# =========================
+*.log
+/*.log
+
+# Exclude common log directories (redundant but improves clarity)
+logs/
+log/
+**/logs/
+**/log/
+
 .idea/
 .oca/
 .vscode/
 
 node_modules/
-
-# Exclude all log files and log directories
-*.log
-logs/
-log/
-**/logs/
-**/log/
