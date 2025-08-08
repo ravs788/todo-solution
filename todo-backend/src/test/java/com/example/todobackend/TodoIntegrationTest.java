@@ -43,7 +43,7 @@ public class TodoIntegrationTest {
         ResponseEntity<String> loginResponse = restTemplate.postForEntity(
                 loginUrl, loginRequest, String.class);
 
-        Assertions.assertEquals(200, loginResponse.getStatusCodeValue(), "Login should succeed");
+        Assertions.assertEquals(HttpStatus.OK, loginResponse.getStatusCode(), "Login should succeed");
         String token = loginResponse.getBody();
         Assertions.assertNotNull(token, "Token should not be null");
 
@@ -60,7 +60,7 @@ public class TodoIntegrationTest {
         ResponseEntity<Todo> todoResponse = restTemplate.postForEntity(
                 todosUrl, req, Todo.class);
 
-        Assertions.assertEquals(200, todoResponse.getStatusCodeValue(), "Todo creation should succeed");
+        Assertions.assertEquals(HttpStatus.OK, todoResponse.getStatusCode(), "Todo creation should succeed");
         Todo created = todoResponse.getBody();
         Assertions.assertNotNull(created, "Created Todo should not be null");
         Assertions.assertEquals("integration test todo", created.getTitle());
