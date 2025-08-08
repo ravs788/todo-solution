@@ -612,3 +612,33 @@ Caused by: com.microsoft.sqlserver.jdbc.SQLServerException: The TCP/IP connectio
 15:55:33.279 [SpringApplicationShutdownHook] INFO  org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
 15:55:33.281 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 15:55:33.287 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+13:33:09.875 [main] INFO  com.example.todobackend.TodoBackendApplication - Starting TodoBackendApplication using Java 17.0.11 with PID 448 (C:\Learning\System Design\todo-solution\todo-backend\target\classes started by RAVI SHANKAR in C:\Learning\System Design\todo-solution\todo-backend)
+13:33:09.886 [main] INFO  com.example.todobackend.TodoBackendApplication - No active profile set, falling back to 1 default profile: "default"
+13:33:10.629 [main] INFO  org.springframework.data.repository.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+13:33:10.686 [main] INFO  org.springframework.data.repository.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 48 ms. Found 2 JPA repository interfaces.
+13:33:11.222 [main] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+13:33:11.231 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8081"]
+13:33:11.233 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+13:33:11.233 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.24]
+13:33:11.291 [main] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+13:33:11.292 [main] INFO  org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1362 ms
+13:33:11.516 [main] INFO  org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+13:33:11.566 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+13:33:11.598 [main] INFO  org.hibernate.cache.internal.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+13:33:11.874 [main] INFO  org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+13:33:11.899 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: SQLServerDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+13:33:12.648 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+13:33:12.665 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+13:33:14.773 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: 3e94edef-8949-40c2-92ed-167ecf93693d
+13:33:14.774 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+13:33:16.428 [main] INFO  org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+13:33:17.061 [main] INFO  org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+13:33:17.234 [main] WARN  org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+13:33:17.483 [main] INFO  org.springframework.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5817b0d1, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6ea1fc9, org.springframework.security.web.context.SecurityContextHolderFilter@683218c8, org.springframework.security.web.header.HeaderWriterFilter@18f8c76d, org.springframework.web.filter.CorsFilter@75e068dc, org.springframework.security.web.authentication.logout.LogoutFilter@2f4bc3ff, com.example.todobackend.security.JwtAuthenticationFilter@437a4e61, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@345f4e0d, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@79bb14d8, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@268eefe7, org.springframework.security.web.session.SessionManagementFilter@5f113867, org.springframework.security.web.access.ExceptionTranslationFilter@52b2c255, org.springframework.security.web.access.intercept.AuthorizationFilter@55b7f0d]
+13:33:17.700 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
+13:33:17.724 [main] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+13:33:17.732 [main] INFO  com.example.todobackend.TodoBackendApplication - Started TodoBackendApplication in 8.182 seconds (process running for 9.134)
+13:45:03.486 [http-nio-8081-exec-1] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+13:45:03.486 [http-nio-8081-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+13:45:03.488 [http-nio-8081-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+15:24:58.499 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=9m11s997ms863µs500ns).
