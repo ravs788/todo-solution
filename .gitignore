@@ -15,4 +15,10 @@ log/
 .vscode/
 
 node_modules/
+
+# Exclude test report directories
+**/allure-results/
+# Exclude all Maven/Java build output directories
+**/target/
+# Exclude backend log file explicitly
 todo-backend/todo-backend.log
