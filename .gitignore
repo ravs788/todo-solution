@@ -3,6 +3,15 @@
 .oca/
 .vscode/
 
+node_modules/
+
+# Exclude all log files and log directories
+*.log
+logs/
+log/
+**/logs/
+**/log/
+=======
 # Node.js
 node_modules/
 
