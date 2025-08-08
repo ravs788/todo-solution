@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Cosmos DB account name (must be globally unique)"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for Cosmos DB account"
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2023-04-15",
+      "name": "[parameters('accountName')]",
+      "location": "[parameters('location')]",
+      "kind": "GlobalDocumentDB",
+      "properties": {
+        "databaseAccountOfferType": "Standard",
+        "enableFreeTier": true,
+        "locations": [
+          {
+            "locationName": "[parameters('location')]",
+            "failoverPriority": 0
+          }
+        ],
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "Session"
+        },
+        "enableAutomaticFailover": false,
+        "isVirtualNetworkFilterEnabled": false,
+        "enableAnalyticalStorage": false
+      }
+    }
+  ],
+  "outputs": {
+    "cosmosDbAccountName": {
+      "type": "string",
+      "value": "[parameters('accountName')]"
+    }
+  }
+}

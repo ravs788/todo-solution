@@ -1,0 +1,86 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "staticWebAppName": {
+      "type": "string",
+      "defaultValue": "todo-frontend-swa",
+      "metadata": {
+        "description": "Name of the Azure Static Web App."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for the Static Web App."
+      }
+    },
+    "sku": {
+      "type": "string",
+      "defaultValue": "Free",
+      "allowedValues": ["Free", "Standard"],
+      "metadata": {
+        "description": "SKU for the Static Web App."
+      }
+    },
+    "repositoryUrl": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The GitHub or Azure DevOps repository URL to link for CI/CD."
+      }
+    },
+    "branch": {
+      "type": "string",
+      "defaultValue": "main",
+      "metadata": {
+        "description": "Optional. The branch of the repository to use for CI/CD."
+      }
+    },
+    "appArtifactLocation": {
+      "type": "string",
+      "defaultValue": "build",
+      "metadata": {
+        "description": "Output location of the build artifacts relative to repository root."
+      }
+    },
+    "apiLocation": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Path to the API code in the repository, empty for frontend-only."
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Web/staticSites",
+      "apiVersion": "2023-01-01",
+      "name": "[parameters('staticWebAppName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('sku')]"
+      },
+      "properties": {
+        "repositoryUrl": "[parameters('repositoryUrl')]",
+        "branch": "[parameters('branch')]",
+        "buildProperties": {
+          "appLocation": "",
+          "apiLocation": "[parameters('apiLocation')]",
+          "outputLocation": "[parameters('appArtifactLocation')]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "staticWebAppDefaultHostname": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Web/staticSites', parameters('staticWebAppName'))).defaultHostname]",
+      "metadata": {
+        "description": "The default host name of the deployed Azure Static Web App."
+      }
+    }
+  }
+}
