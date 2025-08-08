@@ -1,0 +1,96 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for the App Service Plan and App Service."
+      }
+    },
+    "appServicePlanName": {
+      "type": "string",
+      "defaultValue": "todoAppServicePlan",
+      "metadata": {
+        "description": "Name of the App Service Plan."
+      }
+    },
+    "appServicePlanSku": {
+      "type": "string",
+      "defaultValue": "B1",
+      "allowedValues": [ "F1", "B1", "B2", "B3", "S1", "S2", "S3", "P1V2", "P2V2", "P3V2" ],
+      "metadata": {
+        "description": "SKU (pricing tier) for the App Service Plan."
+      }
+    },
+    "appServicePlanTier": {
+      "type": "string",
+      "defaultValue": "Basic",
+      "allowedValues": [ "Free", "Basic", "Standard", "PremiumV2" ],
+      "metadata": {
+        "description": "Tier for the App Service Plan."
+      }
+    },
+    "appServiceName": {
+      "type": "string",
+      "defaultValue": "todo-backend-app",
+      "metadata": {
+        "description": "Name of the App Service (web app)."
+      }
+    },
+    "runtimeStack": {
+      "type": "string",
+      "defaultValue": "JAVA|17-java17",
+      "allowedValues": [ "JAVA|8-jre8", "JAVA|11-java11", "JAVA|17-java17" ],
+      "metadata": {
+        "description": "App Service runtime stack, e.g., JAVA|17-java17."
+      }
+    }
+  },
+  "variables": {
+    "serverFarmResourceId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2022-03-01",
+      "name": "[parameters('appServicePlanName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "Tier": "[parameters('appServicePlanTier')]",
+        "name": "[parameters('appServicePlanSku')]"
+      },
+      "kind": "linux",
+      "properties": {
+        "reserved": true
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-03-01",
+      "name": "[parameters('appServiceName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+      ],
+      "kind": "app,linux",
+      "properties": {
+        "serverFarmId": "[variables('serverFarmResourceId')]",
+        "siteConfig": {
+          "linuxFxVersion": "[parameters('runtimeStack')]"
+        },
+        "httpsOnly": true
+      }
+    }
+  ],
+  "outputs": {
+    "appServiceDefaultHostName": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Web/sites', parameters('appServiceName'))).defaultHostName]",
+      "metadata": {
+        "description": "The default host name of the deployed Azure App Service."
+      }
+    }
+  }
+}
