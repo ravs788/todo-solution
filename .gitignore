@@ -1,3 +1,4 @@
+# IDE folders
 .idea/
 .oca/
 .vscode/
@@ -10,3 +11,27 @@ logs/
 log/
 **/logs/
 **/log/
+=======
+# Node.js
+node_modules/
+
+# Java/Maven
+todo-backend/target/
+
+# Environment variable files
+.env
+todo-frontend/.env
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Test/report output
+todo-backend/allure-results/
+
+# Misc
+npm-debug.log*
+yarn-error.log*
