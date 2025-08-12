@@ -1,66 +1,112 @@
 # Todo Solution
 
-This project contains both the frontend and backend solutions for a Todo application.
+This repository provides a fullstack Todo application with:
+
+- **Frontend**: React (in `todo-frontend/`)
+- **Backend**: Spring Boot (in `todo-backend/`)
+- **E2E**: Playwright automation (in `todo-e2e/`)
+
+---
 
 ## Frontend
 
-The frontend is a React application located in the `todo-frontend` directory.
+**Location:** `todo-frontend/`
 
 ### How to Run
 
-1. Navigate to the `todo-frontend` directory.
-2. Run `npm install` to install the dependencies.
-3. Run `npm start` to start the application.
+1. `cd todo-frontend`
+2. `npm install`
+3. `npm start`  
+   Frontend available at [http://localhost:3000](http://localhost:3000)
 
-The frontend will be available at [http://localhost:3000](http://localhost:3000).
+### Scripts
 
-### Available Scripts
+- `npm start` – start development server
+- `npm test` – run unit tests
+- `npm run build` – build app for production
 
-In the `todo-frontend` directory, the following npm scripts are available:
+### Notes
 
-- **`npm start`**  
-  Runs the app in development mode at [http://localhost:3000](http://localhost:3000). The page reloads on file changes. You may see any lint errors in the console.
-
-- **`npm test`**  
-  Launches the test runner in interactive watch mode.  
-  See the [running tests documentation](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-- **`npm run build`**  
-  Builds the app for production to the `build` folder. It bundles React in production mode and optimizes the build for the best performance. See the [deployment documentation](https://facebook.github.io/create-react-app/docs/deployment).
-
-- **`npm run eject`**  
-  See [eject documentation](https://facebook.github.io/create-react-app/docs/available-scripts#npm-run-eject). You only need this if you want to customize the default build configuration.
-
-For further React and Create React App documentation, visit:
-- [Create React App Documentation](https://facebook.github.io/create-react-app/docs/getting-started)
-- [React Documentation](https://reactjs.org/)
+- The frontend proxies API requests to [http://localhost:8081](http://localhost:8081) by default.
 
 ---
 
 ## Backend
 
-The backend is a Spring Boot application located in the `todo-backend` directory.
+**Location:** `todo-backend/`
 
 ### How to Run
 
-1. Navigate to the `todo-backend` directory.
-2. Run `mvn spring-boot:run` to start the application.
+- Requires a running **SQL Server instance**.
+- Update `todo-backend/src/main/resources/application.properties` with your MSSQL connection information.
+- Start the app with:
+  ```
+  cd todo-backend
+  mvn spring-boot:run
+  ```
+- Backend will be available at [http://localhost:8081](http://localhost:8081)
 
-The backend will be available at [http://localhost:8081](http://localhost:8081).
+### Seed/Admin User
+
+- On first run, a default admin user is seeded:
+  - **Username:** `admin`
+  - **Password:** `password`
 
 ---
 
-## Running the Applications
+## API Features
 
-To simplify the process, you can use the provided batch files at the root:
-
-- `run_frontend_with_install.bat` will install the frontend dependencies and start the frontend application.
-
-**Prerequisites:** Make sure you have Maven and Node.js installed on your system to run the backend and frontend applications, respectively.
+- **JWT-secured endpoints for Todo management**
+- **User registration, admin approval, login**
+- **Forgot/reset password endpoints:**
+  - `POST /api/auth/forgot-password` — requests a password reset
+  - `POST /api/auth/reset-password` — resets password with provided token
+- **Swagger/OpenAPI provided for interactive API docs (Springdoc OpenAPI UI)**
+- **Unit and integration tests** (JUnit 5, tagged in Java source)
 
 ---
 
-## Notes
+## End-to-End (E2E) Tests
 
-- Check the `application.properties` file in the `todo-backend/src/main/resources` directory for backend/database configuration.
-- The frontend is configured to proxy requests to the backend at [http://localhost:8081](http://localhost:8081).
+- Located in `todo-e2e/`, powered by Playwright.
+- **All E2E and CI pipelines are currently disabled.**  
+  To re-enable, uncomment relevant `.github/workflows/*.yml` files.
+
+---
+
+## Continuous Integration / Deployment
+
+- **All GitHub Actions workflows are fully commented out and inactive** to prevent any automated testing or deployment in CI/CD until reinstated.
+- To reactivate, uncomment lines in `.github/workflows/*.yml`.
+
+---
+
+## Developer Notes
+
+- **SQL Server is required** for backend in all environments (dev, test, production).
+- **Unit tests:** `@Tag("unit")`  
+  **Integration tests:** `@Tag("integration")`.
+- Initial admin user always created for new DBs.
+
+---
+
+## Quickstart for Local Dev
+
+1. Ensure SQL Server is running and accessible.
+2. Configure connection info in `application.properties` if needed.
+3. Start backend:
+   ```
+   cd todo-backend
+   mvn spring-boot:run
+   ```
+4. Start frontend:
+   ```
+   cd todo-frontend
+   npm install
+   npm start
+   ```
+5. Access app in browser.
+
+---
+
+For further details on code or configuration, see `flow-diagram.md` for architecture and API flow.
