@@ -1,47 +1,52 @@
-import React, { useState, useContext } from "react";
-import AuthContext from "../context/AuthContext";
+import React, { useState } from "react";
 
-import { useEffect } from "react";
-
-const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender }) => {
+const Register = ({ onRegistered, switchToLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [error, setError] = useState("");
-  const { login: authContextLogin } = useContext(AuthContext);
-
-  useEffect(() => {
-    if (typeof onRender === "function") {
-      onRender();
-    }
-  }, []);
+  const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
+
+    if (!username || !password) {
+      setError("Username and password are required.");
+      return;
+    }
+    if (password !== passwordConfirm) {
+      setError("Passwords do not match.");
+      return;
+    }
+
     try {
       const apiBase = process.env.REACT_APP_API_BASE_URL;
-      const response = await fetch(`${apiBase}/api/auth/login`, {
+      const resp = await fetch(`${apiBase}/api/auth/register`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
 
-      if (!response.ok) {
-        setError("Invalid username or password");
-        return;
+      if (resp.ok) {
+        setSuccess(
+          "Registration successful. Your account needs to be approved by an admin before login."
+        );
+        setUsername("");
+        setPassword("");
+        setPasswordConfirm("");
+        if (onRegistered) onRegistered();
+      } else {
+        const data = await resp.json();
+        setError(data.message || "Registration failed.");
       }
-
-      const token = await response.text();
-      localStorage.setItem("jwtToken", token);
-      if (typeof authContextLogin === "function") {
-        console.log("Calling AuthContext login with token:", token);
-        authContextLogin(token);
-      }
-      if (typeof onLogin === "function") onLogin(token);
     } catch (err) {
-      setError("Login failed");
+      if (err && err.message) {
+        setError("Registration failed: " + err.message);
+      } else {
+        setError("Registration failed due to network or server error.");
+      }
     }
   };
 
@@ -75,8 +80,8 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
             style={{ width: "54px", borderRadius: "13px", boxShadow: "0 1px 6px 0 #ddd" }}
           />
         </div>
-        <h2 style={{ fontWeight: 700, margin: 0, color: "#1b3877", fontSize: "2rem", letterSpacing: "0.02em" }}>Welcome Back!</h2>
-        <div style={{ marginBottom: "18px", color: "#4c68a6" }}>Sign in to your account</div>
+        <h2 style={{ fontWeight: 700, margin: 0, color: "#107782", fontSize: "2rem", letterSpacing: "0.02em" }}>Create Account</h2>
+        <div style={{ marginBottom: "18px", color: "#3c6e70" }}>Join and start managing your todos</div>
         <form
           onSubmit={handleSubmit}
           style={{
@@ -87,12 +92,11 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
           }}
         >
           <div>
-            <label style={{ fontWeight: 500, color: "#1849a9" }}>Username</label>
+            <label style={{ fontWeight: 500, color: "#10848a" }}>Username</label>
             <input
-              type="text"
               value={username}
-              autoFocus
               onChange={(e) => setUsername(e.target.value)}
+              type="text"
               required
               style={{
                 borderRadius: "7px",
@@ -103,15 +107,15 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
                 width: "100%",
                 background: "#f8fbff"
               }}
-              placeholder="e.g. johndoe"
+              placeholder="Your username"
             />
           </div>
           <div>
-            <label style={{ fontWeight: 500, color: "#1849a9" }}>Password</label>
+            <label style={{ fontWeight: 500, color: "#10848a" }}>Password</label>
             <input
-              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              type="password"
               required
               style={{
                 borderRadius: "7px",
@@ -122,7 +126,26 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
                 width: "100%",
                 background: "#f8fbff"
               }}
-              placeholder="Enter your password"
+              placeholder="Choose password"
+            />
+          </div>
+          <div>
+            <label style={{ fontWeight: 500, color: "#10848a" }}>Confirm Password</label>
+            <input
+              value={passwordConfirm}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
+              type="password"
+              required
+              style={{
+                borderRadius: "7px",
+                border: "1.2px solid #a4cbfd",
+                padding: "10px",
+                fontSize: "1.03rem",
+                marginTop: "3px",
+                width: "100%",
+                background: "#f8fbff"
+              }}
+              placeholder="Repeat password"
             />
           </div>
           <button
@@ -130,7 +153,7 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
             style={{
               width: "100%",
               background:
-                "linear-gradient(90deg, #4f8cff 0%, #36d1c4 100%)",
+                "linear-gradient(90deg, #36d1c4 0%, #4f8cff 100%)",
               border: "none",
               color: "#fff",
               fontWeight: 700,
@@ -138,41 +161,13 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
               fontSize: "1.03rem",
               padding: "10px",
               marginTop: "2px",
-              boxShadow: "0 2px 10px 0 rgba(45,130,195,0.08)",
+              boxShadow: "0 2px 10px 0 rgba(34,124,195,0.08)",
               cursor: "pointer"
             }}
           >
-            Login
+            Register
           </button>
         </form>
-        {message && (
-          <div
-            style={{
-              marginBottom: "1.1rem",
-              textAlign: "center",
-              width: "100%",
-            }}
-          >
-            <span
-              style={{
-                color: "#1060ba",
-                fontWeight: 650,
-                textDecoration: "underline",
-                cursor: "default",
-                background: "none",
-                border: "none",
-                fontSize: "1.08rem",
-                padding: "7px 0",
-                borderRadius: "5px",
-                display: "inline-block",
-                letterSpacing: "0.01em",
-              }}
-              tabIndex={-1}
-            >
-              {message}
-            </span>
-          </div>
-        )}
         {error && (
           <div
             style={{
@@ -191,40 +186,42 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
             {error}
           </div>
         )}
-        <div style={{ marginTop: "1.8rem", display: "flex", flexDirection: "column", width: "100%", gap: "11px" }}>
-          <button
-            type="button"
-            onClick={switchToRegister}
+        {success && (
+          <div
             style={{
-              background: "none",
-              color: "#1976d2",
-              fontWeight: 500,
-              fontSize: "1.02rem",
-              border: "none",
+              color: "#19762e",
+              background: "#e0ffe5",
+              fontSize: "1rem",
+              marginTop: "1.12rem",
+              borderRadius: "5px",
+              padding: "8px 12px",
+              width: "100%",
               textAlign: "center",
-              cursor: "pointer",
-              borderRadius: "6px",
-              padding: "0.30rem 0.5rem"
+              boxShadow: "0 2px 12px 0 rgba(39, 150, 44, 0.08)",
+              border: "1px solid #9bf6ac"
             }}
           >
-            Need an account? <span style={{ textDecoration: "underline" }}>Register</span> here
-          </button>
+            {success}
+          </div>
+        )}
+        <div style={{ marginTop: "2.1rem", display: "flex", flexDirection: "column", width: "100%" }}>
           <button
             type="button"
-            onClick={switchToForgot}
+            onClick={switchToLogin}
             style={{
-              background: "none",
-              color: "#2e6c89",
-              fontSize: "1.01rem",
-              fontWeight: 400,
-              border: "none",
-              textAlign: "center",
+              background: "#f3f6fb",
+              color: "#1849a9",
+              border: "1.5px solid #bcd5ee",
+              fontWeight: 600,
+              fontSize: "1.03rem",
+              borderRadius: "7px",
+              padding: "10px",
+              width: "100%",
               cursor: "pointer",
-              borderRadius: "6px",
-              padding: "0.30rem 0.5rem"
+              boxShadow: "0 1px 8px 0 #e2edf7"
             }}
           >
-            Forgot password?
+            ← Back to Login
           </button>
         </div>
       </div>
@@ -232,4 +229,4 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
   );
 };
 
-export default Login;
+export default Register;

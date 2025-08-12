@@ -1,20 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 
 const TodoDelete = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   const handleDelete = () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("jwtToken");
     if (!token) {
       console.error("No token found. Please log in again.");
       navigate("/login");
       return;
     }
+    const apiBase = process.env.REACT_APP_API_BASE_URL;
     axios
-      .delete(`/api/todos/${id}`, {
+      .delete(`${apiBase}/api/todos/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -36,6 +39,19 @@ const TodoDelete = () => {
   const handleCancel = () => {
     navigate("/");
   };
+
+  if (user && user.status === "PENDING") {
+    return (
+      <div className="container mt-5">
+        <div className="card shadow-sm text-center p-4">
+          <h2 style={{ color: "orange" }}>Account Pending Approval</h2>
+          <p>
+            Your registration is successful but your account is pending approval by an admin.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-5">

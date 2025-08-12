@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 
 const api = axios.create({
-  baseURL: "http://localhost:8081/api",
+  baseURL: `${process.env.REACT_APP_API_BASE_URL}/api`,
 });
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("jwtToken");
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
@@ -35,6 +35,17 @@ const TodoList = () => {
     };
     fetchTodos();
   }, []);
+
+  if (user && user.status === "PENDING") {
+    return (
+      <div className="container mt-5">
+        <h2 style={{ color: "orange" }}>Account Pending Approval</h2>
+        <p>
+          Your registration is successful but your account is pending approval by an admin.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-5">
