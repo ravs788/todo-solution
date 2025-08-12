@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @RestController
 @RequestMapping("/api/todos")
@@ -22,20 +25,36 @@ public class TodoController {
         this.todoService = todoService;
     }
 
+    private String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        }
+        return principal.toString();
+    }
+
     @GetMapping
     public List<Todo> getAllTodos() {
-        return todoService.findAll();
+        String username = getCurrentUsername();
+        System.out.println("DEBUG: getAllTodos for username=" + username);
+        return todoService.findAllByUsername(username);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Todo> getTodoById(@PathVariable Integer id) {
-        Optional<Todo> todo = todoService.findById(id);
+        String username = getCurrentUsername();
+        Optional<Todo> todo = todoService.findByIdAndUsername(id, username);
         return todo.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<Todo> createTodo(@RequestBody TodoRequest dto) {
+        String username = getCurrentUsername();
         if (dto.getTitle() == null || dto.getTitle().trim().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
@@ -44,6 +63,7 @@ public class TodoController {
                 .title(dto.getTitle())
                 .completed(dto.getCompleted() != null ? dto.getCompleted() : false)
                 .startDate(dto.getStartDate())
+                .username(username)
                 .build()
         );
         return ResponseEntity.ok(created);
@@ -51,7 +71,8 @@ public class TodoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Todo> updateTodo(@PathVariable Integer id, @RequestBody TodoRequest todoRequest) {
-        Optional<Todo> existing = todoService.findById(id);
+        String username = getCurrentUsername();
+        Optional<Todo> existing = todoService.findByIdAndUsername(id, username);
         if (existing.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -64,10 +85,11 @@ public class TodoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTodo(@PathVariable Integer id) {
-        if (todoService.findById(id).isEmpty()) {
+        String username = getCurrentUsername();
+        if (todoService.findByIdAndUsername(id, username).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        todoService.deleteById(id);
+        todoService.deleteByIdAndUsername(id, username);
         return ResponseEntity.noContent().build();
     }
 }

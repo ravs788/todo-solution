@@ -4,11 +4,13 @@ import com.example.todobackend.model.Todo;
 import com.example.todobackend.repository.TodoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.nio.file.Paths;
+import java.io.IOException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -34,25 +36,24 @@ public class TodoServiceTest {
     @InjectMocks
     private TodoService todoService;
 
+    private final ObjectMapper objectMapper = new ObjectMapper()
+        .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+
+    private Todo loadTodoFromFile(String filename) throws IOException {
+        try (java.io.InputStream is = getClass().getClassLoader().getResourceAsStream("test-data/" + filename)) {
+            if (is == null) throw new java.io.FileNotFoundException("test-data/" + filename + " not found in classpath");
+            return objectMapper.readValue(is, Todo.class);
+        }
+    }
+
     @Test
     @Story("Find All Todos")
     @Description("Test finding all todos")
     @Severity(SeverityLevel.NORMAL)
-    void testFindAll() {
+    void testFindAll() throws IOException {
         // Arrange
-        Todo todo1 = Todo.builder()
-                .id(1)
-                .title("Test Todo 1")
-                .completed(false)
-                .startDate(LocalDateTime.now())
-                .build();
-
-        Todo todo2 = Todo.builder()
-                .id(2)
-                .title("Test Todo 2")
-                .completed(true)
-                .startDate(LocalDateTime.now())
-                .build();
+        Todo todo1 = loadTodoFromFile("todo1.json");
+        Todo todo2 = loadTodoFromFile("todo2.json");
 
         when(todoRepository.findAll()).thenReturn(Arrays.asList(todo1, todo2));
 
@@ -70,14 +71,9 @@ public class TodoServiceTest {
     @Story("Find Todo By Id")
     @Description("Test finding todo by id when it exists")
     @Severity(SeverityLevel.NORMAL)
-    void testFindById_Found() {
+    void testFindById_Found() throws IOException {
         // Arrange
-        Todo todo = Todo.builder()
-                .id(1)
-                .title("Test Todo")
-                .completed(false)
-                .startDate(LocalDateTime.now())
-                .build();
+        Todo todo = loadTodoFromFile("todo1.json");
 
         when(todoRepository.findById(1)).thenReturn(Optional.of(todo));
 
@@ -110,14 +106,9 @@ public class TodoServiceTest {
     @Story("Save Todo")
     @Description("Test saving a todo")
     @Severity(SeverityLevel.NORMAL)
-    void testSave() {
+    void testSave() throws IOException {
         // Arrange
-        Todo todo = Todo.builder()
-                .id(1)
-                .title("Test Todo")
-                .completed(false)
-                .startDate(LocalDateTime.now())
-                .build();
+        Todo todo = loadTodoFromFile("todo1.json");
 
         when(todoRepository.save(any(Todo.class))).thenReturn(todo);
 

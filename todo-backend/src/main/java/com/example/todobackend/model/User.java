@@ -12,6 +12,8 @@ public class User {
     private Long id;
     private String username;
     private String password;
+    private String status; // e.g., "PENDING", "ACTIVE"
+    private String role;   // e.g., "USER", "ADMIN"
 
     // Getters and setters
     public Long getId() {
@@ -36,5 +38,21 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

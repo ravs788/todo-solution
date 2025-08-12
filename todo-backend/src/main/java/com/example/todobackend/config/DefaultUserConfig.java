@@ -30,6 +30,8 @@ public class DefaultUserConfig {
             defaultUser.setUsername(defaultUsername);
         }
         defaultUser.setPassword(passwordEncoder.encode(defaultPassword));
+        defaultUser.setStatus("ACTIVE");
+        defaultUser.setRole("ADMIN");
         userRepository.save(defaultUser);
     }
 }
