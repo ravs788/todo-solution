@@ -25,8 +25,16 @@ public class TodoService {
         return repo.findAll();
     }
 
+    public List<Todo> findAllByUsername(String username) {
+        return repo.findAllByUsername(username);
+    }
+
     public Optional<Todo> findById(Integer id) {
         return repo.findById(id);
+    }
+
+    public Optional<Todo> findByIdAndUsername(Integer id, String username) {
+        return repo.findByIdAndUsername(id, username);
     }
 
     public Todo save(Todo todo) {
@@ -38,5 +46,12 @@ public class TodoService {
     public void deleteById(Integer id) {
         repo.deleteById(id);
         log.info("Deleted Todo with id: {}", id);
+    }
+
+    public void deleteByIdAndUsername(Integer id, String username) {
+        repo.findByIdAndUsername(id, username).ifPresent(todo -> {
+            repo.deleteById(id);
+            log.info("Deleted Todo with id: {} for user {}", id, username);
+        });
     }
 }

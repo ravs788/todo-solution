@@ -1,6 +1,10 @@
 package com.example.todobackend.controller;
 
 import com.example.todobackend.dto.LoginRequest;
+import com.example.todobackend.dto.RegisterRequest;
+import com.example.todobackend.model.User;
+import com.example.todobackend.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.todobackend.security.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,6 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.todobackend.dto.ForgotPasswordRequest;
+import com.example.todobackend.dto.ResetPasswordRequest;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -22,14 +28,40 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
+    public AuthController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider,
+                          UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-@PostMapping("/login")
+    @PostMapping("/approve/{username}")
+    @Operation(summary = "Approve a pending user (ADMIN only)")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User approved successfully"),
+        @ApiResponse(responseCode = "404", description = "User not found"),
+        @ApiResponse(responseCode = "409", description = "User is not pending")
+    })
+    public ResponseEntity<String> approveUser(@org.springframework.web.bind.annotation.PathVariable String username) {
+        var userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(404).body("User not found");
+        }
+        var user = userOpt.get();
+        if (!"PENDING".equalsIgnoreCase(user.getStatus())) {
+            return ResponseEntity.status(409).body("User is not pending");
+        }
+        user.setStatus("ACTIVE");
+        userRepository.save(user);
+        return ResponseEntity.ok("User approved successfully");
+    }
+
+    @PostMapping("/login")
     @Operation(summary = "Login to the application")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successful login, returns JWT token"),
@@ -39,10 +71,49 @@ public class AuthController {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-            String token = jwtTokenProvider.generateToken(authentication.getName());
+            // Get user entity to access role
+            var userOpt = userRepository.findByUsername(loginRequest.getUsername());
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.status(401).body("Invalid username or password");
+            }
+            String role = userOpt.get().getRole();
+            String token = jwtTokenProvider.generateToken(authentication.getName(), role);
             return ResponseEntity.ok(token);
         } catch (AuthenticationException e) {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
+    }
+
+    @PostMapping("/register")
+    @Operation(summary = "Register a new user (status will be PENDING until approved)")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "User registered, pending approval"),
+        @ApiResponse(responseCode = "409", description = "Username already exists")
+    })
+    public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
+        if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
+            return ResponseEntity.status(409).body("Username already exists");
+        }
+        User user = new User();
+        user.setUsername(registerRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setStatus("PENDING");
+        user.setRole("USER");
+        userRepository.save(user);
+        return ResponseEntity.status(201).body("User registered successfully. Pending approval by admin.");
+    }
+
+    @Operation(summary = "Initiate password reset. Generates a reset token for the user.")
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        // Implementation stub: generate and store reset token, return token for demo
+        return ResponseEntity.ok("Password reset requested for " + request.getUsername());
+    }
+
+    @Operation(summary = "Reset password using reset token")
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        // Implementation stub: verify token and change password
+        return ResponseEntity.ok("Password reset for " + request.getUsername());
     }
 }

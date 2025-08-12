@@ -2,6 +2,7 @@ package com.example.todobackend.config;
 
 import com.example.todobackend.security.JwtAuthenticationFilter;
 import com.example.todobackend.security.JwtTokenProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserDetailsService userDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -32,8 +34,9 @@ public class SecurityConfig {
     }
 
     @Autowired
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userDetailsService = userDetailsService;
     }
 
     @Bean
@@ -50,14 +53,16 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/todos").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/todos/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/approve/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/todos").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/todos/**").authenticated()
                 .requestMatchers(HttpMethod.POST, "/api/todos/**").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/api/todos/**").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "/api/todos/**").authenticated()
                 .anyRequest().permitAll()
             )
-            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

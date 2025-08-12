@@ -28,4 +28,8 @@ public class Todo {
 
     @Column(columnDefinition = "DATETIME")
     private LocalDateTime startDate;
+
+    @Column(nullable = false)
+    private String username;
+
 }
