@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 
 const TodoForm = () => {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const [title, setTitle] = useState("");
   const [completed, setCompleted] = useState(false);
   const currentDateTime = new Date().toISOString().slice(0, 16);
@@ -12,9 +14,10 @@ const TodoForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const token = localStorage.getItem("jwtToken");
+    const apiBase = process.env.REACT_APP_API_BASE_URL;
     axios
       .post(
-        "http://localhost:8081/api/todos",
+        `${apiBase}/api/todos`,
         {
           title,
           completed,
@@ -38,6 +41,19 @@ const TodoForm = () => {
   const handleBack = () => {
     navigate("/");
   };
+
+  if (user && user.status === "PENDING") {
+    return (
+      <div className="container mt-5">
+        <div className="card shadow-sm p-4">
+          <h2 style={{ color: "orange" }}>Account Pending Approval</h2>
+          <p>
+            Your registration is successful but your account is pending approval by an admin.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-5">
