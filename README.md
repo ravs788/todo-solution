@@ -13,6 +13,8 @@ This repository provides a fullstack Todo application with:
 
 ### How to Run
 
+**Requires Node.js and npm. Uses [react-app-rewired](https://github.com/timarney/react-app-rewired) for configuration overrides.**
+
 1. `cd todo-frontend`
 2. `npm install`
 3. `npm start`  
@@ -20,9 +22,25 @@ This repository provides a fullstack Todo application with:
 
 ### Scripts
 
-- `npm start` – start development server
-- `npm test` – run unit tests
-- `npm run build` – build app for production
+- `npm start` – start development server (uses `react-app-rewired start`)
+- `npm test` – run unit tests (uses `react-app-rewired test`)
+- `npm run build` – build app for production (uses `react-app-rewired build`)
+- `npm run e2e` – run Playwright end-to-end tests (if present)
+
+### Key Dependencies
+
+- **react** (^19.1.0)
+- **react-router-dom** (^6.22.2)
+- **bootstrap** (^5.3.7)
+- **axios** (^1.10.0)
+- **@testing-library/react** (unit testing)
+- **Playwright** (E2E testing, devDependency)
+
+### Structure
+
+- `/src/components/` – main React components and tests
+- `/src/context/` – React context providers (e.g., Auth)
+- `/public/` – static assets
 
 ### Notes
 
@@ -35,6 +53,8 @@ This repository provides a fullstack Todo application with:
 **Location:** `todo-backend/`
 
 ### How to Run
+
+**Requires Java 17+ and Maven.**
 
 - Requires a running **SQL Server instance**.
 - Update `todo-backend/src/main/resources/application.properties` with your MSSQL connection information.
@@ -55,6 +75,8 @@ This repository provides a fullstack Todo application with:
 
 ## API Features
 
+- **Spring Boot 3.3, Java 17**
+- **Maven build and dependency management**
 - **JWT-secured endpoints for Todo management**
 - **User registration, admin approval, login**
 - **Direct password reset (no email, no token)**
@@ -63,7 +85,7 @@ This repository provides a fullstack Todo application with:
   - `POST /api/auth/reset-password` — (stub; not used in main flow)
 - **Swagger/OpenAPI provided for interactive API docs (Springdoc OpenAPI UI)**
 - **Admin Panel for managing/approving user accounts**
-- **After password reset, user is redirected to login and sees confirmation message**
+- **Allure reporting enabled on tests** (`allure-results/`, `allure-report/`)
 - **Unit and integration tests** (JUnit 5, tagged in Java source)
 
 ---
