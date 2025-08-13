@@ -1,0 +1,49 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Set up JDK 17 for backend
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build & Test Backend (H2 in-memory)
+        working-directory: ./todo-backend
+        run: mvn test -Dspring.profiles.active=h2
+
+      # Set up Node.js 20 for frontend
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install frontend dependencies
+        working-directory: ./todo-frontend
+        run: npm ci
+
+      - name: Run frontend tests
+        working-directory: ./todo-frontend
+        run: npm test -- --ci --coverage
+
+      # Optionally upload test reports (JUnit, Allure) as workflow artifacts
+      - name: Upload Backend Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results
+          path: todo-backend/target/surefire-reports/
+
+      - name: Upload Frontend Coverage Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: todo-frontend/coverage/
