@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import Login from "./Login";
+import Login from "../components/Login";
 import { AuthProvider } from "../context/AuthContext";
 
 describe("Login Component", () => {

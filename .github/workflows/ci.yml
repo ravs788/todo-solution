@@ -31,7 +31,14 @@ jobs:
 
       - name: Run frontend tests
         working-directory: ./todo-frontend
-        run: npm test -- --ci --coverage
+        run: npm test -- --ci --watchAll=false
+
+      - name: Upload Frontend Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-test-results
+          path: todo-frontend/test-results/
 
       # Optionally upload test reports (JUnit, Allure) as workflow artifacts
       - name: Upload Backend Test Reports
@@ -40,10 +47,3 @@ jobs:
         with:
           name: backend-test-results
           path: todo-backend/target/surefire-reports/
-
-      - name: Upload Frontend Coverage Reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-coverage
-          path: todo-frontend/coverage/
