@@ -111,6 +111,42 @@ Basic Spring Boot Maven config for a Todo REST API using SQL Server
 
     <build>
         <plugins>
+            <!-- Allure Maven plugin for test reporting -->
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>2.11.2</version>
+                <configuration>
+                    <reportVersion>2.25.0</reportVersion>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Maven Surefire plugin for test execution (with Allure integration) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
+                    <systemPropertyVariables>
+                        <allure.results.directory>allure-results</allure.results.directory>
+                    </systemPropertyVariables>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>io.qameta.allure</groupId>
+                        <artifactId>allure-junit5</artifactId>
+                        <version>2.25.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -121,14 +157,24 @@ Basic Spring Boot Maven config for a Todo REST API using SQL Server
                 <version>3.2.5</version>
             </plugin>
             <!-- Allure Maven plugin for report generation -->
+
+            <!-- Ensure allure-report is cleaned with mvn clean -->
             <plugin>
-                <groupId>io.qameta.allure</groupId>
-                <artifactId>allure-maven</artifactId>
-                <version>2.12</version>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
                 <configuration>
-                    <reportVersion>2.27.0</reportVersion>
+                    <filesets>
+                        <fileset>
+                            <directory>${basedir}/../allure-report</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 </project>

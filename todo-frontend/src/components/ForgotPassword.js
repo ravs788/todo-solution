@@ -52,8 +52,9 @@ const ForgotPassword = ({ switchToLogin }) => {
       <h2>Forgot Password</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Username: </label>
+          <label htmlFor="fp-username">Username: </label>
           <input
+            id="fp-username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             type="text"
@@ -61,8 +62,9 @@ const ForgotPassword = ({ switchToLogin }) => {
           />
         </div>
         <div>
-          <label>New Password: </label>
+          <label htmlFor="fp-password">New Password: </label>
           <input
+            id="fp-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
@@ -70,8 +72,9 @@ const ForgotPassword = ({ switchToLogin }) => {
           />
         </div>
         <div>
-          <label>Confirm Password: </label>
+          <label htmlFor="fp-password-confirm">Confirm Password: </label>
           <input
+            id="fp-password-confirm"
             value={passwordConfirm}
             onChange={(e) => setPasswordConfirm(e.target.value)}
             type="password"

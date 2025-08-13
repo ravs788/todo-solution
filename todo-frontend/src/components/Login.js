@@ -86,8 +86,11 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
           }}
         >
           <div>
-            <label style={{ fontWeight: 500, color: "#1849a9" }}>Username</label>
+            <label htmlFor="login-username" style={{ fontWeight: 500, color: "#1849a9" }}>
+              Username
+            </label>
             <input
+              id="login-username"
               type="text"
               value={username}
               autoFocus
@@ -100,14 +103,17 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
                 fontSize: "1.03rem",
                 marginTop: "3px",
                 width: "100%",
-                background: "#f8fbff"
+                background: "#f8fbff",
               }}
               placeholder="e.g. johndoe"
             />
           </div>
           <div>
-            <label style={{ fontWeight: 500, color: "#1849a9" }}>Password</label>
+            <label htmlFor="login-password" style={{ fontWeight: 500, color: "#1849a9" }}>
+              Password
+            </label>
             <input
+              id="login-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -119,7 +125,7 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
                 fontSize: "1.03rem",
                 marginTop: "3px",
                 width: "100%",
-                background: "#f8fbff"
+                background: "#f8fbff",
               }}
               placeholder="Enter your password"
             />
