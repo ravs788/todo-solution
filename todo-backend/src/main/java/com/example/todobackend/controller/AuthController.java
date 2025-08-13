@@ -106,30 +106,21 @@ public class AuthController {
     @Operation(summary = "Initiate password reset. Generates a reset token for the user.")
     @PostMapping("/reset-password")
     public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequest request) {
-        System.out.println("[DEBUG] ForgotPassword called for username: " + request.getUsername());
         try {
             if (request.getUsername() == null || request.getNewPassword() == null) {
-                System.out.println("[DEBUG] Bad request: missing username or password");
                 return ResponseEntity.badRequest().body("Username and new password required.");
             }
             var userOpt = userRepository.findByUsername(request.getUsername());
             if (userOpt.isEmpty()) {
-                System.out.println("[DEBUG] User not found: " + request.getUsername());
                 return ResponseEntity.status(404).body("User not found");
             }
             User user = userOpt.get();
-            String oldHash = user.getPassword();
             String newHash = passwordEncoder.encode(request.getNewPassword());
-            System.out.println("[DEBUG] Old password hash: " + oldHash);
-            System.out.println("[DEBUG] New password hash will be: " + newHash);
             user.setPassword(newHash);
-            user.setStatus("DEBUG_RESET"); // DEBUG: change status to verify user's record is updated
+            user.setStatus("ACTIVE");
             userRepository.save(user);
-            System.out.println("[DEBUG] Password reset and saved for user: " + user.getUsername());
-            System.out.println("[DEBUG] Password hash in entity after save: " + user.getPassword());
             return ResponseEntity.ok("Password has been reset for " + user.getUsername());
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
     }
@@ -137,29 +128,20 @@ public class AuthController {
     @Operation(summary = "Reset password using reset token or directly for username")
     @PostMapping("/forgot-password")
     public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
-        System.out.println("[DEBUG] ResetPassword called for username: " + request.getUsername());
         try {
             if (request.getUsername() == null || request.getNewPassword() == null) {
-                System.out.println("[DEBUG] Bad request: missing username or password");
                 return ResponseEntity.badRequest().body("Username and new password required.");
             }
             var userOpt = userRepository.findByUsername(request.getUsername());
             if (userOpt.isEmpty()) {
-                System.out.println("[DEBUG] User not found: " + request.getUsername());
                 return ResponseEntity.status(404).body("User not found");
             }
             User user = userOpt.get();
-            String oldHash = user.getPassword();
             String newHash = passwordEncoder.encode(request.getNewPassword());
-            System.out.println("[DEBUG] Old password hash: " + oldHash);
-            System.out.println("[DEBUG] New password hash will be: " + newHash);
             user.setPassword(newHash);
             userRepository.save(user);
-            System.out.println("[DEBUG] Password reset and saved for user: " + user.getUsername());
-            System.out.println("[DEBUG] Password hash in entity after save: " + user.getPassword());
             return ResponseEntity.ok("Password has been reset for " + user.getUsername());
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
     }

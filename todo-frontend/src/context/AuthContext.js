@@ -23,9 +23,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      console.log("JWT token from storage:", token);
       const payload = parseJwt(token);
-      console.log("Decoded JWT payload from storage:", payload); // DEBUG LOG
       if (payload && payload.sub) {
         setUser({
           username: payload.sub,
@@ -38,9 +36,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = (token) => {
     localStorage.setItem("jwtToken", token);
-    console.log("JWT token on login:", token);
     const payload = parseJwt(token);
-    console.log("Decoded JWT payload on login:", payload); // DEBUG LOG
     if (payload && payload.sub) {
       setUser({
         username: payload.sub,

@@ -30,7 +30,6 @@ const TodoForm = () => {
         }
       )
       .then((response) => {
-        console.log("Todo created:", response.data);
         navigate("/");
       })
       .catch((error) => {
