@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="3" failures="0" errors="0" time="2.433">
+  <testsuite name="Login Component" errors="0" failures="0" skipped="0" timestamp="2025-08-13T07:13:28" time="1.083" tests="3">
+    <testcase classname="Login Component renders username and password inputs and login button" name="Login Component renders username and password inputs and login button" time="0.112">
+    </testcase>
+    <testcase classname="Login Component calls onLogin with a token when valid credentials are entered" name="Login Component calls onLogin with a token when valid credentials are entered" time="0.033">
+    </testcase>
+    <testcase classname="Login Component shows error with invalid credentials" name="Login Component shows error with invalid credentials" time="0.053">
+    </testcase>
+  </testsuite>
+</testsuites>

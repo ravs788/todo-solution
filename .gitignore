@@ -22,3 +22,6 @@ node_modules/
 **/target/
 # Exclude backend log file explicitly
 todo-backend/todo-backend.log
+
+# Ignore Allure report output
+allure-report/
