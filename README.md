@@ -56,6 +56,8 @@ This repository provides a fullstack Todo application with:
 
 **Requires Java 17+ and Maven.**
 
+By default, uses SQL Server:
+
 - Requires a running **SQL Server instance**.
 - Update `todo-backend/src/main/resources/application.properties` with your MSSQL connection information.
 - Start the app with:
@@ -65,9 +67,17 @@ This repository provides a fullstack Todo application with:
   ```
 - Backend will be available at [http://localhost:8081](http://localhost:8081)
 
+**To use in-memory H2 database instead:**  
+Start backend with the H2 profile for rapid local dev/testing. Data is not persisted after application shutdown.  
+  ```
+  cd todo-backend
+  mvn spring-boot:run -Dspring-boot.run.profiles=h2
+  ```
+- H2 web console is available at [http://localhost:8081/h2-console](http://localhost:8081/h2-console)
+
 ### Seed/Admin User
 
-- On first run, a default admin user is seeded:
+- On first run with either SQL Server or H2, a default admin user is seeded automatically:
   - **Username:** `admin`
   - **Password:** `password`
 
@@ -77,6 +87,7 @@ This repository provides a fullstack Todo application with:
 
 - **Spring Boot 3.3, Java 17**
 - **Maven build and dependency management**
+- **Supports both SQL Server and in-memory H2 databases (dev profile)**
 - **JWT-secured endpoints for Todo management**
 - **User registration, admin approval, login**
 - **Direct password reset (no email, no token)**
