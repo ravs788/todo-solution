@@ -4,7 +4,6 @@ This repository provides a fullstack Todo application with:
 
 - **Frontend**: React (in `todo-frontend/`)
 - **Backend**: Spring Boot (in `todo-backend/`)
-- **E2E**: Playwright automation (in `todo-e2e/`)
 
 ---
 
@@ -58,21 +57,17 @@ This repository provides a fullstack Todo application with:
 
 - **JWT-secured endpoints for Todo management**
 - **User registration, admin approval, login**
+- **Direct password reset (no email, no token)**
 - **Forgot/reset password endpoints:**
-  - `POST /api/auth/forgot-password` — requests a password reset
-  - `POST /api/auth/reset-password` — resets password with provided token
+  - `POST /api/auth/forgot-password` — resets password directly (username, newPassword required; no email or token sent/needed)
+  - `POST /api/auth/reset-password` — (stub; not used in main flow)
 - **Swagger/OpenAPI provided for interactive API docs (Springdoc OpenAPI UI)**
+- **Admin Panel for managing/approving user accounts**
+- **After password reset, user is redirected to login and sees confirmation message**
 - **Unit and integration tests** (JUnit 5, tagged in Java source)
 
 ---
 
-## End-to-End (E2E) Tests
-
-- Located in `todo-e2e/`, powered by Playwright.
-- **All E2E and CI pipelines are currently disabled.**  
-  To re-enable, uncomment relevant `.github/workflows/*.yml` files.
-
----
 
 ## Continuous Integration / Deployment
 
@@ -109,4 +104,4 @@ This repository provides a fullstack Todo application with:
 
 ---
 
-For further details on code or configuration, see `flow-diagram.md` for architecture and API flow.
+For further details on code or configuration, see `flow-diagram.md` for updated architecture and latest API flow (including admin approval and direct password reset).

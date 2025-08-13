@@ -40,7 +40,6 @@ public class TodoController {
     @GetMapping
     public List<Todo> getAllTodos() {
         String username = getCurrentUsername();
-        System.out.println("DEBUG: getAllTodos for username=" + username);
         return todoService.findAllByUsername(username);
     }
 

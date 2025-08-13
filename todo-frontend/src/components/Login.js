@@ -36,7 +36,6 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
       const token = await response.text();
       localStorage.setItem("jwtToken", token);
       if (typeof authContextLogin === "function") {
-        console.log("Calling AuthContext login with token:", token);
         authContextLogin(token);
       }
       if (typeof onLogin === "function") onLogin(token);
