@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import TodoList from "./TodoList";
+import TodoList from "../components/TodoList";
 import AuthContext from "../context/AuthContext";
 
 // Mock data
