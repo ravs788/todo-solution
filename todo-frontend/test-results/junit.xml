@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="26" failures="0" errors="0" time="5.88">
-  <testsuite name="TodoUpdate" errors="0" failures="0" skipped="4" timestamp="2025-08-14T10:23:45" time="2.527" tests="4">
+<testsuites name="jest tests" tests="26" failures="0" errors="0" time="1.974">
+  <testsuite name="TodoUpdate" errors="0" failures="0" skipped="4" timestamp="2025-08-14T10:57:43" time="0.92" tests="4">
     <testcase classname="TodoUpdate shows correct initial values for id=1, including activity type and completed checkbox" name="TodoUpdate shows correct initial values for id=1, including activity type and completed checkbox" time="0">
       <skipped/>
     </testcase>
@@ -14,62 +14,62 @@
       <skipped/>
     </testcase>
   </testsuite>
-  <testsuite name="TodoForm" errors="0" failures="0" skipped="1" timestamp="2025-08-14T10:23:45" time="2.622" tests="4">
-    <testcase classname="TodoForm renders the Create Todo form" name="TodoForm renders the Create Todo form" time="0.07">
+  <testsuite name="unit" errors="0" failures="0" skipped="1" timestamp="2025-08-14T10:57:43" time="1.013" tests="4">
+    <testcase classname="unit AdminPanel renders and shows no users pending approval" name="unit AdminPanel renders and shows no users pending approval" time="0.07">
     </testcase>
-    <testcase classname="TodoForm shows pending approval message if user.status is PENDING" name="TodoForm shows pending approval message if user.status is PENDING" time="0.007">
+    <testcase classname="unit AdminPanel renders a list of pending users with approve buttons" name="unit AdminPanel renders a list of pending users with approve buttons" time="0.025">
     </testcase>
-    <testcase classname="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" name="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" time="0.012">
-    </testcase>
-    <testcase classname="TodoForm submits form, calls axios.post and navigates to /" name="TodoForm submits form, calls axios.post and navigates to /" time="0">
-      <skipped/>
-    </testcase>
-  </testsuite>
-  <testsuite name="unit" errors="0" failures="0" skipped="1" timestamp="2025-08-14T10:23:45" time="2.612" tests="4">
-    <testcase classname="unit AdminPanel renders and shows no users pending approval" name="unit AdminPanel renders and shows no users pending approval" time="0.047">
-    </testcase>
-    <testcase classname="unit AdminPanel renders a list of pending users with approve buttons" name="unit AdminPanel renders a list of pending users with approve buttons" time="0.023">
-    </testcase>
-    <testcase classname="unit AdminPanel shows loading while fetching" name="unit AdminPanel shows loading while fetching" time="0.03">
+    <testcase classname="unit AdminPanel shows loading while fetching" name="unit AdminPanel shows loading while fetching" time="0.022">
     </testcase>
     <testcase classname="unit AdminPanel approves user and removes from list" name="unit AdminPanel approves user and removes from list" time="0">
       <skipped/>
     </testcase>
   </testsuite>
-  <testsuite name="TodoList" errors="0" failures="0" skipped="2" timestamp="2025-08-14T10:23:45" time="2.659" tests="4">
+  <testsuite name="TodoForm" errors="0" failures="0" skipped="1" timestamp="2025-08-14T10:57:43" time="1.084" tests="4">
+    <testcase classname="TodoForm renders the Create Todo form" name="TodoForm renders the Create Todo form" time="0.12">
+    </testcase>
+    <testcase classname="TodoForm shows pending approval message if user.status is PENDING" name="TodoForm shows pending approval message if user.status is PENDING" time="0.004">
+    </testcase>
+    <testcase classname="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" name="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" time="0.009">
+    </testcase>
+    <testcase classname="TodoForm submits form, calls axios.post and navigates to /" name="TodoForm submits form, calls axios.post and navigates to /" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="TodoList" errors="0" failures="0" skipped="2" timestamp="2025-08-14T10:57:43" time="1.005" tests="4">
     <testcase classname="TodoList renders the Todo List table and todos" name="TodoList renders the Todo List table and todos" time="0">
       <skipped/>
     </testcase>
-    <testcase classname="TodoList shows Create New Todo button when user exists" name="TodoList shows Create New Todo button when user exists" time="0.085">
+    <testcase classname="TodoList shows Create New Todo button when user exists" name="TodoList shows Create New Todo button when user exists" time="0.095">
     </testcase>
-    <testcase classname="TodoList shows pending approval message for PENDING user" name="TodoList shows pending approval message for PENDING user" time="0.009">
+    <testcase classname="TodoList shows pending approval message for PENDING user" name="TodoList shows pending approval message for PENDING user" time="0.006">
     </testcase>
     <testcase classname="TodoList renders empty table if no todos" name="TodoList renders empty table if no todos" time="0">
       <skipped/>
     </testcase>
   </testsuite>
-  <testsuite name="Login Component" errors="0" failures="0" skipped="0" timestamp="2025-08-14T10:23:45" time="2.697" tests="3">
-    <testcase classname="Login Component renders username and password inputs and login button" name="Login Component renders username and password inputs and login button" time="0.123">
+  <testsuite name="unit" errors="0" failures="0" skipped="0" timestamp="2025-08-14T10:57:43" time="1.113" tests="7">
+    <testcase classname="unit ForgotPassword renders form fields and back button" name="unit ForgotPassword renders form fields and back button" time="0.085">
     </testcase>
-    <testcase classname="Login Component calls onLogin with a token when valid credentials are entered" name="Login Component calls onLogin with a token when valid credentials are entered" time="0.039">
+    <testcase classname="unit ForgotPassword shows error when required fields missing" name="unit ForgotPassword shows error when required fields missing" time="0.029">
     </testcase>
-    <testcase classname="Login Component shows error with invalid credentials" name="Login Component shows error with invalid credentials" time="0.042">
+    <testcase classname="unit ForgotPassword shows error if passwords do not match" name="unit ForgotPassword shows error if passwords do not match" time="0.011">
+    </testcase>
+    <testcase classname="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" name="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" time="0.02">
+    </testcase>
+    <testcase classname="unit ForgotPassword shows error if server returns !ok" name="unit ForgotPassword shows error if server returns !ok" time="0.023">
+    </testcase>
+    <testcase classname="unit ForgotPassword shows error on network/server failure" name="unit ForgotPassword shows error on network/server failure" time="0.016">
+    </testcase>
+    <testcase classname="unit ForgotPassword calls switchToLogin when Back to Login clicked" name="unit ForgotPassword calls switchToLogin when Back to Login clicked" time="0.003">
     </testcase>
   </testsuite>
-  <testsuite name="unit" errors="0" failures="0" skipped="0" timestamp="2025-08-14T10:23:45" time="2.701" tests="7">
-    <testcase classname="unit ForgotPassword renders form fields and back button" name="unit ForgotPassword renders form fields and back button" time="0.058">
+  <testsuite name="Login Component" errors="0" failures="0" skipped="0" timestamp="2025-08-14T10:57:43" time="1.121" tests="3">
+    <testcase classname="Login Component renders username and password inputs and login button" name="Login Component renders username and password inputs and login button" time="0.142">
     </testcase>
-    <testcase classname="unit ForgotPassword shows error when required fields missing" name="unit ForgotPassword shows error when required fields missing" time="0.017">
+    <testcase classname="Login Component calls onLogin with a token when valid credentials are entered" name="Login Component calls onLogin with a token when valid credentials are entered" time="0.046">
     </testcase>
-    <testcase classname="unit ForgotPassword shows error if passwords do not match" name="unit ForgotPassword shows error if passwords do not match" time="0.022">
-    </testcase>
-    <testcase classname="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" name="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" time="0.029">
-    </testcase>
-    <testcase classname="unit ForgotPassword shows error if server returns !ok" name="unit ForgotPassword shows error if server returns !ok" time="0.014">
-    </testcase>
-    <testcase classname="unit ForgotPassword shows error on network/server failure" name="unit ForgotPassword shows error on network/server failure" time="0.015">
-    </testcase>
-    <testcase classname="unit ForgotPassword calls switchToLogin when Back to Login clicked" name="unit ForgotPassword calls switchToLogin when Back to Login clicked" time="0.004">
+    <testcase classname="Login Component shows error with invalid credentials" name="Login Component shows error with invalid credentials" time="0.024">
     </testcase>
   </testsuite>
 </testsuites>

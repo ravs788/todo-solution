@@ -145,6 +145,7 @@ Basic Spring Boot Maven config for a Todo REST API using SQL Server
                     <testFailureIgnore>true</testFailureIgnore>
                     <systemPropertyVariables>
                         <allure.results.directory>allure-results</allure.results.directory>
+                        <spring.profiles.active>h2</spring.profiles.active>
                     </systemPropertyVariables>
                 </configuration>
                 <dependencies>
