@@ -5,7 +5,7 @@ import Login from "../components/Login";
 import { AuthProvider } from "../context/AuthContext";
 
 describe("Login Component", () => {
-  it("renders username and password inputs and login button", () => {
+it("renders username and password inputs and login button", () => {
     render(
       <AuthProvider>
         <Login />
@@ -16,7 +16,7 @@ describe("Login Component", () => {
     expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
   });
 
-  it("calls onLogin with a token when valid credentials are entered", async () => {
+it("calls onLogin with a token when valid credentials are entered", async () => {
     // Mock fetch to simulate backend response
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
@@ -43,7 +43,7 @@ describe("Login Component", () => {
     global.fetch.mockRestore();
   });
 
-  it("shows error with invalid credentials", async () => {
+it("shows error with invalid credentials", async () => {
     global.fetch = jest.fn().mockResolvedValue({ ok: false });
     render(
       <AuthProvider>

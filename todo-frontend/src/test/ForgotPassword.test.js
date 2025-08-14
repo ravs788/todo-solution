@@ -14,7 +14,7 @@ describe('unit', () => {
       jest.useRealTimers();
     });
 
-    it("renders form fields and back button", () => {
+it("renders form fields and back button", () => {
       render(<ForgotPassword />);
       expect(screen.getByText(/Forgot Password/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/Username/)).toBeInTheDocument();
@@ -24,13 +24,13 @@ describe('unit', () => {
       expect(screen.getByText(/Reset Password/i)).toBeInTheDocument();
     });
 
-    it("shows error when required fields missing", () => {
+it("shows error when required fields missing", () => {
       render(<ForgotPassword />);
       fireEvent.click(screen.getByText(/Reset Password/i));
       expect(screen.getByText(/Username is required/i)).toBeInTheDocument();
     });
 
-    it("shows error if passwords do not match", () => {
+it("shows error if passwords do not match", () => {
       render(<ForgotPassword />);
       fireEvent.change(screen.getByLabelText(/Username/), { target: { value: "bob" }});
       fireEvent.change(screen.getByLabelText(/New Password/), { target: { value: "a" }});
@@ -39,7 +39,7 @@ describe('unit', () => {
       expect(screen.getByText(/Passwords do not match/i)).toBeInTheDocument();
     });
 
-    it("shows message after successful password reset and calls switchToLogin after delay", async () => {
+it("shows message after successful password reset and calls switchToLogin after delay", async () => {
       const switchToLogin = jest.fn();
       fetch.mockResolvedValueOnce({ ok: true });
       render(<ForgotPassword switchToLogin={switchToLogin} />);
@@ -52,7 +52,7 @@ describe('unit', () => {
       expect(switchToLogin).toHaveBeenCalled();
     });
 
-    it("shows error if server returns !ok", async () => {
+it("shows error if server returns !ok", async () => {
       fetch.mockResolvedValueOnce({ ok: false });
       render(<ForgotPassword />);
       fireEvent.change(screen.getByLabelText(/Username/), { target: { value: "bob" }});
@@ -62,7 +62,7 @@ describe('unit', () => {
       await waitFor(() => expect(screen.getByText(/Password reset failed/i)).toBeInTheDocument());
     });
 
-    it("shows error on network/server failure", async () => {
+it("shows error on network/server failure", async () => {
       fetch.mockRejectedValueOnce("fail");
       render(<ForgotPassword />);
       fireEvent.change(screen.getByLabelText(/Username/), { target: { value: "bob" }});
@@ -72,7 +72,7 @@ describe('unit', () => {
       await waitFor(() => expect(screen.getByText(/Network or server error/i)).toBeInTheDocument());
     });
 
-    it("calls switchToLogin when Back to Login clicked", () => {
+it("calls switchToLogin when Back to Login clicked", () => {
       const switchToLogin = jest.fn();
       render(<ForgotPassword switchToLogin={switchToLogin} />);
       fireEvent.click(screen.getByText(/Back to Login/i));

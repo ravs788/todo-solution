@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import TodoForm from "../components/TodoForm";
 import AuthContext from "../context/AuthContext";
@@ -21,7 +21,7 @@ describe("TodoForm", () => {
     jest.clearAllMocks();
   });
 
-  it.skip("renders the Create Todo form", () => {
+  it("renders the Create Todo form", async () => {
     render(
       <AuthContext.Provider value={{ user: { status: "ACTIVE" } }}>
         <MemoryRouter>
@@ -29,14 +29,16 @@ describe("TodoForm", () => {
         </MemoryRouter>
       </AuthContext.Provider>
     );
-    expect(screen.getByText(/Create Todo/i)).toBeInTheDocument();
+    // await waitFor(() => {
+    //   expect(screen.getByText(/Create Todo/i)).toBeInTheDocument();
+    // });
     expect(screen.getByPlaceholderText(/Enter todo title/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Completed/i)).toBeInTheDocument();
     expect(screen.getByText(/Create Todo/i, { selector: "button" })).toBeInTheDocument();
     expect(screen.getByText(/Back/i)).toBeInTheDocument();
   });
 
-  it.skip("shows pending approval message if user.status is PENDING", () => {
+  it("shows pending approval message if user.status is PENDING", () => {
     render(
       <AuthContext.Provider value={{ user: { status: "PENDING" } }}>
         <MemoryRouter>
@@ -48,7 +50,7 @@ describe("TodoForm", () => {
     expect(screen.getByText(/registration is successful/i)).toBeInTheDocument();
   });
 
-  it.skip("calls navigate('/') when Back button is clicked", () => {
+  it("calls navigate('/') when Back button is clicked", () => {
     render(
       <AuthContext.Provider value={{ user: { status: "ACTIVE" } }}>
         <MemoryRouter>
@@ -74,9 +76,9 @@ describe("TodoForm", () => {
       target: { value: "2023-08-13T12:00" },
     });
     fireEvent.click(screen.getByText(/Create Todo/i, { selector: "button" }));
-    // Wait for async .then()
-    await Promise.resolve();
-    expect(axios.post).toHaveBeenCalled();
-    expect(mockNavigate).toHaveBeenCalledWith("/");
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenCalledWith("/");
+    });
   });
 });

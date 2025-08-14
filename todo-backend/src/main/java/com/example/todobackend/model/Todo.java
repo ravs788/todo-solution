@@ -32,4 +32,11 @@ public class Todo {
     @Column(nullable = false)
     private String username;
 
+    // ADDED FIELDS:
+    @Column(nullable = true)
+    private String activityType; // "regular" or "definite"
+
+    @Column(columnDefinition = "DATETIME")
+    private LocalDateTime endDate;
+
 }

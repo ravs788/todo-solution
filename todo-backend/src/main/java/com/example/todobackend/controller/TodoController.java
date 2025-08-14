@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -63,6 +64,8 @@ public class TodoController {
                 .completed(dto.getCompleted() != null ? dto.getCompleted() : false)
                 .startDate(dto.getStartDate())
                 .username(username)
+                .activityType(dto.getActivityType())
+                .endDate(dto.getEndDate())
                 .build()
         );
         return ResponseEntity.ok(created);
@@ -76,8 +79,20 @@ public class TodoController {
             return ResponseEntity.notFound().build();
         }
         Todo up = existing.get();
+        Boolean wasCompleted = up.getCompleted();
+        Boolean willBeCompleted = todoRequest.getCompleted() != null ? todoRequest.getCompleted() : up.getCompleted();
         up.setTitle(todoRequest.getTitle() != null ? todoRequest.getTitle() : up.getTitle());
-        up.setCompleted(todoRequest.getCompleted() != null ? todoRequest.getCompleted() : up.getCompleted());
+        up.setCompleted(willBeCompleted);
+        if (todoRequest.getActivityType() != null) {
+            up.setActivityType(todoRequest.getActivityType());
+        }
+        if (todoRequest.getEndDate() != null) {
+            up.setEndDate(todoRequest.getEndDate());
+        }
+        // Auto set endDate if marking completed (transition from false->true)
+        if ((wasCompleted == null || !wasCompleted) && willBeCompleted) {
+            up.setEndDate(LocalDateTime.now());
+        }
         Todo updated = todoService.save(up);
         return ResponseEntity.ok(updated);
     }

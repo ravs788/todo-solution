@@ -36,3 +36,13 @@
     transform: rotate(360deg);
   }
 }
+
+/* Read-only styling for completed todos */
+.completed-task {
+  color: #888;
+  font-style: italic;
+  text-decoration: line-through;
+  font-family: 'Fira Mono', 'Consolas', monospace;
+  font-size: 1.05em;
+  opacity: 0.85;
+}
