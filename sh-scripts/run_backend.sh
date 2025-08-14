@@ -3,4 +3,4 @@
 
 cd "$(dirname "$0")/.." || exit 1
 cd todo-backend || exit 1
-mvn spring-boot:run
+mvn spring-boot:run -Dspring-boot.run.profiles=h2
