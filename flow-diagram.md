@@ -75,9 +75,12 @@ classDiagram
     class AuthController {
       +login()
       +register()
-      +approveUser()
       +forgotPassword()
       +resetPassword()
+    }
+    class AdminController {
+      +approveUser()
+      +getPendingUsers()
     }
     class TodoController {
       +getTodos()
@@ -121,6 +124,8 @@ classDiagram
 
     AuthController --> UserRepository
     AuthController --> User
+    AdminController --> UserRepository
+    AdminController --> User
     TodoController --> TodoService
     TodoService --> TodoRepository
     TodoRepository --> Todo
@@ -128,8 +133,10 @@ classDiagram
     UserRepository --> User
 
     %% Extra relationships for admin and password reset flows
-    AuthController ..> "ForgotPasswordRequest"
-    AuthController ..> "ResetPasswordRequest"
+    class ForgotPasswordRequest
+    class ResetPasswordRequest
+    AuthController ..> ForgotPasswordRequest
+    AuthController ..> ResetPasswordRequest
 ```
 
 ---

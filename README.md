@@ -1,140 +1,187 @@
 # Todo Solution
 
-This repository provides a fullstack Todo application with:
+<!-- 
+  BADGES: To keep visually organized, badges are grouped into:
+  1. Repo metadata/activity
+  2. Build & CI/CD
+  3. Technology & community
+-->
 
-- **Frontend**: React (in `todo-frontend/`)
-- **Backend**: Spring Boot (in `todo-backend/`)
+<!-- 1. Repo Metadata -->
+[![Issues](https://img.shields.io/github/issues/ravs788/todo-solution)](https://github.com/ravs788/todo-solution/issues) [![Forks](https://img.shields.io/github/forks/ravs788/todo-solution?style=social)](https://github.com/ravs788/todo-solution/network/members) [![Stars](https://img.shields.io/github/stars/ravs788/todo-solution?style=social)](https://github.com/ravs788/todo-solution/stargazers) [![Contributors](https://img.shields.io/github/contributors/ravs788/todo-solution)](https://github.com/ravs788/todo-solution/graphs/contributors) [![Last Commit](https://img.shields.io/github/last-commit/ravs788/todo-solution)](https://github.com/ravs788/todo-solution/commits/main)
+
+<!-- 2. Build & CI/CD -->
+[![CI (PRs & Merges)](https://github.com/ravs788/todo-solution/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ravs788/todo-solution/actions/workflows/ci.yml) [![Build Status](https://img.shields.io/badge/build-manual-inactive.svg)](../../actions) 
+
+<!-- 3. Tech & Community -->
+[![Java](https://img.shields.io/badge/backend-Java_17-blue?logo=java&logoColor=white)](todo-backend/) [![React](https://img.shields.io/badge/frontend-React_19-61dafb?logo=react&logoColor=white)](todo-frontend/) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](../../pulls) [![Made with ❤️](https://img.shields.io/badge/Made%20with-Love-ff69b4)](https://github.com/)
+
 
 ---
 
-## Frontend
+## 🚀 Features
 
-**Location:** `todo-frontend/`
-
-### How to Run
-
-**Requires Node.js and npm. Uses [react-app-rewired](https://github.com/timarney/react-app-rewired) for configuration overrides.**
-
-1. `cd todo-frontend`
-2. `npm install`
-3. `npm start`  
-   Frontend available at [http://localhost:3000](http://localhost:3000)
-
-### Scripts
-
-- `npm start` – start development server (uses `react-app-rewired start`)
-- `npm test` – run unit tests (uses `react-app-rewired test`)
-- `npm run build` – build app for production (uses `react-app-rewired build`)
-- `npm run e2e` – run Playwright end-to-end tests (if present)
-
-### Key Dependencies
-
-- **react** (^19.1.0)
-- **react-router-dom** (^6.22.2)
-- **bootstrap** (^5.3.7)
-- **axios** (^1.10.0)
-- **@testing-library/react** (unit testing)
-- **Playwright** (E2E testing, devDependency)
-
-### Structure
-
-- `/src/components/` – main React components and tests
-- `/src/context/` – React context providers (e.g., Auth)
-- `/public/` – static assets
-
-### Notes
-
-- The frontend proxies API requests to [http://localhost:8081](http://localhost:8081) by default.
+- Full-stack **Todo app**: Java Spring Boot backend + React frontend
+- **Admin approval** required before new users can log in
+- Secure **JWT-based authentication**
+- **Direct password reset** (no token/email required)
+- **SQL Server database** in all environments (Azure SQL compatible)
+- Interactive **Admin Panel**: approve/reject users, manage accounts
+- **Allure reporting** on backend Java tests
+- **Unit/integration tests** for both backend and frontend (JUnit 5, Testing Library)
+- **Playwright E2E** frontend tests
+- **Swagger/OpenAPI** UI on backend for live API docs
+- Easy deploy to **Azure App Service** (backend) and **Azure Static Web Apps** (frontend)
+- **React Context API** for user/auth state management
+- **Bootstrap styling** throughout
 
 ---
 
-## Backend
+## 📂 Project Structure
 
-**Location:** `todo-backend/`
+```plaintext
+todo-solution/
+│
+├── todo-backend/           # Spring Boot backend (Java 17+)
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/com/example/todobackend/
+│   │   │   │   ├── controller/
+│   │   │   │   ├── dto/
+│   │   │   │   ├── model/
+│   │   │   │   ├── repository/
+│   │   │   │   ├── security/
+│   │   │   │   └── service/
+│   │   │   └── resources/
+│   │   │       └── application.properties      # DB config (update for your environment)
+│   │   └── test/
+│   │       └── java/com/example/todobackend/
+│   └── pom.xml
+│
+├── todo-frontend/           # React frontend (Node.js/npm)
+│   ├── public/
+│   ├── src/
+│   │   ├── components/      # React components (TodoList, etc)
+│   │   ├── context/         # AuthContext, etc
+│   │   ├── test/            # Frontend unit tests (Jest, RTL)
+│   ├── package.json
+│   └── .env                 # Set REACT_APP_API_URL as needed
+│
+├── allure-report/           # Test coverage reports (after running tests)
+├── azure-deployment-plan.md # Azure deploy instructions
+├── flow-diagram.md          # Architecture & flow diagrams
+├── deployment-options-comparison.md
+└── README.md                # This file
 
-### How to Run
-
-**Requires Java 17+ and Maven.**
-
-By default, uses SQL Server:
-
-- Requires a running **SQL Server instance**.
-- Update `todo-backend/src/main/resources/application.properties` with your MSSQL connection information.
-- Start the app with:
-  ```
-  cd todo-backend
-  mvn spring-boot:run
-  ```
-- Backend will be available at [http://localhost:8081](http://localhost:8081)
-
-**To use in-memory H2 database instead:**  
-Start backend with the H2 profile for rapid local dev/testing. Data is not persisted after application shutdown.  
-  ```
-  cd todo-backend
-  mvn spring-boot:run -Dspring-boot.run.profiles=h2
-  ```
-- H2 web console is available at [http://localhost:8081/h2-console](http://localhost:8081/h2-console)
-
-### Seed/Admin User
-
-- On first run with either SQL Server or H2, a default admin user is seeded automatically:
-  - **Username:** `admin`
-  - **Password:** `password`
-
----
-
-## API Features
-
-- **Spring Boot 3.3, Java 17**
-- **Maven build and dependency management**
-- **Supports both SQL Server and in-memory H2 databases (dev profile)**
-- **JWT-secured endpoints for Todo management**
-- **User registration, admin approval, login**
-- **Direct password reset (no email, no token)**
-- **Forgot/reset password endpoints:**
-  - `POST /api/auth/forgot-password` — resets password directly (username, newPassword required; no email or token sent/needed)
-  - `POST /api/auth/reset-password` — (stub; not used in main flow)
-- **Swagger/OpenAPI provided for interactive API docs (Springdoc OpenAPI UI)**
-- **Admin Panel for managing/approving user accounts**
-- **Allure reporting enabled on tests** (`allure-results/`, `allure-report/`)
-- **Unit and integration tests** (JUnit 5, tagged in Java source)
+```
 
 ---
 
+## 📝 Quickstart
 
-## Continuous Integration / Deployment
+### 1. Clone & configure
 
-- **All GitHub Actions workflows are fully commented out and inactive** to prevent any automated testing or deployment in CI/CD until reinstated.
-- To reactivate, uncomment lines in `.github/workflows/*.yml`.
+```bash
+git clone <repo-url>
+cd todo-solution/
+# Configure backend DB in todo-backend/src/main/resources/application.properties
+# Optionally edit frontend API URL in todo-frontend/.env
+```
 
----
+### 2. Start Backend (Java 17+, SQL Server required)
 
-## Developer Notes
+```bash
+cd todo-backend
+mvn spring-boot:run
+```
 
-- **SQL Server is required** for backend in all environments (dev, test, production).
-- **Unit tests:** `@Tag("unit")`  
-  **Integration tests:** `@Tag("integration")`.
-- Initial admin user always created for new DBs.
+- The app seeds a default admin user: **admin:password**
+- User accounts require **admin approval** after registration.
 
----
+### 3. Start Frontend
 
-## Quickstart for Local Dev
+```bash
+cd todo-frontend
+npm install
+npm start
+```
 
-1. Ensure SQL Server is running and accessible.
-2. Configure connection info in `application.properties` if needed.
-3. Start backend:
-   ```
-   cd todo-backend
-   mvn spring-boot:run
-   ```
-4. Start frontend:
-   ```
-   cd todo-frontend
-   npm install
-   npm start
-   ```
-5. Access app in browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-For further details on code or configuration, see `flow-diagram.md` for updated architecture and latest API flow (including admin approval and direct password reset).
+## 📊 Architecture & Key Flows
+
+- See [flow-diagram.md](flow-diagram.md) for sequence/UML diagrams:
+  - **Registration → admin approval → login → JWT**
+  - **Direct password reset (no token)**
+  - **Admin control panel for user management**
+
+---
+
+## ⚡ Main Scripts
+
+### Backend
+
+- `mvn spring-boot:run` - start server in dev mode
+- `mvn test` - run all Java tests, tagged as unit/integration
+- `mvn allure:serve` - launch Allure coverage UI
+
+### Frontend
+
+- `npm start` - start React dev server
+- `npm test` - run frontend unit tests
+- `npm run build` - production bundle
+- `npm run e2e` - Playwright E2E tests (if configured)
+
+---
+
+## 🔒 Security / Auth
+
+- All non-auth backend endpoints require a valid **JWT**.
+- New users must be approved by admin before they can log in.
+- Passwords can be directly reset (no email/token) via the UI.
+
+---
+
+## 🖥️ Scripts
+
+Scripts are provided for starting the apps and running tests:
+
+**Windows:** Use scripts in `bat-scripts/` (double-click or run with `cmd`)<br>
+**Mac/Linux:** Use scripts in `sh-scripts/` (run with `bash sh-scripts/<script>.sh`)
+
+| Script Name                      | What it does                        |
+|-----------------------------------|-------------------------------------|
+| run_backend.bat / .sh             | Starts the backend Spring Boot app  |
+| run_frontend.bat / .sh            | Starts the React frontend dev server|
+| run_backend_tests.bat / .sh       | Cleans and runs all backend tests   |
+| run_frontend_tests.bat / .sh      | Cleans and runs all frontend tests  |
+| run_all_tests.bat / .sh           | Runs both backend & frontend tests  |
+
+> All scripts assume you run them from the project root.
+
+---
+
+<!-- 
+## 🌐 Deployment
+
+- Deployment scripts and automation are not yet implemented. Check back here for updates.
+-->
+## 📚 Further Reference
+
+- [flow-diagram.md](flow-diagram.md): Sequence, class diagrams, and business logic
+- [azure-deployment-plan.md](azure-deployment-plan.md): Azure production deployment instructions
+- [deployment-options-comparison.md](deployment-options-comparison.md): Cloud and hosting options overview
+
+---
+
+## 🤝 Contributing
+
+PRs and suggestions are welcome! Please open issues or submit pull requests.
+
+---
+
+## 📄 License
+
+MIT
