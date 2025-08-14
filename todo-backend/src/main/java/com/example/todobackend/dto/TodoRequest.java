@@ -15,4 +15,7 @@ public class TodoRequest {
     private String title;
     private Boolean completed;
     private LocalDateTime startDate;
+    // New fields for extended todo details
+    private String activityType; // "regular" or "definite"
+    private LocalDateTime endDate;
 }

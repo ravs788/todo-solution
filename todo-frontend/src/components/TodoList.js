@@ -61,13 +61,14 @@ const TodoList = () => {
             <th>Title</th>
             <th>Completed</th>
             <th>Start Date</th>
+            <th>End Date</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {todos.map((todo) => (
             <tr key={todo.id}>
-              <td>{todo.title}</td>
+              <td className={todo.completed ? "completed-task" : ""}>{todo.title}</td>
               <td>{todo.completed ? "Yes" : "No"}</td>
               <td>
                 {new Date(todo.startDate).getDate().toString().padStart(2, "0")}
@@ -78,17 +79,32 @@ const TodoList = () => {
                 -{new Date(todo.startDate).getFullYear()}
               </td>
               <td>
+                {todo.endDate
+                  ? (new Date(todo.endDate).getDate().toString().padStart(2, "0") +
+                    "-" +
+                    new Intl.DateTimeFormat("en", { month: "short" }).format(
+                      new Date(todo.endDate)
+                    ) +
+                    "-" +
+                    new Date(todo.endDate).getFullYear())
+                  : ""}
+              </td>
+              <td>
                 {user && (
                   <>
                     <Link
                       to={`/update/${todo.id}`}
                       className="btn btn-sm btn-primary me-2"
+                      disabled={todo.completed}
+                      style={todo.completed ? { pointerEvents: "none", opacity: 0.5 } : {}}
                     >
                       Update
                     </Link>
                     <Link
                       to={`/delete/${todo.id}`}
                       className="btn btn-sm btn-danger"
+                      disabled={todo.completed}
+                      style={todo.completed ? { pointerEvents: "none", opacity: 0.5 } : {}}
                     >
                       Delete
                     </Link>

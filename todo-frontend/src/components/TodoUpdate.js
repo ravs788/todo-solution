@@ -8,6 +8,7 @@ const TodoUpdate = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [title, setTitle] = useState("");
+  const [activityType, setActivityType] = useState("definite");
   const [completed, setCompleted] = useState(false);
   const [startDate, setStartDate] = useState("");
 
@@ -22,6 +23,7 @@ const TodoUpdate = () => {
       })
       .then((response) => {
         setTitle(response.data.title);
+        setActivityType(response.data.activityType || "definite");
         setCompleted(response.data.completed || false);
         const formattedDate = response.data.startDate
           ? response.data.startDate.slice(0, 16)
@@ -42,6 +44,7 @@ const TodoUpdate = () => {
         `${apiBase}/api/todos/${id}`,
         {
           title,
+          activityType,
           completed,
           startDate,
         },
@@ -93,18 +96,33 @@ const TodoUpdate = () => {
               />
             </label>
           </div>
-          <div className="mb-3 form-check">
-            <input
-              type="checkbox"
-              className="form-check-input"
-              checked={completed}
-              onChange={(e) => setCompleted(e.target.checked)}
-              id="completedUpdateInput"
-            />
-            <label className="form-check-label" htmlFor="completedUpdateInput">
-              Completed
+          <div className="mb-3">
+            <label className="form-label">
+              Activity Type:
+              <select
+                className="form-select"
+                value={activityType}
+                onChange={(e) => setActivityType(e.target.value)}
+              >
+                <option value="definite">Definite End</option>
+                <option value="regular">Regular Activity</option>
+              </select>
             </label>
           </div>
+          {activityType === "definite" && (
+            <div className="mb-3 form-check">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                checked={completed}
+                onChange={(e) => setCompleted(e.target.checked)}
+                id="completedUpdateInput"
+              />
+              <label className="form-check-label" htmlFor="completedUpdateInput">
+                Completed
+              </label>
+            </div>
+          )}
           <div className="mb-3">
             <label className="form-label">
               Start Date:

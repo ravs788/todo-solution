@@ -26,7 +26,7 @@ describe('unit', () => {
       jest.restoreAllMocks();
     });
 
-    it("renders and shows no users pending approval", async () => {
+it("renders and shows no users pending approval", async () => {
       fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => [],
@@ -38,7 +38,7 @@ describe('unit', () => {
       expect(await screen.findByText(/No users pending approval/i)).toBeInTheDocument();
     });
 
-    it("renders a list of pending users with approve buttons", async () => {
+it("renders a list of pending users with approve buttons", async () => {
       fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => [{ id: 99, username: "pendinguser", status: "PENDING" }],
@@ -49,7 +49,7 @@ describe('unit', () => {
       expect(screen.getByText(/Approve/i)).toBeInTheDocument();
     });
 
-    it("shows loading while fetching", async () => {
+it("shows loading while fetching", async () => {
       let resolve;
       fetch.mockReturnValue(
         new Promise((res) => {
@@ -83,11 +83,7 @@ describe('unit', () => {
       const approveBtn = screen.getAllByText(/Approve/i)[0];
       fireEvent.click(approveBtn);
 
-      await waitFor(() =>
-        expect(screen.getByText((content) =>
-          content.includes('User approved')
-        )).toBeInTheDocument()
-      );
+      expect(await screen.findByText(/User approved/i)).toBeInTheDocument();
       expect(screen.getByText(/No users pending approval/i)).toBeInTheDocument();
     });
   });

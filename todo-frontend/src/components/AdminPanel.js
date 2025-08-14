@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from "react";
 
-// Fetches and allows admin to approve pending users
+// Fetches and allows admin to approve users, shows all users/statuses
 const AdminPanel = () => {
-  const [pendingUsers, setPendingUsers] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
 
   // Get current token for auth header
   const jwtToken = localStorage.getItem("jwtToken");
 
-  const fetchPending = async () => {
+  const fetchUsers = async () => {
     setLoading(true);
     try {
       const apiBase = process.env.REACT_APP_API_BASE_URL;
-      const resp = await fetch(`${apiBase}/api/admin/pending-users`, {
+      const resp = await fetch(`${apiBase}/api/admin/all-users`, {
         headers: {
           "Authorization": `Bearer ${jwtToken}`,
         },
       });
       if (resp.ok) {
-        const users = await resp.json();
-        setPendingUsers(users);
+        const data = await resp.json();
+        setUsers(data);
         setStatusMsg("");
       } else {
-        setStatusMsg("Failed to fetch pending users.");
+        setStatusMsg("Failed to fetch users.");
       }
     } catch {
       setStatusMsg("Error contacting server.");
@@ -33,7 +33,7 @@ const AdminPanel = () => {
   };
 
   useEffect(() => {
-    fetchPending();
+    fetchUsers();
     // eslint-disable-next-line
   }, []);
 
@@ -53,7 +53,12 @@ const AdminPanel = () => {
       );
       if (resp.ok) {
         setStatusMsg("User approved.");
-        setPendingUsers((prev) => prev.filter((u) => u.id !== userId));
+        // Update user status in state
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.id === userId ? { ...u, status: "ACTIVE" } : u
+          )
+        );
       } else {
         setStatusMsg("Failed to approve user.");
       }
@@ -66,24 +71,43 @@ const AdminPanel = () => {
 
   return (
     <div>
-      <h2>Admin Panel &ndash; Pending User Approvals</h2>
+      <h2>Admin Panel &ndash; All Users</h2>
       {loading && <div>Loading...</div>}
       {statusMsg && <div style={{ color: "blue" }}>{statusMsg}</div>}
-      <ul>
-        {pendingUsers.length === 0 && <li>No users pending approval.</li>}
-        {pendingUsers.map((user) => (
-          <li key={user.id}>
-            {user.username} (status: {user.status || "PENDING"})
-            <button
-              style={{ marginLeft: "12px" }}
-              disabled={loading}
-              onClick={() => approveUser(user.id)}
-            >
-              Approve
-            </button>
-          </li>
-        ))}
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.length === 0 && (
+            <tr>
+              <td colSpan={3}>No users pending approval.</td>
+            </tr>
+          )}
+          {users.map((user) => (
+            <tr key={user.id}>
+              <td>{user.username}</td>
+              <td>{user.status}</td>
+              <td>
+                {(user.status && user.status.trim().toUpperCase() === "PENDING") ? (
+                  <button
+                    disabled={loading}
+                    onClick={() => approveUser(user.id)}
+                  >
+                    Approve
+                  </button>
+                ) : (
+                  <span style={{ color: "green" }}>-</span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

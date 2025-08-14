@@ -1,14 +1,7 @@
-/** @type {import('jest').Config} */
 module.exports = {
+  transform: {
+    "^.+\\.[jt]sx?$": "babel-jest"
+  },
   testEnvironment: "jsdom",
-  setupFilesAfterEnv: ["<rootDir>/src/setupTests.js"],
-  reporters: [
-    "default",
-    [
-      "jest-allure2",
-      {
-        resultsDir: "allure-report"
-      }
-    ]
-  ]
+  setupFilesAfterEnv: ["<rootDir>/src/setupTests.js"]
 };

@@ -7,6 +7,7 @@ const TodoForm = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [title, setTitle] = useState("");
+  const [activityType, setActivityType] = useState("definite");
   const [completed, setCompleted] = useState(false);
   const currentDateTime = new Date().toISOString().slice(0, 16);
   const [startDate, setStartDate] = useState(currentDateTime);
@@ -15,14 +16,27 @@ const TodoForm = () => {
     e.preventDefault();
     const token = localStorage.getItem("jwtToken");
     const apiBase = process.env.REACT_APP_API_BASE_URL;
+    let endDate = null;
+    // Only capture end date if definite activity and completed is checked
+    if (activityType === "definite" && completed) {
+      endDate = new Date().toISOString();
+    }
+    const payload = {
+      title,
+      activityType,
+      startDate,
+    };
+    if (activityType === "definite") {
+      payload.completed = completed;
+      payload.endDate = endDate;
+    } else {
+      payload.completed = false;
+      payload.endDate = null;
+    }
     axios
       .post(
         `${apiBase}/api/todos`,
-        {
-          title,
-          completed,
-          startDate,
-        },
+        payload,
         {
           headers: {
             Authorization: token ? `Bearer ${token}` : "",
@@ -72,18 +86,33 @@ const TodoForm = () => {
               />
             </label>
           </div>
-          <div className="mb-3 form-check">
-            <input
-              type="checkbox"
-              className="form-check-input"
-              checked={completed}
-              onChange={(e) => setCompleted(e.target.checked)}
-              id="completedInput"
-            />
-            <label className="form-check-label" htmlFor="completedInput">
-              Completed
+          <div className="mb-3">
+            <label className="form-label">
+              Activity Type:
+              <select
+                className="form-select"
+                value={activityType}
+                onChange={(e) => setActivityType(e.target.value)}
+              >
+                <option value="definite">Definite End</option>
+                <option value="regular">Regular Activity</option>
+              </select>
             </label>
           </div>
+          {activityType === "definite" && (
+            <div className="mb-3 form-check">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                checked={completed}
+                onChange={(e) => setCompleted(e.target.checked)}
+                id="completedInput"
+              />
+              <label className="form-check-label" htmlFor="completedInput">
+                Completed
+              </label>
+            </div>
+          )}
           <div className="mb-3">
             <label className="form-label">
               Start Date:
