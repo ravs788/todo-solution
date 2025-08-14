@@ -20,9 +20,12 @@ This deployment plan is tailored for your project structure:
     - In Azure Portal, create a Web App (Java SE, Linux recommended for cost and performance)
 - **Deploy to App Service**
     - Upload the built JAR file using Azure Portal, Azure CLI, or set up GitHub Actions for automatic deploys
-- **Database Setup (if needed)**
-    - Provision Azure Database for MySQL/PostgreSQL (choose based on your app's current config)
-    - Update `todo-backend/src/main/resources/application.properties` with Azure connection strings, or set them as environment variables in the App Service’s "Configuration" tab
+    - The backend provides JWT-secured endpoints, direct password reset (no email/token), and features an admin approval workflow.
+- **Database Setup (REQUIRED)**
+    - Provision **Azure SQL Database** (do **NOT** use MySQL or PostgreSQL; this app supports only SQL Server/compatible DBs)
+    - Update `todo-backend/src/main/resources/application.properties` with your Azure SQL connection strings, or set them as environment variables in the App Service’s "Configuration" tab
+    - On first run, the backend seeds a default admin user (`admin`/`password`) if not present.
+    - Note: Normal users *must* be approved by an admin in the UI before they can log in.
 - **CORS Configuration**
     - Ensure your backend's CORS settings allow origins from your frontend Static Web App domain
 

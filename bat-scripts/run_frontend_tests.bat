@@ -1,5 +1,6 @@
 @echo off
-cd /d "%~dp0"
+REM Change to the parent directory of this script (project root)
+cd /d "%~dp0.."
 echo Cleaning frontend test results...
 rmdir /s /q "todo-frontend\test-results"
 rmdir /s /q "todo-frontend\allure-report"
