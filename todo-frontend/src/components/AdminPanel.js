@@ -70,44 +70,156 @@ const AdminPanel = () => {
   };
 
   return (
-    <div>
-      <h2>Admin Panel &ndash; All Users</h2>
-      {loading && <div>Loading...</div>}
-      {statusMsg && <div style={{ color: "blue" }}>{statusMsg}</div>}
-      <table>
-        <thead>
-          <tr>
-            <th>Username</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.length === 0 && (
-            <tr>
-              <td colSpan={3}>No users pending approval.</td>
-            </tr>
-          )}
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.username}</td>
-              <td>{user.status}</td>
-              <td>
-                {(user.status && user.status.trim().toUpperCase() === "PENDING") ? (
-                  <button
-                    disabled={loading}
-                    onClick={() => approveUser(user.id)}
-                  >
-                    Approve
-                  </button>
-                ) : (
-                  <span style={{ color: "green" }}>-</span>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(120deg, #e0e7ff 0%, #d0fcfa 100%)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: "18px",
+          boxShadow: "0 6px 36px 0 rgba(38,80,160,0.16)",
+          maxWidth: "500px",
+          width: "98%",
+          padding: "38px 24px 32px 24px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <div style={{ marginBottom: "13px" }}>
+          <img
+            src="/logo192.png"
+            alt="Logo"
+            style={{
+              width: "54px",
+              borderRadius: "13px",
+              boxShadow: "0 1px 6px 0 #ddd",
+            }}
+          />
+        </div>
+        <h2 style={{ fontWeight: 700, margin: 0, color: "#174bb7", fontSize: "2rem", letterSpacing: "0.02em" }}>
+          Admin Panel &ndash; All Users
+        </h2>
+        {loading && (
+          <div style={{
+            color: "#1770b8",
+            fontWeight: 500,
+            fontSize: "1.04rem",
+            marginTop: "16px",
+            marginBottom: "8px"
+          }}>Loading...</div>
+        )}
+        {statusMsg && (
+          <div style={{
+            color: statusMsg.match(/approved|success/i) ? "#108c2c" : "#3d5fc4",
+            background: "#f4f6ff",
+            padding: "8px 13px",
+            fontWeight: 600,
+            borderRadius: "7px",
+            margin: "10px 0 15px 0"
+          }}>
+            {statusMsg}
+          </div>
+        )}
+        <div style={{ width: "100%", overflowX: "auto", marginTop: "9px" }}>
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              marginTop: "0.3rem",
+              borderRadius: "10px",
+              boxShadow: "0 1px 10px 0 #dce0fd",
+              background: "#f9fbfc"
+            }}
+          >
+            <thead>
+              <tr>
+                <th style={{
+                  padding: "12px 8px 8px 8px",
+                  fontSize: "1.02rem",
+                  fontWeight: 700,
+                  color: "#2c317a",
+                  borderBottom: "2px solid #d8e6fd",
+                  background: "#e3f0ff"
+                }}>Username</th>
+                <th style={{
+                  padding: "12px 8px 8px 8px",
+                  fontSize: "1.02rem",
+                  fontWeight: 700,
+                  color: "#2c317a",
+                  borderBottom: "2px solid #d8e6fd",
+                  background: "#e3f0ff"
+                }}>Status</th>
+                <th style={{
+                  padding: "12px 8px 8px 8px",
+                  fontSize: "1.02rem",
+                  fontWeight: 700,
+                  color: "#2c317a",
+                  borderBottom: "2px solid #d8e6fd",
+                  background: "#e3f0ff"
+                }}>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.length === 0 && (
+                <tr>
+                  <td colSpan={3} style={{ textAlign: "center", padding: "21px 0", color: "#a0a5bb" }}>No users pending approval.</td>
+                </tr>
+              )}
+              {users.map((user) => (
+                <tr key={user.id}
+                  style={{
+                    background: user.status && user.status.trim().toUpperCase() === "PENDING" ? "#f9e5db" : "#f9fbfc"
+                  }}>
+                  <td style={{
+                    padding: "9px 10px",
+                    borderBottom: "1.2px solid #e1e9fb"
+                  }}>{user.username}</td>
+                  <td style={{
+                    padding: "9px 10px",
+                    borderBottom: "1.2px solid #e1e9fb",
+                    color: user.status && user.status.trim().toUpperCase() === "ACTIVE" ? "#049848" : "#cf7500",
+                    fontWeight: 600
+                  }}>{user.status}</td>
+                  <td style={{
+                    padding: "9px 10px",
+                    borderBottom: "1.2px solid #e1e9fb",
+                    textAlign: "center"
+                  }}>
+                    {(user.status && user.status.trim().toUpperCase() === "PENDING") ? (
+                      <button
+                        disabled={loading}
+                        onClick={() => approveUser(user.id)}
+                        style={{
+                          background: "linear-gradient(90deg, #13cd67 0%, #1b99cc 100%)",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "6px",
+                          padding: "6px 14px",
+                          fontWeight: 700,
+                          fontSize: "1.02rem",
+                          cursor: loading ? "not-allowed" : "pointer",
+                          boxShadow: "0 1px 8px 0 #e2edf7"
+                        }}
+                      >
+                        Approve
+                      </button>
+                    ) : (
+                      <span style={{ color: "#6db843", fontWeight: 600 }}>-</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };

@@ -13,7 +13,7 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
     if (typeof onRender === "function") {
       onRender();
     }
-  }, []);
+  }, [onRender]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
