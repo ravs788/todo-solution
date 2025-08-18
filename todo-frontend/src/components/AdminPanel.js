@@ -5,6 +5,7 @@ const AdminPanel = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
+  const [view, setView] = useState("ACTIVE"); // Dropdown: "ACTIVE" or "PENDING"
 
   // Get current token for auth header
   const jwtToken = localStorage.getItem("jwtToken");
@@ -69,6 +70,13 @@ const AdminPanel = () => {
     }
   };
 
+  // Filter users
+  const visibleUsers = users.filter(
+    (u) =>
+      (view === "ACTIVE" && u.status && u.status.trim().toUpperCase() === "ACTIVE") ||
+      (view === "PENDING" && u.status && u.status.trim().toUpperCase() === "PENDING")
+  );
+
   return (
     <div
       style={{
@@ -106,6 +114,27 @@ const AdminPanel = () => {
         <h2 style={{ fontWeight: 700, margin: 0, color: "#174bb7", fontSize: "2rem", letterSpacing: "0.02em" }}>
           Admin Panel &ndash; All Users
         </h2>
+        <div style={{ marginTop: "19px", marginBottom: "23px", width: "100%" }}>
+          <label style={{ fontWeight: 600, color: "#1976d2", marginRight: "12px", fontSize: "1.05rem" }}>
+            View:{" "}
+            <select
+              value={view}
+              onChange={e => setView(e.target.value)}
+              style={{
+                borderRadius: "7px",
+                border: "1.5px solid #a4cbfd",
+                padding: "7px 19px 7px 11px",
+                fontSize: "1.08rem",
+                marginLeft: "10px",
+                background: "#f8fbff",
+                color: "#1849a9"
+              }}
+            >
+              <option value="ACTIVE">Active Users</option>
+              <option value="PENDING">Pending Users</option>
+            </select>
+          </label>
+        </div>
         {loading && (
           <div style={{
             color: "#1770b8",
@@ -167,12 +196,14 @@ const AdminPanel = () => {
               </tr>
             </thead>
             <tbody>
-              {users.length === 0 && (
+              {visibleUsers.length === 0 && (
                 <tr>
-                  <td colSpan={3} style={{ textAlign: "center", padding: "21px 0", color: "#a0a5bb" }}>No users pending approval.</td>
+                  <td colSpan={3} style={{ textAlign: "center", padding: "21px 0", color: "#a0a5bb" }}>
+                    {view === "ACTIVE" ? "No active users." : "No users pending approval."}
+                  </td>
                 </tr>
               )}
-              {users.map((user) => (
+              {visibleUsers.map((user) => (
                 <tr key={user.id}
                   style={{
                     background: user.status && user.status.trim().toUpperCase() === "PENDING" ? "#f9e5db" : "#f9fbfc"
@@ -192,7 +223,7 @@ const AdminPanel = () => {
                     borderBottom: "1.2px solid #e1e9fb",
                     textAlign: "center"
                   }}>
-                    {(user.status && user.status.trim().toUpperCase() === "PENDING") ? (
+                    {(view === "PENDING" && user.status && user.status.trim().toUpperCase() === "PENDING") ? (
                       <button
                         disabled={loading}
                         onClick={() => approveUser(user.id)}
