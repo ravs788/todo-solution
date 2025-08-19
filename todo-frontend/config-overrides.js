@@ -1,5 +1,11 @@
 module.exports = {
-  // Keep other rewired config...
+  devServer: (configFunction) => {
+    return (proxy, allowedHost) => {
+      const config = configFunction(proxy, allowedHost);
+      config.allowedHosts = ['.localhost', 'localhost', '127.0.0.1'];
+      return config;
+    };
+  },
   jest: function (config) {
     config.reporters = [
       "default",

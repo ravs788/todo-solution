@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
-
 import { useEffect } from "react";
+import "../AppCard.css";
 
 const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender }) => {
   const [username, setUsername] = useState("");
@@ -9,11 +9,17 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
   const [error, setError] = useState("");
   const { login: authContextLogin } = useContext(AuthContext);
 
+  // Autosizing input
+  const getInputWidth = (value) => {
+    let len = Math.min(Math.max(value.length || 1, 50), 100);
+    return `${len + 1}ch`;
+  };
+
   useEffect(() => {
     if (typeof onRender === "function") {
       onRender();
     }
-  }, []);
+  }, [onRender]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,37 +51,15 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(120deg, #e0e7ff 0%, #d0fcfa 100%)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: "18px",
-          boxShadow: "0 6px 36px 0 rgba(38,80,160,0.16)",
-          maxWidth: "375px",
-          width: "98%",
-          padding: "38px 24px 32px 24px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center"
-        }}
-      >
-        <div style={{ marginBottom: "16px" }}>
-          <img
-            src="/logo192.png"
-            alt="Logo"
-            style={{ width: "54px", borderRadius: "13px", boxShadow: "0 1px 6px 0 #ddd" }}
-          />
-        </div>
-        <h2 style={{ fontWeight: 700, margin: 0, color: "#1b3877", fontSize: "2rem", letterSpacing: "0.02em" }}>Welcome Back!</h2>
-        <div style={{ marginBottom: "18px", color: "#4c68a6" }}>Sign in to your account</div>
+    <div className="app-gradient-bg">
+      <div className="app-card">
+        <img
+          src="/logo192.png"
+          alt="Logo"
+          className="app-card-logo"
+        />
+        <h2 className="app-card-title">Welcome Back!</h2>
+        <div className="app-card-subtitle">Sign in to your account</div>
         <form
           onSubmit={handleSubmit}
           style={{
@@ -94,17 +78,15 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
               type="text"
               value={username}
               autoFocus
-              onChange={(e) => setUsername(e.target.value)}
+              maxLength={100}
+              onChange={e => setUsername(e.target.value)}
               required
               style={{
-                borderRadius: "7px",
-                border: "1.2px solid #a4cbfd",
-                padding: "10px",
-                fontSize: "1.03rem",
-                marginTop: "3px",
-                width: "100%",
-                background: "#f8fbff",
+                ...{
+                  width: getInputWidth(username),
+                },
               }}
+              className="app-input"
               placeholder="e.g. johndoe"
             />
           </div>
@@ -116,37 +98,19 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
               id="login-password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              maxLength={100}
+              onChange={e => setPassword(e.target.value)}
               required
               style={{
-                borderRadius: "7px",
-                border: "1.2px solid #a4cbfd",
-                padding: "10px",
-                fontSize: "1.03rem",
-                marginTop: "3px",
-                width: "100%",
-                background: "#f8fbff",
+                ...{
+                  width: getInputWidth(password),
+                },
               }}
+              className="app-input"
               placeholder="Enter your password"
             />
           </div>
-          <button
-            type="submit"
-            style={{
-              width: "100%",
-              background:
-                "linear-gradient(90deg, #4f8cff 0%, #36d1c4 100%)",
-              border: "none",
-              color: "#fff",
-              fontWeight: 700,
-              borderRadius: "7px",
-              fontSize: "1.03rem",
-              padding: "10px",
-              marginTop: "2px",
-              boxShadow: "0 2px 10px 0 rgba(45,130,195,0.08)",
-              cursor: "pointer"
-            }}
-          >
+          <button type="submit" className="app-button-primary">
             Login
           </button>
         </form>

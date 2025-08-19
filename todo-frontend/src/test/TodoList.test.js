@@ -20,22 +20,31 @@ const mockTodos = [
   },
 ];
 
-// Mock axios
-jest.mock("axios", () => ({
-  create: () => ({
-    get: jest.fn(() => Promise.resolve({ data: mockTodos })),
-    interceptors: {
-      request: { use: jest.fn() }
-    }
-  }),
-}));
+jest.mock("axios", () => {
+  const getMock = jest.fn(() => Promise.resolve({ data: mockTodos }));
+  const mockAxiosModule = {
+    create: () => ({
+      get: getMock,
+      interceptors: {
+        request: { use: jest.fn() }
+      }
+    }),
+    _getMock: getMock
+  };
+  return mockAxiosModule;
+});
 
 describe("TodoList", () => {
   afterEach(() => {
     jest.clearAllMocks();
+    require("axios")._getMock.mockImplementation(() => Promise.resolve({ data: mockTodos }));
   });
 
-  it.skip("renders the Todo List table and todos", async () => {
+  beforeEach(() => {
+    require("axios")._getMock.mockImplementation(() => Promise.resolve({ data: mockTodos }));
+  });
+
+  it("renders the Todo List table and todos", async () => {
     render(
       <AuthContext.Provider value={{ user: { status: "ACTIVE" } }}>
         <MemoryRouter>
@@ -43,16 +52,18 @@ describe("TodoList", () => {
         </MemoryRouter>
       </AuthContext.Provider>
     );
-    expect(await screen.findByText(/Todo List/i)).toBeInTheDocument();
-    // expect(await screen.findByText("First Task")).toBeInTheDocument();
-    expect(await screen.findByText("Second Task")).toBeInTheDocument();
-    expect(await screen.findByText(/No/i)).toBeInTheDocument();
-    expect(await screen.findByText(/Yes/i)).toBeInTheDocument();
+
+    // Await that both todos are rendered
+    await screen.findByText(/Todo List/i);
+    await screen.findByText("First Task");
+    await screen.findByText("Second Task");
+    await screen.findByText(/No/i);
+    await screen.findByText(/Yes/i);
     expect(screen.getAllByText(/Update/i, { selector: "a" }).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Delete/i, { selector: "a" }).length).toBeGreaterThan(0);
   });
 
-it("shows Create New Todo button when user exists", () => {
+  it("shows Create New Todo button when user exists", () => {
     render(
       <AuthContext.Provider value={{ user: { status: "ACTIVE" } }}>
         <MemoryRouter>
@@ -63,7 +74,7 @@ it("shows Create New Todo button when user exists", () => {
     expect(screen.getByText(/Create New Todo/i)).toBeInTheDocument();
   });
 
-it("shows pending approval message for PENDING user", () => {
+  it("shows pending approval message for PENDING user", () => {
     render(
       <AuthContext.Provider value={{ user: { status: "PENDING" } }}>
         <MemoryRouter>
@@ -75,13 +86,9 @@ it("shows pending approval message for PENDING user", () => {
     expect(screen.getByText(/registration is successful/i)).toBeInTheDocument();
   });
 
-  it.skip("renders empty table if no todos", async () => {
+  it("renders empty table if no todos", async () => {
     // Override mock response for this test
-    const { create } = require("axios");
-    create.mockReturnValueOnce({
-      get: jest.fn(() => Promise.resolve({ data: [] })),
-      interceptors: { request: { use: jest.fn() } }
-    });
+    require("axios")._getMock.mockImplementationOnce(() => Promise.resolve({ data: [] }));
     render(
       <AuthContext.Provider value={{ user: { status: "ACTIVE" } }}>
         <MemoryRouter>

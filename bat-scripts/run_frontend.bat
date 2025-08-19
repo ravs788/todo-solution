@@ -2,4 +2,5 @@
 REM Change to the parent directory of this script (project root)
 cd /d "%~dp0.."
 cd todo-frontend
+npm install
 npm start
