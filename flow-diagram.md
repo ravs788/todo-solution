@@ -1,63 +1,8 @@
 # Application Flow Diagram
 
-> **Cline Rules Enforcement:**  
-> **All workflows—manual or automated—begin with enforcement of [CLINE_RULES.md](CLINE_RULES.md)**.
-> 
-> Whenever code is run, tested, or deployed, consult `CLINE_RULES.md` to ensure process and syntax compliance.
-> See more: [README.md](README.md).
-
 This diagram illustrates the flow between the layers of the Todo application, from the UI through the backend to MSSQL.
 
 ---
-
-## Rules Checking in Flow
-
-```mermaid
-sequenceDiagram
-    participant Rules as "Cline Rules (CLINE_RULES.md)"
-    participant U as User
-    participant F as Frontend
-    participant B as Backend
-    participant A as Admin
-
-    %% Enforce rules before any user/automation scenario
-    Rules->>U: Enforce rules before development/automation
-
-    %% Registration and Approval Flow
-    U->>F: Fill registration form
-    F->>B: POST /api/auth/register (username, password)
-    B->>B: Create user (status: PENDING)
-    B->>F: "Registered, pending approval"
-    F->>U: Show "Pending approval" message
-
-    alt Admin Approval Needed
-        A->>F: Login as admin
-        F->>B: POST /api/auth/login (admin creds)
-        B->>F: admin JWT/token issued
-        A->>F: Open Admin Panel
-        F->>B: GET /api/admin/pending-users (JWT)
-        B->>F: [list of PENDING users]
-        A->>F: Click approve
-        F->>B: POST /api/admin/approve-user/{id}
-        B->>B: Set user status to ACTIVE
-        B->>F: OK
-        F->>A: "User approved"
-    end
-
-    %% User login after approval
-    U->>F: Login
-    F->>B: POST /api/auth/login (username, password)
-    B->>B: Check status is ACTIVE
-    B->>F: JWT/token issued for user
-    F->>U: Access granted
-
-    %% Password Reset Flow (no token)
-    U->>F: Fill Forgot Password (username, newPassword)
-    F->>B: POST /api/auth/forgot-password (username, newPassword)
-    B->>B: Update password directly if user exists
-    B->>F: Success
-    F->>U: Redirect to login, show "Password has been reset"
-```
 
 ```mermaid
 sequenceDiagram
