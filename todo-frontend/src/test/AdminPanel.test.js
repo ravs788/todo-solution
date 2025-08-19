@@ -35,16 +35,29 @@ it("renders and shows no users pending approval", async () => {
       render(<AdminPanel />);
       expect(screen.getByText(/Admin Panel/i)).toBeInTheDocument();
       expect(fetch).toHaveBeenCalled();
+      expect(await screen.findByText(/No active users/i)).toBeInTheDocument();
+
+      // Now test for pending users view as well:
+      fireEvent.change(screen.getByLabelText(/View:/i), {
+        target: { value: "PENDING" }
+      });
       expect(await screen.findByText(/No users pending approval/i)).toBeInTheDocument();
     });
 
 it("renders a list of pending users with approve buttons", async () => {
       fetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => [{ id: 99, username: "pendinguser", status: "PENDING" }],
+        json: async () => [
+          { id: 98, username: "activeuser", status: "ACTIVE" },
+          { id: 99, username: "pendinguser", status: "PENDING" }
+        ],
       });
 
       render(<AdminPanel />);
+      // Switch to pending users tab using dropdown
+      fireEvent.change(screen.getByLabelText(/View:/i), {
+        target: { value: "PENDING" }
+      });
       expect(await screen.findByText(/pendinguser/i)).toBeInTheDocument();
       expect(screen.getByText(/Approve/i)).toBeInTheDocument();
     });
