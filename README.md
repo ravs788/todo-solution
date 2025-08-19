@@ -176,7 +176,24 @@ Scripts are provided for starting the apps and running tests:
 
 ---
 
-## 🤝 Contributing
+## � Cline Rules and Automation
+
+This project uses a reusable [CLINE_RULES.md](CLINE_RULES.md) file. These are automation rules for AI-based project helpers and scripts (e.g. Cline), designed to enforce workflow and code standards across all development and automation tasks.
+
+**How it works:**
+- Cline and anyone using project automation should always check and enforce the rules in CLINE_RULES.md before making changes, running chained shell commands, or pushing updates.
+- See [flow-diagram.md](flow-diagram.md) for how rule enforcement fits into the project flow.
+
+**Standard rules include:**
+1. Always use semicolons (`;`) to chain shell commands, never `&&`.
+2. Update all relevant documentation whenever code is pushed to GitHub, on any branch.
+3. Keep this rules file updated, and consult both the README and flow diagram for integration and enforcement practices.
+
+You may add more rules or update this doc as your automation process grows.
+
+---
+
+## �🤝 Contributing
 
 PRs and suggestions are welcome! Please open issues or submit pull requests.
 

@@ -6,7 +6,13 @@ They are enforced standards for automation, shell execution, documentation, and 
 ## Rules
 
 1. When running multiple shell/CLI statements, separate them by semicolon (`;`), not double-ampersand (`&&`).
-2. Update project documentation whenever code changes are pushed to GitHub, for any branch.
+2. Update project documentation whenever code changes are committed to any branch.
 
 ---
 _You may extend or revise these rules as your team's workflow evolves._
+
+## Reference docs
+
+See:
+- [README.md](README.md): Overall workflow and automation integration of rules
+- [flow-diagram.md](flow-diagram.md): Where Cline rules enforcement fits in application/user flows
