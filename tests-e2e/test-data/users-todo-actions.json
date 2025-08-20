@@ -1,0 +1,16 @@
+[
+  {
+    "username": "testuser262501",
+    "password": "password123",
+    "add": [
+      { "title": "Buy milk", "description": "2L whole milk" },
+      { "title": "Call plumber", "description": "Fix sink leak before Friday" }
+    ],
+    "edit": [
+      { "originalTitle": "Buy milk", "newTitle": "Buy almond milk", "newDescription": "1L unsweetened" }
+    ],
+    "delete": [
+      { "title": "Call plumber" }
+    ]
+  }
+]

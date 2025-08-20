@@ -1,0 +1,159 @@
+name: Reusable E2E + Unit Test and Deploy Template
+
+on:
+  workflow_call:
+    inputs:
+      backend-dir:
+        required: false
+        default: 'todo-backend'
+        type: string
+      frontend-dir:
+        required: false
+        default: 'todo-frontend'
+        type: string
+      e2e-dir:
+        required: false
+        default: 'tests-e2e'
+        type: string
+      e2e-grep:
+        required: false
+        description: 'Pattern for Playwright test grep. E.g. @smoke or @regression'
+        type: string
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      ########################################################################
+      # BACKEND DEPLOY & TEST
+      ########################################################################
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build & start backend (Spring Boot)
+        working-directory: ${{ inputs.backend-dir }}
+        run: |
+          ./mvnw clean package -DskipTests
+          nohup ./mvnw spring-boot:run > ../backend.log 2>&1 &
+
+      - name: Wait for backend to be ready
+        run: |
+          echo "Waiting for backend..."
+          sleep 10
+          curl --fail http://localhost:8080/actuator/health || (echo "Backend did not start." && exit 1)
+
+      - name: Run backend unit tests
+        working-directory: ${{ inputs.backend-dir }}
+        run: ./mvnw test
+
+      - name: Upload backend unit test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-unit-tests
+          path: |
+            ${{ inputs.backend-dir }}/target/surefire-reports/
+            ${{ inputs.backend-dir }}/target/site/jacoco/
+
+      - name: Upload backend logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-log
+          path: backend.log
+
+      ########################################################################
+      # FRONTEND DEPLOY & TEST
+      ########################################################################
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install frontend dependencies
+        working-directory: ${{ inputs.frontend-dir }}
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: ${{ inputs.frontend-dir }}
+        run: npm run build
+
+      - name: Start frontend (background)
+        working-directory: ${{ inputs.frontend-dir }}
+        run: nohup npx serve -s build -l 3000 > ../frontend.log 2>&1 &
+
+      - name: Wait for frontend to be ready
+        run: |
+          echo "Waiting for frontend..."
+          sleep 10
+          curl --fail http://localhost:3000 || (echo "Frontend did not start." && exit 1)
+
+      - name: Run frontend unit tests
+        working-directory: ${{ inputs.frontend-dir }}
+        run: npm test -- --ci --coverage
+
+      - name: Upload frontend test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-unit-tests
+          path: |
+            ${{ inputs.frontend-dir }}/coverage/
+            ${{ inputs.frontend-dir }}/test-results/
+
+      - name: Upload frontend logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-log
+          path: frontend.log
+
+      ########################################################################
+      # E2E TESTS
+      ########################################################################
+      - name: Install Playwright & deps
+        working-directory: ${{ inputs.e2e-dir }}
+        run: |
+          npm ci
+          npx playwright install --with-deps
+
+      - name: Run E2E tests
+        working-directory: ${{ inputs.e2e-dir }}
+        run: |
+          if [ -z "${{ inputs.e2e-grep }}" ]; then
+            npx playwright test
+          else
+            npx playwright test --grep "${{ inputs.e2e-grep }}"
+          fi
+
+      - name: Upload Playwright E2E results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-e2e-report
+          path: |
+            ${{ inputs.e2e-dir }}/playwright-report/
+            ${{ inputs.e2e-dir }}/test-results/
+
+    outputs:
+      backend-log: backend.log
+      frontend-log: frontend.log

@@ -24,6 +24,14 @@ const TodoList = () => {
   const [todos, setTodos] = useState([]);
   const { user } = useContext(AuthContext);
 
+  // Filter states
+  const [titleFilter, setTitleFilter] = useState("");
+  const [completedFilter, setCompletedFilter] = useState(""); // "", true, false
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
+
   useEffect(() => {
     const fetchTodos = async () => {
       try {
@@ -35,6 +43,29 @@ const TodoList = () => {
     };
     fetchTodos();
   }, []);
+
+  // Filter logic with improved date handling
+  const filteredTodos = todos
+    .filter((todo) =>
+      titleFilter ? todo.title.toLowerCase().includes(titleFilter.toLowerCase()) : true
+    )
+    .filter((todo) =>
+      completedFilter === ""
+        ? true
+        : completedFilter === "true"
+        ? todo.completed === true
+        : todo.completed === false
+    );
+
+  const totalPages = Math.ceil(filteredTodos.length / pageSize);
+  const pagedTodos = filteredTodos.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
+  useEffect(() => {
+    setCurrentPage(1); // Reset page on filter change
+  }, [titleFilter, completedFilter, todos]);
 
   if (user && user.status === "PENDING") {
     return (
@@ -55,6 +86,29 @@ const TodoList = () => {
           Create New Todo
         </Link>
       )}
+      {/* Filter controls */}
+      <div className="row g-3 mb-3">
+        <div className="col-md-6">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Filter by Title"
+            value={titleFilter}
+            onChange={e => setTitleFilter(e.target.value)}
+          />
+        </div>
+        <div className="col-md-3">
+          <select
+            className="form-select"
+            value={completedFilter}
+            onChange={e => setCompletedFilter(e.target.value)}
+          >
+            <option value="">All</option>
+            <option value="true">Completed</option>
+            <option value="false">Not Completed</option>
+          </select>
+        </div>
+      </div>
       <table className="table table-striped">
         <thead>
           <tr>
@@ -66,7 +120,7 @@ const TodoList = () => {
           </tr>
         </thead>
         <tbody>
-          {todos.map((todo) => (
+          {pagedTodos.map((todo) => (
             <tr key={todo.id}>
               <td className={todo.completed ? "completed-task" : ""}>{todo.title}</td>
               <td>{todo.completed ? "Yes" : "No"}</td>
@@ -113,8 +167,37 @@ const TodoList = () => {
               </td>
             </tr>
           ))}
+          {pagedTodos.length === 0 && (
+            <tr>
+              <td colSpan={5} style={{ textAlign: "center", color: "#888" }}>
+                No todos found.
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="d-flex justify-content-center align-items-center my-3">
+          <button
+            className="btn btn-outline-primary btn-sm mx-1"
+            onClick={() => setCurrentPage(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Prev
+          </button>
+          <span style={{ fontWeight: 600, margin: "0 10px" }}>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="btn btn-outline-primary btn-sm mx-1"
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };
