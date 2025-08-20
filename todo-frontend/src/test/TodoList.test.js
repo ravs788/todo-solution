@@ -57,8 +57,11 @@ describe("TodoList", () => {
     await screen.findByText(/Todo List/i);
     await screen.findByText("First Task");
     await screen.findByText("Second Task");
-    await screen.findByText(/No/i);
-    await screen.findByText(/Yes/i);
+    // Use findAllByText to avoid ambiguity with "No" and "Yes" in both options and table cells
+    const noCells = await screen.findAllByText(/No/i, { selector: "td" });
+    expect(noCells.length).toBeGreaterThan(0);
+    const yesCells = await screen.findAllByText(/Yes/i, { selector: "td" });
+    expect(yesCells.length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Update/i, { selector: "a" }).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Delete/i, { selector: "a" }).length).toBeGreaterThan(0);
   });

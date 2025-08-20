@@ -1,10 +1,5 @@
 # Application Flow Diagram
 
-> **Cline Rules Enforcement:**  
-> **All workflows—manual or automated—begin with enforcement of [CLINE_RULES.md](CLINE_RULES.md)**.
-> 
-> Whenever code is run, tested, or deployed, consult `CLINE_RULES.md` to ensure process and syntax compliance.
-> See more: [README.md](README.md).
 
 This diagram illustrates the flow between the layers of the Todo application, from the UI through the backend to MSSQL.
 
@@ -14,14 +9,12 @@ This diagram illustrates the flow between the layers of the Todo application, fr
 
 ```mermaid
 sequenceDiagram
-    participant Rules as "Cline Rules (CLINE_RULES.md)"
     participant U as User
     participant F as Frontend
     participant B as Backend
     participant A as Admin
 
     %% Enforce rules before any user/automation scenario
-    Rules->>U: Enforce rules before development/automation
 
     %% Registration and Approval Flow
     U->>F: Fill registration form
@@ -207,3 +200,50 @@ classDiagram
 ---
 
 For detailed API usage and environment setup, see `README.md` (now fully up-to-date with these flows).
+
+---
+
+## E2E Test Mapping (Playwright)
+
+```mermaid
+flowchart TD
+  subgraph E2E_Specs
+    crud["todo-crud-user.spec.ts"]
+    others["todo-other-operations.spec.ts"]
+    reg["user-registration-approval.spec.ts"]
+    login["login-users.spec.ts"]
+  end
+
+  subgraph Tags
+    crudTag["@regression"]
+    othersTag["@smoke"]
+    regTag["@regression"]
+    loginTag["@smoke"]
+  end
+
+  subgraph POMs
+    homePage["HomePage.ts"]
+    createTodo["CreateTodoPage.ts"]
+    updateTodo["UpdateTodoPage.ts"]
+    deleteTodo["DeleteTodoPage.ts"]
+    loginPage["LoginPage.ts"]
+    registerUserPage["RegisterUserPage.ts"]
+    adminPanelPage["AdminPanelPage.ts"]
+  end
+
+  crud --> crudTag
+  others --> othersTag
+  reg --> regTag
+  login --> loginTag
+
+  crud --> createTodo & updateTodo & deleteTodo
+  others --> createTodo & updateTodo
+  reg --> registerUserPage & adminPanelPage
+  login --> loginPage
+  homePage -. uses .-> POMs
+```
+
+**Notes**
+- E2E specs live in `tests-e2e/tests/` and rely on shared Page-Object Models (`tests-e2e/pages/`).
+- Tags (`@smoke`, `@regression`) enable CI filtering via `npx playwright test --grep`.
+- Playwright HTML & trace reports are uploaded by GitHub Actions for every run.
