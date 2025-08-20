@@ -166,14 +166,6 @@ Scripts are provided for starting services and running tests (Windows: `bat-scri
 
 ---
 
-## 📚 Further Reference
-
-- [flow-diagram.md](flow-diagram.md): E2E diagrams, test class architecture
-- [azure-deployment-plan.md](azure-deployment-plan.md): Azure deploy
-- [CLINE_RULES.md](CLINE_RULES.md): Repo automation, documentation & testing rules
-
----
-
 ## 🤝 Contributing
 
 PRs and suggestions are welcome! Please open issues or submit pull requests. Run the full test suite, including E2E, before submitting for review.
