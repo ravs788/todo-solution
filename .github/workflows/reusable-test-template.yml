@@ -90,18 +90,19 @@ jobs:
       #########################################
       # E2E TESTS
       #########################################
-      - name: Install Playwright & Browsers
-        working-directory: ./tests-e2e
-        run: |
-          npx playwright install --with-deps
+      # Install dependencies at repo root so Playwright is available
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
 
       - name: Run E2E tests
-        working-directory: ./tests-e2e
         run: |
           if [ -z "${{ inputs.e2e-grep }}" ]; then
-            npx playwright test
+            npx playwright test tests-e2e
           else
-            npx playwright test --grep "${{ inputs.e2e-grep }}"
+            npx playwright test tests-e2e --grep "${{ inputs.e2e-grep }}"
           fi
 
       - name: Upload Playwright E2E results
@@ -112,4 +113,3 @@ jobs:
           path: |
             tests-e2e/playwright-report/
             tests-e2e/test-results/
-      
