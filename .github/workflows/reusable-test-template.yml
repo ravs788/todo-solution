@@ -93,7 +93,6 @@ jobs:
       - name: Install Playwright & Browsers
         working-directory: ./tests-e2e
         run: |
-          npm ci
           npx playwright install --with-deps
 
       - name: Run E2E tests
@@ -113,17 +112,4 @@ jobs:
           path: |
             tests-e2e/playwright-report/
             tests-e2e/test-results/
-
-      - name: Upload E2E Backend Log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-e2e-log
-          path: backend-e2e.log
-
-      - name: Upload E2E Frontend Log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-e2e-log
-          path: frontend-e2e.log
+      
