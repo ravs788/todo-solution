@@ -70,12 +70,50 @@ const AdminPanel = () => {
     }
   };
 
-  // Filter users
-  const visibleUsers = users.filter(
-    (u) =>
-      (view === "ACTIVE" && u.status && u.status.trim().toUpperCase() === "ACTIVE") ||
-      (view === "PENDING" && u.status && u.status.trim().toUpperCase() === "PENDING")
-  );
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
+
+  // Filter and sort users
+  let visibleUsers = [];
+  if (view === "ACTIVE") {
+    visibleUsers = users
+      .filter(
+        (u) =>
+          u.status &&
+          u.status.trim().toUpperCase() === "ACTIVE" &&
+          u.username.toLowerCase() !== "admin"
+      )
+      .sort((a, b) => {
+        // Prefer createdAt descending, else id descending
+        if (a.createdAt && b.createdAt) {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        } else if (b.id && a.id) {
+          return b.id - a.id;
+        }
+        return 0;
+      });
+  } else if (view === "PENDING") {
+    visibleUsers = users.filter(
+      (u) =>
+        u.status &&
+        u.status.trim().toUpperCase() === "PENDING"
+    );
+  }
+
+  // Pagination logic
+  const totalPages = Math.ceil(visibleUsers.length / pageSize);
+  const paginatedUsers = visibleUsers.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  // Change page and keep in bound
+  const gotoPage = (n) => {
+    if (n < 1) n = 1;
+    else if (n > totalPages) n = totalPages;
+    setCurrentPage(n);
+  };
+
+  // Reset to first page when filter changes or users change
+  useEffect(() => { setCurrentPage(1); }, [view, users]);
 
   return (
     <div
@@ -203,7 +241,7 @@ const AdminPanel = () => {
                   </td>
                 </tr>
               )}
-              {visibleUsers.map((user) => (
+              {paginatedUsers.map((user) => (
                 <tr key={user.id}
                   style={{
                     background: user.status && user.status.trim().toUpperCase() === "PENDING" ? "#f9e5db" : "#f9fbfc"
@@ -250,6 +288,46 @@ const AdminPanel = () => {
             </tbody>
           </table>
         </div>
+        {/* Pagination controls */}
+        {totalPages > 1 && (
+          <div style={{ marginTop: 18, display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => gotoPage(currentPage - 1)}
+              style={{
+                marginRight: 10,
+                padding: "4px 12px",
+                borderRadius: "4px",
+                border: "1px solid #aaa",
+                background: currentPage === 1 ? "#eee" : "#e7f1fd",
+                color: "#11447b",
+                fontWeight: 600,
+                cursor: currentPage === 1 ? "not-allowed" : "pointer"
+              }}
+            >
+              Prev
+            </button>
+            <span style={{ margin: "0 10px", fontWeight: 600, color: "#2b399a" }}>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => gotoPage(currentPage + 1)}
+              style={{
+                marginLeft: 10,
+                padding: "4px 12px",
+                borderRadius: "4px",
+                border: "1px solid #aaa",
+                background: currentPage === totalPages ? "#eee" : "#e7f1fd",
+                color: "#11447b",
+                fontWeight: 600,
+                cursor: currentPage === totalPages ? "not-allowed" : "pointer"
+              }}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
