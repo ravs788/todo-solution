@@ -95,8 +95,6 @@ jobs:
       # E2E TESTS
       #########################################
       # Install dependencies at repo root so Playwright is available
-      - name: Install root dependencies
-        run: npm ci
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
