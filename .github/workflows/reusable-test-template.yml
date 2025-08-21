@@ -1,20 +1,14 @@
 name: Reusable CI with E2E
-
-on:
-  workflow_call:
-    inputs:
-      e2e-grep:
-        required: false
-        description: 'Playwright grep/tag pattern, e.g., @smoke or @regression'
-        type: string
+on: [push, pull_request]
 
 jobs:
-  build-test-backend:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Set up JDK 17 for backend
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -25,30 +19,7 @@ jobs:
         working-directory: ./todo-backend
         run: mvn test -Dspring.profiles.active=h2
 
-      - name: Upload Backend Test Reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-test-results
-          path: todo-backend/target/surefire-reports/
-
-      - name: Build Backend Application Jar
-        working-directory: ./todo-backend
-        run: mvn package -DskipTests
-
-      - name: Upload Backend Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-app
-          path: todo-backend/target/*.jar
-
-  build-test-frontend:
-    runs-on: ubuntu-latest
-    needs: build-test-backend
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
+      # Set up Node.js 20 for frontend
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -58,11 +29,7 @@ jobs:
         working-directory: ./todo-frontend
         run: npm install
 
-      - name: Build Frontend App
-        working-directory: ./todo-frontend
-        run: npm run build
-
-      - name: Run Frontend Tests
+      - name: Run frontend tests
         working-directory: ./todo-frontend
         run: npm test -- --ci --watchAll=false
 
@@ -73,71 +40,22 @@ jobs:
           name: frontend-test-results
           path: todo-frontend/test-results/
 
-      - name: Upload Built Frontend App
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-build
-          path: todo-frontend/build/
-
-  e2e-playwright:
-    runs-on: ubuntu-latest
-    needs: [build-test-backend, build-test-frontend]
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install root dependencies
-        run: npm install
-
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-
-      # Start backend (H2, detached)
-      - name: Start backend (detached)
-        working-directory: ./todo-backend
-        run: nohup mvn spring-boot:run -Dspring.profiles.active=h2 > ../../backend-e2e.log 2>&1 &
-
-      # Start frontend (detached)
-      - name: Start frontend (detached)
-        working-directory: ./todo-frontend
-        run: nohup npx serve -s build -l 3000 > ../../frontend-e2e.log 2>&1 &
-
-      - name: Wait for backend to be ready
-        run: |
-          echo "Waiting for backend (localhost:8080)..."
-          for i in {1..20}; do
-            if curl --fail http://localhost:8080/actuator/health; then exit 0; fi
-            sleep 3
-          done
-          echo "Backend not responding!"; exit 1
-
-      - name: Wait for frontend to be ready
-        run: |
-          echo "Waiting for frontend (localhost:3000)..."
-          for i in {1..10}; do
-            if curl --fail http://localhost:3000; then exit 0; fi
-            sleep 3
-          done
-          echo "Frontend not responding!"; exit 1
-
-      - name: Run Playwright E2E tests (tag/gtr pattern)
-        run: |
-          if [ -z "${{ inputs.e2e-grep }}" ]; then
-            npx playwright test tests-e2e
-          else
-            npx playwright test tests-e2e --grep "${{ inputs.e2e-grep }}"
-          fi
-
-      - name: Upload Playwright E2E results
+      # Optionally upload test reports (JUnit, Allure) as workflow artifacts
+      - name: Upload Backend Test Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-e2e-report
-          path: |
-            tests-e2e/playwright-report/
-            tests-e2e/test-results/
+          name: backend-test-results
+          path: todo-backend/target/surefire-reports/
+
+      # Run Playwright E2E tests and upload the HTML report
+      - name: Run e2e tests (Playwright)
+        working-directory: ./todo-frontend
+        run: npx playwright install --with-deps && npx playwright test
+
+      - name: Upload Playwright Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: todo-frontend/playwright-report/
