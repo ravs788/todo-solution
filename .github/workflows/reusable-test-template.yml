@@ -41,7 +41,11 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: ./todo-frontend
-        run: npm install
+        run: |
+            npm cache clean --force
+            rm -rf node_modules
+            rm -f package-lock.json
+            npm install
 
       - name: Run frontend tests
         working-directory: ./todo-frontend
