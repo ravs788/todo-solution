@@ -41,7 +41,7 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: ./todo-frontend
-        run: npm ci
+        run: npm install
 
       - name: Run frontend tests
         working-directory: ./todo-frontend
