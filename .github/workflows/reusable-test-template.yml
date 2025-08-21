@@ -1,5 +1,15 @@
 name: Reusable CI with E2E
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_call:
+    inputs:
+      e2e_tag:
+        description: 'Tag to filter e2e tests (e.g. smoke, regression); if omitted, runs all.'
+        required: false
+        default: ''
+        type: string
+
 
 jobs:
   build-and-test:
@@ -51,7 +61,13 @@ jobs:
       # Run Playwright E2E tests and upload the HTML report
       - name: Run e2e tests (Playwright)
         working-directory: ./todo-frontend
-        run: npx playwright install --with-deps && npx playwright test
+        run: |
+          npx playwright install --with-deps
+          if [ -n "${{ inputs.e2e_tag }}" ]; then
+            npx playwright test --grep ${{ inputs.e2e_tag }}
+          else
+            npx playwright test
+          fi
 
       - name: Upload Playwright Report
         if: always()
