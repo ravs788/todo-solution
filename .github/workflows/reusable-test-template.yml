@@ -56,7 +56,7 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: ./todo-frontend
-        run: npm ci
+        run: npm clean-install
 
       - name: Build Frontend App
         working-directory: ./todo-frontend
