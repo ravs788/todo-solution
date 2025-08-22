@@ -27,8 +27,8 @@ jobs:
         working-directory: ./todo-backend
         run: mvn test -Dspring.profiles.active=h2
 
-      # Set up Node.js 20 for E2E tests
-      - name: Set up Node.js for E2E tests
+      # Set up Node.js 20
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -56,8 +56,8 @@ jobs:
           name: backend-test-results
           path: todo-backend/target/surefire-reports/
 
-      # Set up Node.js 20 for frontend
-      - name: Set up Node.js
+      # Set up Node.js 20  for E2E tests
+      - name: Set up Node.js  for E2E tests
         uses: actions/setup-node@v4
         with:
           node-version: '20'
