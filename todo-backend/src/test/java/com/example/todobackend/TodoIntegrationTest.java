@@ -70,7 +70,7 @@ public class TodoIntegrationTest {
         loginRequest.setUsername(testUser); // ensure unique per run
 
         // First, register user
-        String registerUrl = "http://localhost:" + port + "/api/auth/register";
+        String registerUrl = "/api/auth/register";
         restTemplate.postForEntity(registerUrl, loginRequest, String.class);
 
         // Approve user as admin (mimic approval, using admin user)
@@ -78,20 +78,20 @@ public class TodoIntegrationTest {
         adminLogin.setUsername("admin");
         adminLogin.setPassword("password");
         String adminToken = restTemplate.postForEntity(
-            "http://localhost:" + port + "/api/auth/login",
+            "/api/auth/login",
             adminLogin,
             String.class
         ).getBody();
         HttpHeaders adminHeaders = new HttpHeaders();
         adminHeaders.set("Authorization", "Bearer " + adminToken);
         restTemplate.postForEntity(
-            "http://localhost:" + port + "/api/auth/approve/" + testUser,
+            "/api/auth/approve/" + testUser,
             new HttpEntity<>(adminHeaders),
             String.class
         );
 
         // Now login as test user and get token
-        String loginUrl = "http://localhost:" + port + "/api/auth/login";
+        String loginUrl = "/api/auth/login";
         ResponseEntity<String> loginResponse = restTemplate.postForEntity(
                 loginUrl, loginRequest, String.class);
 
@@ -100,7 +100,7 @@ public class TodoIntegrationTest {
         Assertions.assertNotNull(token, "Token should not be null");
 
         // --- 2. Create todo using token ---
-        String todosUrl = "http://localhost:" + port + "/api/todos";
+        String todosUrl = "/api/todos";
         TodoRequest todoRequest = loadTestData("todo-request.json", TodoRequest.class);
 
         HttpHeaders headers = new HttpHeaders();
@@ -130,25 +130,25 @@ public class TodoIntegrationTest {
         loginRequest.setUsername(testUser);
 
         // Register a new user
-        String registerUrl = "http://localhost:" + port + "/api/auth/register";
+        String registerUrl = "/api/auth/register";
         restTemplate.postForEntity(registerUrl, loginRequest, String.class);
 
         // Approve user as admin
-        String adminLoginUrl = "http://localhost:" + port + "/api/auth/login";
+        String adminLoginUrl = "/api/auth/login";
         LoginRequest adminLogin = new LoginRequest();
         adminLogin.setUsername("admin");
         adminLogin.setPassword("password");
         String adminToken = restTemplate.postForEntity(adminLoginUrl, adminLogin, String.class).getBody();
         HttpHeaders adminHeaders = new HttpHeaders();
         adminHeaders.set("Authorization", "Bearer " + adminToken);
-        restTemplate.postForEntity("http://localhost:" + port + "/api/auth/approve/" + testUser,
+        restTemplate.postForEntity("/api/auth/approve/" + testUser,
                 new HttpEntity<>(adminHeaders), String.class);
 
         // Login as testUser
         String testUserToken = restTemplate.postForEntity(adminLoginUrl, loginRequest, String.class).getBody();
 
         // testUser creates a todo from JSON
-        String todosUrl = "http://localhost:" + port + "/api/todos";
+        String todosUrl = "/api/todos";
         TodoRequest testUserTodoReq = loadTestData("todo-request.json", TodoRequest.class);
         testUserTodoReq.setTitle(testUser + "'s todo");
         HttpHeaders testUserHeaders = new HttpHeaders();
@@ -162,7 +162,7 @@ public class TodoIntegrationTest {
         LoginRequest user2LoginReq = loadTestData("login-request.json", LoginRequest.class);
         user2LoginReq.setUsername(user2);
         restTemplate.postForEntity(registerUrl, user2LoginReq, String.class);
-        restTemplate.postForEntity("http://localhost:" + port + "/api/auth/approve/" + user2,
+        restTemplate.postForEntity("/api/auth/approve/" + user2,
                 new HttpEntity<>(adminHeaders), String.class);
         String user2Token = restTemplate.postForEntity(adminLoginUrl, user2LoginReq, String.class).getBody();
         TodoRequest user2TodoReq = loadTestData("todo-request.json", TodoRequest.class);
