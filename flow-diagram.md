@@ -247,3 +247,44 @@ flowchart TD
 - E2E specs live in `tests-e2e/tests/` and rely on shared Page-Object Models (`tests-e2e/pages/`).
 - Tags (`@smoke`, `@regression`) enable CI filtering via `npx playwright test --grep`.
 - Playwright HTML & trace reports are uploaded by GitHub Actions for every run.
+
+---
+
+## E2E & CI/CD Test Execution Flow
+
+```mermaid
+flowchart TD
+    checkout["Checkout Repository"]
+    setupjdk["Setup JDK 17"]
+    buildbackend["Build & Test Backend (H2)"]
+    setupnodee2e["Setup Node.js for E2E"]
+    installfe["Install Frontend Dependencies"]
+    testfe["Run Frontend Tests"]
+    installe2e["Install Playwright E2E Dependencies"]
+    installwaiton["Install wait-on"]
+    startbackend["Start Backend on H2"]
+    startfrontend["Start Frontend"]
+    waiton["Wait for :3000 (frontend) & :8081 (backend)"]
+    rone2e["Run Playwright E2E (Chromium Only, workers=1 in CI)"]
+    uploadreport["Upload Playwright HTML Report"]
+
+    checkout --> setupjdk
+    setupjdk --> buildbackend
+    buildbackend --> setupnodee2e
+    setupnodee2e --> installfe
+    installfe --> testfe
+    testfe --> installe2e
+    installe2e --> installwaiton
+    installwaiton --> startbackend
+    startbackend --> startfrontend
+    startfrontend --> waiton
+    waiton --> rone2e
+    rone2e --> uploadreport
+```
+
+**CI Test Structure & E2E Principles**
+- All E2E and Playwright config, code, and dependencies are in `tests-e2e/`
+- In CI: Backend & frontend are started and checked before E2E start; Playwright runs only on Chromium, single worker
+- Local runs: All browsers, 5 workers by default
+- Reports are always generated and uploaded for trace/debugging
+- All test reports & artifacts are .gitignored everywhere

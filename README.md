@@ -104,10 +104,14 @@ npm test
 
 ### E2E Tests (Playwright)
 
+All Playwright test code, configuration, and dependencies are now fully isolated in `tests-e2e/`.
+- **Locally:** All browsers (Chromium, Firefox, WebKit) are tested in parallel (default 5 workers).
+- **CI:** Only Chromium is run, with tests executed sequentially (1 worker).
+
 ```bash
 cd tests-e2e
 npm ci
-npx playwright test                 # Run all tests (across Chromium, Firefox, WebKit)
+npx playwright test                 # Run all tests (across Chromium, Firefox, WebKit *locally*, Chromium *in CI*)
 npx playwright test --grep "@smoke" # Only smoke tests
 npx playwright test --grep "@regression" # Only regression tests
 npx playwright show-report          # Open the HTML report
@@ -130,6 +134,19 @@ npx playwright test -g "should add, edit, and delete todos"
 - **Parameterized tests:** Data-driven per-user and per-scenario runs
 - **Tag & grep:** Add `@smoke`, `@regression`, etc. in test titles and filter with `--grep`
 - **CI artifacts:** HTML + traces uploaded after every run for debugging
+
+---
+
+## 📣 CI/CD Workflows
+
+- **Reusable CI template:** See `.github/workflows/reusable-test-template.yml`
+- **E2E runs on Chromium-only in CI, all browsers locally**
+- **Backend and frontend** are built, then both are started in the background (backend with H2), and `wait-on` utility ensures they are up before E2E tests start.
+- **Playwright runs from `tests-e2e` only**; no global install required or used.
+- **Worker/thread configuration:** 5 threads locally for quick feedback, sequential in CI for safety and reproducibility.
+- **Test/report folders are .gitignored everywhere.**
+- Playwright HTML reporting included; open with `npx playwright show-report`
+- All backend, frontend, and E2E runs upload reports for review
 
 ---
 
