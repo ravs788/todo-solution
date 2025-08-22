@@ -1,7 +1,5 @@
 name: Reusable CI with E2E
 on:
-  push:
-  pull_request:
   workflow_call:
     inputs:
       e2e_tag:
