@@ -22,6 +22,7 @@ public class DefaultUserConfig {
 
     @PostConstruct
     public void init() {
+        // Ensure the default admin user exists
         String defaultUsername = "admin";
         String defaultPassword = "password";
         User defaultUser = userRepository.findByUsername(defaultUsername).orElse(null);
@@ -33,5 +34,18 @@ public class DefaultUserConfig {
         defaultUser.setStatus("ACTIVE");
         defaultUser.setRole("ADMIN");
         userRepository.save(defaultUser);
+
+        // Ensure the default test user exists for all databases
+        String testUsername = "testuser262501";
+        String testPassword = "password123";
+        User testUser = userRepository.findByUsername(testUsername).orElse(null);
+        if (testUser == null) {
+            testUser = new User();
+            testUser.setUsername(testUsername);
+        }
+        testUser.setPassword(passwordEncoder.encode(testPassword));
+        testUser.setStatus("ACTIVE");
+        testUser.setRole("USER");
+        userRepository.save(testUser);
     }
 }
