@@ -82,11 +82,7 @@ jobs:
         working-directory: ./tests-e2e
         run: |
           npx playwright install --with-deps
-          if [ -n "${{ inputs.e2e_tag }}" ]; then
-            npx playwright test -- --grep ${{ inputs.e2e_tag }}
-          else
-            npx playwright test
-          fi
+          [ -n "${{ inputs.e2e_tag }}" ] && npx playwright test --grep "${{ inputs.e2e_tag }}" || npx playwright test
 
       - name: Upload Playwright Report
         if: always()
