@@ -6,6 +6,5 @@ on:
 
 jobs:
   run-regression-tests:
-    uses: ./.github/workflows/reusable-test-template.yml
-    with: {}
+    uses: .github/workflows/reusable-test-template.yml
     secrets: inherit
