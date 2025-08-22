@@ -62,20 +62,25 @@ jobs:
         with:
           node-version: '20'
 
-      # Display present working directory before E2E
-      - name: Show present working directory and list files before E2E install
-        run: |
-          pwd
-          ls -la
-
       # Install E2E dependencies (Playwright local to tests-e2e)
       - name: Install Playwright E2E dependencies
         working-directory: ./tests-e2e
         run: npm install
 
+      # Install wait-on for port checks
+      - name: Install wait-on dependency for startup checks
+        run: npm install -g wait-on
+
       - name: Print npm debug log
         run: cat /home/runner/.npm/_logs/*.log # Adjust path
         if: failure()
+
+      # Start backend and frontend, then wait for both to be ready
+      - name: Start backend and frontend for E2E
+        run: |
+          nohup mvn spring-boot:run -Dspring-boot.run.profiles=h2 -f ./todo-backend/pom.xml &
+          nohup npm start --prefix ./todo-frontend &
+          npx wait-on tcp:3000 tcp:8081
 
       # Run Playwright E2E tests and upload the HTML report
       - name: Run e2e tests (Playwright)
