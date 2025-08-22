@@ -58,6 +58,14 @@ jobs:
           name: backend-test-results
           path: todo-backend/target/surefire-reports/
 
+      # Display present working directory before E2E
+      - name: Show present working directory before E2E install
+        run: pwd
+
+      # Install root dependencies (including Playwright)
+      - name: Install root dependencies
+        run: npm install
+
       # Run Playwright E2E tests and upload the HTML report
       - name: Run e2e tests (Playwright)
         working-directory: .
