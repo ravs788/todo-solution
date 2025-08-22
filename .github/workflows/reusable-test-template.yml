@@ -31,7 +31,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
 
       - name: Install frontend dependencies
         working-directory: ./todo-frontend
@@ -57,8 +57,10 @@ jobs:
           path: todo-backend/target/surefire-reports/
 
       # Display present working directory before E2E
-      - name: Show present working directory before E2E install
-        run: pwd
+      - name: Show present working directory and list files before E2E install
+        run: |
+          pwd
+          ls -la
 
       # Install root dependencies (including Playwright)
       - name: Install root dependencies
