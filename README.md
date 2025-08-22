@@ -11,7 +11,7 @@
 [![Issues](https://img.shields.io/github/issues/ravs788/todo-solution)](https://github.com/ravs788/todo-solution/issues) [![Forks](https://img.shields.io/github/forks/ravs788/todo-solution?style=social)](https://github.com/ravs788/todo-solution/network/members) [![Stars](https://img.shields.io/github/stars/ravs788/todo-solution?style=social)](https://github.com/ravs788/todo-solution/stargazers) [![Contributors](https://img.shields.io/github/contributors/ravs788/todo-solution)](https://github.com/ravs788/todo-solution/graphs/contributors) [![Last Commit](https://img.shields.io/github/last-commit/ravs788/todo-solution)](https://github.com/ravs788/todo-solution/commits/main)
 
 <!-- 2. Build & CI/CD -->
-[![Merge Regression CI](https://github.com/ravs788/todo-solution/actions/workflows/merge-tests.yml/badge.svg?branch=main)](https://github.com/ravs788/todo-solution/actions/workflows/merge-tests.yml) [![PR Smoke CI](https://github.com/ravs788/todo-solution/actions/workflows/pr-tests.yml/badge.svg?branch=main)](https://github.com/ravs788/todo-solution/actions/workflows/pr-tests.yml) [![Build Status](https://img.shields.io/badge/build-manual-inactive.svg)](../../actions) 
+[![Merge Regression CI](https://github.com/ravs788/todo-solution/actions/workflows/merge-tests.yml/badge.svg?branch=main)](https://github.com/ravs788/todo-solution/actions/workflows/merge-tests.yml) [![PR Smoke CI](https://github.com/ravs788/todo-solution/actions/workflows/pr-tests.yml/badge.svg)](https://github.com/ravs788/todo-solution/actions/workflows/pr-tests.yml) [![Build Status](https://github.com/ravs788/todo-solution/actions/workflows/merge-tests.yml/badge.svg?branch=main)](https://github.com/ravs788/todo-solution/actions/workflows/merge-tests.yml)
 
 <!-- 3. Tech & Community -->
 [![Java](https://img.shields.io/badge/backend-Java_17-blue?logo=java&logoColor=white)](todo-backend/) [![React](https://img.shields.io/badge/frontend-React_19-61dafb?logo=react&logoColor=white)](todo-frontend/) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](../../pulls) [![Made with ❤️](https://img.shields.io/badge/Made%20with-Love-ff69b4)](https://github.com/)
@@ -161,7 +161,7 @@ npx playwright test --grep "@regression"
 
 ---
 
-## � Reporting & CI
+##  Reporting & CI
 
 - All major browsers covered in CI matrix (Chromium, Firefox, WebKit)
 - Playwright HTML reporting included; open with `npx playwright show-report`
@@ -169,7 +169,7 @@ npx playwright test --grep "@regression"
 
 ---
 
-## � Diagrams & Architecture
+##  Diagrams & Architecture
 
 See [flow-diagram.md](flow-diagram.md) for:
 1. User journey & sequence diagrams (including E2E flow)
