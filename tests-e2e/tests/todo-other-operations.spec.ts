@@ -1,10 +1,10 @@
-import { test, expect } from '@playwright/test';
-import { LoginPage } from '../pages/LoginPage';
-import { CreateTodoPage } from '../pages/CreateTodoPage';
-import { UpdateTodoPage } from '../pages/UpdateTodoPage';
-import { HomePage } from '../pages/HomePage';
-import config from '../../config.json';
-import todoOpsData from '../test-data/todo-other-operations.json';
+import { test, expect } from "@playwright/test";
+import { LoginPage } from "../pages/LoginPage";
+import { CreateTodoPage } from "../pages/CreateTodoPage";
+import { UpdateTodoPage } from "../pages/UpdateTodoPage";
+import { HomePage } from "../pages/HomePage";
+import config from "../../config.json";
+import todoOpsData from "../test-data/todo-other-operations.json";
 
 const testUser = todoOpsData.users[0];
 
@@ -17,13 +17,20 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login(testUser.username, testUser.password);
 });
 
-test.describe('Todo Other Operations', () => {
-  test('should allow me to mark todo items as completed @regression', async ({ page }) => {
+test.describe("Todo Other Operations", () => {
+  test("should allow me to mark todo items as completed @regression", async ({
+    page,
+  }) => {
     // Create a new unique todo
-    const todoTitle = 'Complete me Test Todo ' + Date.now();
+    const todoTitle = "Complete me Test Todo " + Date.now();
     const createTodoPage = new CreateTodoPage(page, config.baseUrl);
     await createTodoPage.goto();
-    await createTodoPage.createTodo(todoTitle, 'definite', false, new Date().toISOString().slice(0, 16));
+    await createTodoPage.createTodo(
+      todoTitle,
+      "definite",
+      false,
+      new Date().toISOString().slice(0, 16)
+    );
     await page.waitForTimeout(700);
 
     // Mark as completed with update page abstraction
@@ -35,22 +42,24 @@ test.describe('Todo Other Operations', () => {
     const homePage = new HomePage(page, config.baseUrl);
     await homePage.goto();
     await homePage.setTitleFilter(todoTitle);
-    const row = homePage.todoTable.locator('tbody tr').filter({
-      has: page.locator('td').first().filter({ hasText: todoTitle }),
+    const row = homePage.todoTable.locator("tbody tr").filter({
+      has: page.locator("td").first().filter({ hasText: todoTitle }),
     });
-    const completedCell = row.locator('td').nth(1);
-    await completedCell.waitFor({ state: 'visible', timeout: 3000 });
+    const completedCell = row.locator("td").nth(1);
+    await completedCell.waitFor({ state: "visible", timeout: 3000 });
     await expect(await completedCell.innerText()).toMatch(/yes/i);
   });
-  
-  test('should allow me to create a Regular Activity todo @regression', async ({ page }) => {
+
+  test("should allow me to create a Regular Activity todo @regression", async ({
+    page,
+  }) => {
     // Create a Regular Activity todo
-    const todoTitle = 'Regular Activity Todo ' + Date.now();
+    const todoTitle = "Regular Activity Todo " + Date.now();
     const createTodoPage = new CreateTodoPage(page, config.baseUrl);
     await createTodoPage.goto();
     await createTodoPage.createTodo(
       todoTitle,
-      'regular',
+      "regular",
       false,
       new Date().toISOString().slice(0, 16)
     );
@@ -60,12 +69,11 @@ test.describe('Todo Other Operations', () => {
     const homePage = new HomePage(page, config.baseUrl);
     await homePage.goto();
     await homePage.setTitleFilter(todoTitle);
-    const row = homePage.todoTable.locator('tbody tr').filter({
-      has: page.locator('td').first().filter({ hasText: todoTitle }),
+    const row = homePage.todoTable.locator("tbody tr").filter({
+      has: page.locator("td").first().filter({ hasText: todoTitle }),
     });
     await expect(row).toBeVisible();
   });
-
 });
 
 // Ensure we always logout at end of each test
