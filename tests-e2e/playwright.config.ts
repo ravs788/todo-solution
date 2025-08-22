@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test';
 import path from 'path';
 
 export default defineConfig({
-  workers: process.env.CI ? 3 : 5,
+  workers: process.env.CI ? 1 : 5,
   testDir: path.join(__dirname, 'tests'),
   outputDir: path.join(__dirname, 'test-results'),
   reporter: [
