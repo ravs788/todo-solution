@@ -1,7 +1,8 @@
 #!/bin/bash
 # Clean frontend test results and run frontend tests
 
-cd "$(dirname "$0")/.." || exit 1
+cd "$(dirname "$0")" || exit 1
+cd .. || exit 1
 echo "Cleaning frontend test results..."
 rm -rf todo-frontend/test-results
 rm -rf todo-frontend/allure-report
