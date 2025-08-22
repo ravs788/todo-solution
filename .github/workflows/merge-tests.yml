@@ -2,7 +2,7 @@ name: Merge Regression Suite
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
 
 jobs:
   run-regression-tests:
