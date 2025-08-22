@@ -56,6 +56,12 @@ jobs:
           name: backend-test-results
           path: todo-backend/target/surefire-reports/
 
+      # Set up Node.js 20 for frontend
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       # Display present working directory before E2E
       - name: Show present working directory and list files before E2E install
         run: |
@@ -66,6 +72,10 @@ jobs:
       - name: Install root dependencies
         working-directory: .
         run: npm install
+
+      - name: Print npm debug log
+        run: cat /home/runner/.npm/_logs/*.log # Adjust path
+        if: failure()
 
       # Run Playwright E2E tests and upload the HTML report
       - name: Run e2e tests (Playwright)
