@@ -27,8 +27,8 @@ jobs:
         working-directory: ./todo-backend
         run: mvn test -Dspring.profiles.active=h2
 
-      # Set up Node.js 20 for frontend
-      - name: Set up Node.js
+      # Set up Node.js 20 for E2E tests
+      - name: Set up Node.js for E2E tests
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -68,9 +68,9 @@ jobs:
           pwd
           ls -la
 
-      # Install root dependencies (including Playwright)
-      - name: Install root dependencies
-        working-directory: .
+      # Install E2E dependencies (Playwright local to tests-e2e)
+      - name: Install Playwright E2E dependencies
+        working-directory: ./tests-e2e
         run: npm install
 
       - name: Print npm debug log
@@ -79,13 +79,13 @@ jobs:
 
       # Run Playwright E2E tests and upload the HTML report
       - name: Run e2e tests (Playwright)
-        working-directory: .
+        working-directory: ./tests-e2e
         run: |
           npx playwright install --with-deps
           if [ -n "${{ inputs.e2e_tag }}" ]; then
-            npx playwright test --grep ${{ inputs.e2e_tag }}
+            npm test -- --grep ${{ inputs.e2e_tag }}
           else
-            npx playwright test
+            npm test
           fi
 
       - name: Upload Playwright Report
@@ -93,4 +93,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: playwright-report/
+          path: tests-e2e/pw-html-report/
