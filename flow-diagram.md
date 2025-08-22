@@ -1,8 +1,56 @@
 # Application Flow Diagram
 
+
 This diagram illustrates the flow between the layers of the Todo application, from the UI through the backend to MSSQL.
 
 ---
+
+## Rules Checking in Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant B as Backend
+    participant A as Admin
+
+    %% Enforce rules before any user/automation scenario
+
+    %% Registration and Approval Flow
+    U->>F: Fill registration form
+    F->>B: POST /api/auth/register (username, password)
+    B->>B: Create user (status: PENDING)
+    B->>F: "Registered, pending approval"
+    F->>U: Show "Pending approval" message
+
+    alt Admin Approval Needed
+        A->>F: Login as admin
+        F->>B: POST /api/auth/login (admin creds)
+        B->>F: admin JWT/token issued
+        A->>F: Open Admin Panel
+        F->>B: GET /api/admin/pending-users (JWT)
+        B->>F: [list of PENDING users]
+        A->>F: Click approve
+        F->>B: POST /api/admin/approve-user/{id}
+        B->>B: Set user status to ACTIVE
+        B->>F: OK
+        F->>A: "User approved"
+    end
+
+    %% User login after approval
+    U->>F: Login
+    F->>B: POST /api/auth/login (username, password)
+    B->>B: Check status is ACTIVE
+    B->>F: JWT/token issued for user
+    F->>U: Access granted
+
+    %% Password Reset Flow (no token)
+    U->>F: Fill Forgot Password (username, newPassword)
+    F->>B: POST /api/auth/forgot-password (username, newPassword)
+    B->>B: Update password directly if user exists
+    B->>F: Success
+    F->>U: Redirect to login, show "Password has been reset"
+```
 
 ```mermaid
 sequenceDiagram
@@ -152,3 +200,50 @@ classDiagram
 ---
 
 For detailed API usage and environment setup, see `README.md` (now fully up-to-date with these flows).
+
+---
+
+## E2E Test Mapping (Playwright)
+
+```mermaid
+flowchart TD
+  subgraph E2E_Specs
+    crud["todo-crud-user.spec.ts"]
+    others["todo-other-operations.spec.ts"]
+    reg["user-registration-approval.spec.ts"]
+    login["login-users.spec.ts"]
+  end
+
+  subgraph Tags
+    crudTag["@regression"]
+    othersTag["@smoke"]
+    regTag["@regression"]
+    loginTag["@smoke"]
+  end
+
+  subgraph POMs
+    homePage["HomePage.ts"]
+    createTodo["CreateTodoPage.ts"]
+    updateTodo["UpdateTodoPage.ts"]
+    deleteTodo["DeleteTodoPage.ts"]
+    loginPage["LoginPage.ts"]
+    registerUserPage["RegisterUserPage.ts"]
+    adminPanelPage["AdminPanelPage.ts"]
+  end
+
+  crud --> crudTag
+  others --> othersTag
+  reg --> regTag
+  login --> loginTag
+
+  crud --> createTodo & updateTodo & deleteTodo
+  others --> createTodo & updateTodo
+  reg --> registerUserPage & adminPanelPage
+  login --> loginPage
+  homePage -. uses .-> POMs
+```
+
+**Notes**
+- E2E specs live in `tests-e2e/tests/` and rely on shared Page-Object Models (`tests-e2e/pages/`).
+- Tags (`@smoke`, `@regression`) enable CI filtering via `npx playwright test --grep`.
+- Playwright HTML & trace reports are uploaded by GitHub Actions for every run.

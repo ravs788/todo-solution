@@ -1,0 +1,11 @@
+name: PR Smoke Suite
+
+on:
+  pull_request:
+
+jobs:
+  run-smoke-tests:
+    uses: ./.github/workflows/reusable-test-template.yml
+    with:
+      e2e_tag: '@smoke'
+    secrets: inherit

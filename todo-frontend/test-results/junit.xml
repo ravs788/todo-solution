@@ -1,13 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="4" failures="0" errors="0" time="6.157">
-  <testsuite name="TodoList" errors="0" failures="0" skipped="0" timestamp="2025-08-19T05:05:56" time="3.754" tests="4">
-    <testcase classname="TodoList renders the Todo List table and todos" name="TodoList renders the Todo List table and todos" time="0.51">
+<testsuites name="jest tests" tests="26" failures="0" errors="0" time="6.531">
+  <testsuite name="TodoUpdate" errors="0" failures="0" skipped="4" timestamp="2025-08-21T05:32:23" time="2.434" tests="4">
+    <testcase classname="TodoUpdate shows correct initial values for id=1, including activity type and completed checkbox" name="TodoUpdate shows correct initial values for id=1, including activity type and completed checkbox" time="0">
+      <skipped/>
     </testcase>
-    <testcase classname="TodoList shows Create New Todo button when user exists" name="TodoList shows Create New Todo button when user exists" time="0.028">
+    <testcase classname="TodoUpdate hides completed checkbox when activity type is switched to &apos;regular&apos;" name="TodoUpdate hides completed checkbox when activity type is switched to &apos;regular&apos;" time="0">
+      <skipped/>
     </testcase>
-    <testcase classname="TodoList shows pending approval message for PENDING user" name="TodoList shows pending approval message for PENDING user" time="0.022">
+    <testcase classname="TodoUpdate allows changing title and activity type, submits update and sends correct payload" name="TodoUpdate allows changing title and activity type, submits update and sends correct payload" time="0">
+      <skipped/>
     </testcase>
-    <testcase classname="TodoList renders empty table if no todos" name="TodoList renders empty table if no todos" time="0.019">
+    <testcase classname="TodoUpdate shows error message if update fails" name="TodoUpdate shows error message if update fails" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="unit" errors="0" failures="0" skipped="0" timestamp="2025-08-21T05:32:23" time="2.678" tests="7">
+    <testcase classname="unit ForgotPassword renders form fields and back button" name="unit ForgotPassword renders form fields and back button" time="0.098">
+    </testcase>
+    <testcase classname="unit ForgotPassword shows error when required fields missing" name="unit ForgotPassword shows error when required fields missing" time="0.021">
+    </testcase>
+    <testcase classname="unit ForgotPassword shows error if passwords do not match" name="unit ForgotPassword shows error if passwords do not match" time="0.023">
+    </testcase>
+    <testcase classname="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" name="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" time="0.038">
+    </testcase>
+    <testcase classname="unit ForgotPassword shows error if server returns !ok" name="unit ForgotPassword shows error if server returns !ok" time="0.024">
+    </testcase>
+    <testcase classname="unit ForgotPassword shows error on network/server failure" name="unit ForgotPassword shows error on network/server failure" time="0.024">
+    </testcase>
+    <testcase classname="unit ForgotPassword calls switchToLogin when Back to Login clicked" name="unit ForgotPassword calls switchToLogin when Back to Login clicked" time="0.01">
+    </testcase>
+  </testsuite>
+  <testsuite name="TodoForm" errors="0" failures="0" skipped="1" timestamp="2025-08-21T05:32:23" time="2.638" tests="4">
+    <testcase classname="TodoForm renders the Create Todo form" name="TodoForm renders the Create Todo form" time="0.12">
+    </testcase>
+    <testcase classname="TodoForm shows pending approval message if user.status is PENDING" name="TodoForm shows pending approval message if user.status is PENDING" time="0.009">
+    </testcase>
+    <testcase classname="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" name="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" time="0.025">
+    </testcase>
+    <testcase classname="TodoForm submits form, calls axios.post and navigates to /" name="TodoForm submits form, calls axios.post and navigates to /" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="TodoList" errors="0" failures="0" skipped="0" timestamp="2025-08-21T05:32:23" time="2.702" tests="4">
+    <testcase classname="TodoList renders the Todo List table and todos" name="TodoList renders the Todo List table and todos" time="0.178">
+    </testcase>
+    <testcase classname="TodoList shows Create New Todo button when user exists" name="TodoList shows Create New Todo button when user exists" time="0.016">
+    </testcase>
+    <testcase classname="TodoList shows pending approval message for PENDING user" name="TodoList shows pending approval message for PENDING user" time="0.005">
+    </testcase>
+    <testcase classname="TodoList renders empty table if no todos" name="TodoList renders empty table if no todos" time="0.02">
+    </testcase>
+  </testsuite>
+  <testsuite name="Login Component" errors="0" failures="0" skipped="0" timestamp="2025-08-21T05:32:23" time="2.71" tests="3">
+    <testcase classname="Login Component renders username and password inputs and login button" name="Login Component renders username and password inputs and login button" time="0.144">
+    </testcase>
+    <testcase classname="Login Component calls onLogin with a token when valid credentials are entered" name="Login Component calls onLogin with a token when valid credentials are entered" time="0.045">
+    </testcase>
+    <testcase classname="Login Component shows error with invalid credentials" name="Login Component shows error with invalid credentials" time="0.058">
+    </testcase>
+  </testsuite>
+  <testsuite name="unit" errors="0" failures="0" skipped="1" timestamp="2025-08-21T05:32:23" time="3.215" tests="4">
+    <testcase classname="unit AdminPanel renders and shows no users pending approval" name="unit AdminPanel renders and shows no users pending approval" time="0.089">
+    </testcase>
+    <testcase classname="unit AdminPanel renders a list of pending users with approve buttons" name="unit AdminPanel renders a list of pending users with approve buttons" time="0.049">
+    </testcase>
+    <testcase classname="unit AdminPanel shows loading while fetching" name="unit AdminPanel shows loading while fetching" time="0.038">
+    </testcase>
+    <testcase classname="unit AdminPanel approves user and removes from list" name="unit AdminPanel approves user and removes from list" time="0">
+      <skipped/>
     </testcase>
   </testsuite>
 </testsuites>

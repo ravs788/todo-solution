@@ -1,0 +1,10 @@
+name: Merge Regression Suite
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  run-regression-tests:
+    uses: ./.github/workflows/reusable-test-template.yml
+    secrets: inherit

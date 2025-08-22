@@ -1,4 +1,9 @@
 # =========================
+test-results/
+**/test-results/
+**/pw-html-report/
+**/allure-results/
+**/results.xml
 # DO NOT ALLOW ANY LOG FILES IN THIS REPOSITORY
 # =========================
 *.log
@@ -24,4 +29,3 @@ node_modules/
 todo-backend/todo-backend.log
 
 # Ignore Allure report output
-allure-report/
