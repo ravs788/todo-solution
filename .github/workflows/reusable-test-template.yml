@@ -83,9 +83,9 @@ jobs:
         run: |
           npx playwright install --with-deps
           if [ -n "${{ inputs.e2e_tag }}" ]; then
-            npm test -- --grep ${{ inputs.e2e_tag }}
+            npx playwright test -- --grep ${{ inputs.e2e_tag }}
           else
-            npm test
+            npx playwright test
           fi
 
       - name: Upload Playwright Report
