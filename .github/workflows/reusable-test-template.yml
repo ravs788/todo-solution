@@ -64,6 +64,7 @@ jobs:
 
       # Install root dependencies (including Playwright)
       - name: Install root dependencies
+        working-directory: .
         run: npm install
 
       # Run Playwright E2E tests and upload the HTML report
