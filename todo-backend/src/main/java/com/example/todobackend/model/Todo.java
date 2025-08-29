@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "todo")
@@ -38,5 +39,13 @@ public class Todo {
 
     @Column(columnDefinition = "DATETIME")
     private LocalDateTime endDate;
+
+    @ManyToMany
+    @JoinTable(
+        name = "todo_tags",
+        joinColumns = @JoinColumn(name = "todo_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags;
 
 }

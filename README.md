@@ -189,6 +189,20 @@ PRs and suggestions are welcome! Please open issues or submit pull requests. Run
 
 ---
 
+## Recent Changes
+
+### Tag Management and Editing
+- Tag update operations in the UI and Playwright E2E tests are now robust and performed before form submission.
+- Page Object and backend flows for tag editing and chip validation were improved to ensure tags are properly saved.
+
+### E2E Test Improvements
+- The update tags E2E flow was unified to open the edit form, set tags, and submit, matching real user actions.
+- Test logic now avoids selector ambiguity, removes debug code, and ensures assertions are properly scoped.
+
+### Pagination and Page Size Selection
+- The Todo List UI now supports a "Rows per page" dropdown with options for 5, 10 (default), and 25.
+- The dropdown is displayed to the far right of the pagination controls below the table, while the Prev/Next controls remain centered.
+
 ## 📄 License
 
 MIT

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import com.example.todobackend.model.Tag;
 import java.time.LocalDateTime;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,25 +57,24 @@ public class TodoController {
     @PostMapping
     public ResponseEntity<Todo> createTodo(@RequestBody TodoRequest dto) {
         String username = getCurrentUsername();
+        if (username == null || username.trim().isEmpty()) {
+            // Return 401 if authentication context is missing
+            return ResponseEntity.status(401).body(null);
+        }
         if (dto.getTitle() == null || dto.getTitle().trim().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        Todo created = todoService.save(
-            Todo.builder()
-                .title(dto.getTitle())
-                .completed(dto.getCompleted() != null ? dto.getCompleted() : false)
-                .startDate(dto.getStartDate())
-                .username(username)
-                .activityType(dto.getActivityType())
-                .endDate(dto.getEndDate())
-                .build()
-        );
+        Todo created = todoService.saveFromRequest(dto, username);
         return ResponseEntity.ok(created);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Todo> updateTodo(@PathVariable Integer id, @RequestBody TodoRequest todoRequest) {
         String username = getCurrentUsername();
+        if (username == null || username.trim().isEmpty()) {
+            // Return 401 if authentication context is missing
+            return ResponseEntity.status(401).body(null);
+        }
         Optional<Todo> existing = todoService.findByIdAndUsername(id, username);
         if (existing.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -88,6 +89,16 @@ public class TodoController {
         }
         if (todoRequest.getEndDate() != null) {
             up.setEndDate(todoRequest.getEndDate());
+        }
+        // Handle tags update: if tags list provided in request, update tags accordingly
+        if (todoRequest.getTags() != null) {
+            Set<Tag> tags = todoService.resolveTagsFromNames(todoRequest.getTags());
+            // Replace existing tag links properly to avoid duplicate key errors in join table
+            if (up.getTags() == null) {
+                up.setTags(new java.util.HashSet<>());
+            }
+            up.getTags().clear();
+            up.getTags().addAll(tags);
         }
         // Auto set endDate if marking completed (transition from false->true)
         if ((wasCompleted == null || !wasCompleted) && willBeCompleted) {

@@ -2,6 +2,8 @@ import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
+import TagInput from "./TagInput";
+import "./TodoForm.css";
 
 const TodoForm = () => {
   const navigate = useNavigate();
@@ -11,6 +13,7 @@ const TodoForm = () => {
   const [completed, setCompleted] = useState(false);
   const currentDateTime = new Date().toISOString().slice(0, 16);
   const [startDate, setStartDate] = useState(currentDateTime);
+  const [tags, setTags] = useState([]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -33,6 +36,7 @@ const TodoForm = () => {
       payload.completed = false;
       payload.endDate = null;
     }
+    payload.tags = tags;
     axios
       .post(
         `${apiBase}/api/todos`,
@@ -57,30 +61,10 @@ const TodoForm = () => {
 
   if (user && user.status === "PENDING") {
     return (
-      <div
-        style={{
-          minHeight: "100vh",
-          background: "linear-gradient(120deg, #e0e7ff 0%, #d0fcfa 100%)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div
-          style={{
-            background: "#fff",
-            borderRadius: "18px",
-            boxShadow: "0 6px 36px 0 rgba(38,80,160,0.16)",
-            maxWidth: "375px",
-            width: "98%",
-            padding: "38px 24px 32px 24px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <h2 style={{ color: "orange" }}>Account Pending Approval</h2>
-          <p>
+      <div className="todoform-fullscreen-bg">
+        <div className="todoform-pending-block">
+          <h2 className="todoform-pending-heading">Account Pending Approval</h2>
+          <p className="todoform-text">
             Your registration is successful but your account is pending approval by an admin.
           </p>
         </div>
@@ -89,54 +73,24 @@ const TodoForm = () => {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(120deg, #e0e7ff 0%, #d0fcfa 100%)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: "18px",
-          boxShadow: "0 6px 36px 0 rgba(38,80,160,0.16)",
-          maxWidth: "375px",
-          width: "98%",
-          padding: "38px 24px 32px 24px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ marginBottom: "16px" }}>
+    <div className="todoform-fullscreen-bg">
+      <div className="todoform-container">
+        <div className="todoform-logo-section">
           <img
             src="/logo192.png"
             alt="Logo"
-            style={{
-              width: "54px",
-              borderRadius: "13px",
-              boxShadow: "0 1px 6px 0 #ddd",
-            }}
+            className="todoform-logo-img"
           />
         </div>
-        <h2 style={{ fontWeight: 700, margin: 0, color: "#107782", fontSize: "2rem", letterSpacing: "0.02em" }}>
+        <h2 className="todoform-heading">
           Create Todo
         </h2>
         <form
           onSubmit={handleSubmit}
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            gap: "1.23rem",
-            marginTop: "18px"
-          }}
+          className="todoform-form"
         >
           <div>
-            <label style={{ fontWeight: 500, color: "#10848a" }}>
+            <label className="todoform-label">
               Title
               <input
                 type="text"
@@ -144,31 +98,15 @@ const TodoForm = () => {
                 onChange={(e) => setTitle(e.target.value)}
                 required
                 placeholder="Enter todo title"
-                style={{
-                  borderRadius: "7px",
-                  border: "1.2px solid #a4cbfd",
-                  padding: "10px",
-                  fontSize: "1.03rem",
-                  marginTop: "3px",
-                  width: "100%",
-                  background: "#f8fbff"
-                }}
+                className="todoform-input"
               />
             </label>
           </div>
           <div>
-            <label style={{ fontWeight: 500, color: "#10848a" }}>
+            <label className="todoform-label">
               Activity Type
               <select
-                style={{
-                  borderRadius: "7px",
-                  border: "1.2px solid #a4cbfd",
-                  padding: "8px",
-                  fontSize: "1.03rem",
-                  marginTop: "3px",
-                  width: "100%",
-                  background: "#f8fbff"
-                }}
+                className="todoform-select"
                 value={activityType}
                 onChange={(e) => setActivityType(e.target.value)}
               >
@@ -178,73 +116,52 @@ const TodoForm = () => {
             </label>
           </div>
           {activityType === "definite" && (
-            <div style={{ display: "flex", alignItems: "center", marginLeft: "0.35rem" }}>
+            <div className="todoform-checkbox-row">
               <input
                 type="checkbox"
                 checked={completed}
                 onChange={(e) => setCompleted(e.target.checked)}
                 id="completedInput"
-                style={{ marginRight: "9px", width: "17px", height: "17px" }}
+                className="todoform-checkbox"
               />
-              <label htmlFor="completedInput" style={{ color: "#1976d2", fontWeight: 500 }}>
+              <label htmlFor="completedInput" className="todoform-checkbox-label">
                 Completed
               </label>
             </div>
           )}
           <div>
-            <label style={{ fontWeight: 500, color: "#10848a" }}>
+            <label className="todoform-label">
               Start Date
               <input
                 type="datetime-local"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 required
-                style={{
-                  borderRadius: "7px",
-                  border: "1.2px solid #a4cbfd",
-                  padding: "10px",
-                  fontSize: "1.03rem",
-                  marginTop: "3px",
-                  width: "100%",
-                  background: "#f8fbff"
-                }}
+                className="todoform-date"
               />
             </label>
           </div>
-          <div style={{ display: "flex", gap: "7px" }}>
+          <div>
+            <label className="todoform-label">
+              Tags
+              <TagInput
+                value={tags}
+                onChange={setTags}
+                apiBase={process.env.REACT_APP_API_BASE_URL}
+              />
+            </label>
+          </div>
+          <div className="todoform-button-row">
             <button
               type="submit"
-              style={{
-                width: "100%",
-                background: "linear-gradient(90deg, #36d1c4 0%, #4f8cff 100%)",
-                border: "none",
-                color: "#fff",
-                fontWeight: 700,
-                borderRadius: "7px",
-                fontSize: "1.03rem",
-                padding: "10px",
-                marginTop: "2px",
-                boxShadow: "0 2px 10px 0 rgba(34,124,195,0.08)",
-                cursor: "pointer"
-              }}
+              className="todoform-btn-primary"
             >
               Create Todo
             </button>
             <button
               type="button"
               onClick={handleBack}
-              style={{
-                width: "100%",
-                background: "#f3f6fb",
-                color: "#1849a9",
-                border: "1.5px solid #bcd5ee",
-                fontWeight: 600,
-                fontSize: "1.03rem",
-                borderRadius: "7px",
-                padding: "10px",
-                cursor: "pointer",
-                boxShadow: "0 1px 8px 0 #e2edf7"
-              }}
+              className="todoform-btn-secondary"
             >
               Back
             </button>

@@ -194,16 +194,71 @@ public class TodoIntegrationTest {
             .ifPresent(user -> userRepository.deleteById(user.getId()));
     }
 
-    @AfterEach
-    public void cleanUpTestData() {
-        if (testUser != null) {
-            // Delete all todos for testUser
-            todoRepository.findAllByUsername(testUser)
-                .forEach(todo -> todoRepository.deleteById(todo.getId()));
-            // Delete user
-            userRepository.findByUsername(testUser)
-                .ifPresent(user -> userRepository.deleteById(user.getId()));
-            testUser = null;
-        }
+    @Test
+    @Story("Create Todo with Tags (Integration)")
+    @Description("Test creating a todo with tags, and then fetch todo to verify tags are present. Also test tag suggestion endpoint.")
+    @Severity(SeverityLevel.CRITICAL)
+    public void createTodo_withTags_andSuggestTags() throws IOException {
+        String uniqueUser = "taguser_" + System.currentTimeMillis();
+
+        LoginRequest loginRequest = loadTestData("login-request.json", LoginRequest.class);
+        loginRequest.setUsername(uniqueUser);
+
+        // Register and approve as above
+        restTemplate.postForEntity("/api/auth/register", loginRequest, String.class);
+
+        LoginRequest adminLogin = new LoginRequest();
+        adminLogin.setUsername("admin");
+        adminLogin.setPassword("password");
+        String adminToken = restTemplate.postForEntity(
+            "/api/auth/login",
+            adminLogin,
+            String.class
+        ).getBody();
+        HttpHeaders adminHeaders = new HttpHeaders();
+        adminHeaders.set("Authorization", "Bearer " + adminToken);
+        restTemplate.postForEntity(
+            "/api/auth/approve/" + uniqueUser,
+            new HttpEntity<>(adminHeaders),
+            String.class
+        );
+        // Login as test user
+        String token = restTemplate.postForEntity("/api/auth/login", loginRequest, String.class).getBody();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Create todo with tags
+        TodoRequest todoRequest = new TodoRequest();
+        todoRequest.setTitle("Todo With Tags");
+        todoRequest.setCompleted(false);
+        todoRequest.setTags(java.util.List.of("work", "urgent"));
+        HttpEntity<TodoRequest> req = new HttpEntity<>(todoRequest, headers);
+
+        ResponseEntity<Todo> todoResponse = restTemplate.postForEntity("/api/todos", req, Todo.class);
+        Assertions.assertEquals(HttpStatus.OK, todoResponse.getStatusCode());
+        Todo created = todoResponse.getBody();
+        Assertions.assertNotNull(created);
+        Assertions.assertNotNull(created.getTags());
+        Assertions.assertEquals(2, created.getTags().size());
+        Assertions.assertTrue(created.getTags().stream().anyMatch(t -> t.getName().equals("work")));
+        Assertions.assertTrue(created.getTags().stream().anyMatch(t -> t.getName().equals("urgent")));
+
+        // Fetch all todos and verify tags
+        ResponseEntity<Todo[]> allTodosResp = restTemplate.exchange(
+                "/api/todos", HttpMethod.GET, new HttpEntity<>(headers), Todo[].class);
+        Assertions.assertEquals(HttpStatus.OK, allTodosResp.getStatusCode());
+        Todo[] todos = allTodosResp.getBody();
+        Assertions.assertNotNull(todos);
+        Assertions.assertTrue(java.util.Arrays.stream(todos)
+            .anyMatch(t -> t.getTags() != null && t.getTags().size() == 2));
+
+        // Test tag suggestion endpoint
+        ResponseEntity<String[]> suggestResp = restTemplate.exchange(
+            "/api/tags?search=wor", HttpMethod.GET, null, String[].class);
+        Assertions.assertEquals(HttpStatus.OK, suggestResp.getStatusCode());
+        String[] suggestions = suggestResp.getBody();
+        Assertions.assertNotNull(suggestions);
+        Assertions.assertTrue(java.util.Arrays.asList(suggestions).contains("work"));
     }
 }

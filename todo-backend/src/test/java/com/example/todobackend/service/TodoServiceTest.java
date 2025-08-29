@@ -2,6 +2,13 @@ package com.example.todobackend.service;
 
 import com.example.todobackend.model.Todo;
 import com.example.todobackend.repository.TodoRepository;
+import com.example.todobackend.repository.TagRepository;
+import com.example.todobackend.model.Tag;
+import com.example.todobackend.dto.TodoRequest;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Collections;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +40,9 @@ public class TodoServiceTest {
     @Mock
     private TodoRepository todoRepository;
 
+    @Mock
+    private TagRepository tagRepository;
+
     @InjectMocks
     private TodoService todoService;
 
@@ -44,6 +54,78 @@ public class TodoServiceTest {
             if (is == null) throw new java.io.FileNotFoundException("test-data/" + filename + " not found in classpath");
             return objectMapper.readValue(is, Todo.class);
         }
+    }
+
+    @Test
+    @Story("Save Todo with new tags")
+    @Description("Test saving a todo with a new tag; tag is created and linked")
+    @Severity(SeverityLevel.CRITICAL)
+    void testSaveFromRequest_WithNewTag() {
+        // Arrange
+        TodoRequest req = TodoRequest.builder()
+                .title("Test Todo with Tag")
+                .completed(false)
+                .tags(List.of("newtag"))
+                .build();
+
+        Tag newTag = Tag.builder().id(10).name("newtag").build();
+
+        when(tagRepository.findByNameIgnoreCase("newtag")).thenReturn(Optional.empty());
+        when(tagRepository.save(any(Tag.class))).thenReturn(newTag);
+
+        Todo savedTodo = Todo.builder()
+                .id(1)
+                .title("Test Todo with Tag")
+                .completed(false)
+                .tags(Set.of(newTag))
+                .build();
+
+        when(todoRepository.save(any(Todo.class))).thenReturn(savedTodo);
+
+        // Act
+        Todo result = todoService.saveFromRequest(req, "user1");
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1, result.getTags().size());
+        assertTrue(result.getTags().stream().anyMatch(tag -> "newtag".equals(tag.getName())));
+        verify(tagRepository).save(any(Tag.class));
+        verify(todoRepository).save(any(Todo.class));
+    }
+
+    @Test
+    @Story("Save Todo with existing tag")
+    @Description("Test saving a todo with an existing tag is linked but not duplicated")
+    @Severity(SeverityLevel.CRITICAL)
+    void testSaveFromRequest_WithExistingTag() {
+        // Arrange
+        Tag existingTag = Tag.builder().id(20).name("urgent").build();
+        TodoRequest req = TodoRequest.builder()
+                .title("Todo Existing Tag")
+                .completed(false)
+                .tags(List.of("urgent"))
+                .build();
+
+        when(tagRepository.findByNameIgnoreCase("urgent")).thenReturn(Optional.of(existingTag));
+
+        Todo savedTodo = Todo.builder()
+                .id(2)
+                .title("Todo Existing Tag")
+                .completed(false)
+                .tags(Set.of(existingTag))
+                .build();
+
+        when(todoRepository.save(any(Todo.class))).thenReturn(savedTodo);
+
+        // Act
+        Todo result = todoService.saveFromRequest(req, "userB");
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1, result.getTags().size());
+        assertEquals("urgent", result.getTags().iterator().next().getName());
+        verify(tagRepository, never()).save(any(Tag.class));
+        verify(todoRepository).save(any(Todo.class));
     }
 
     @Test

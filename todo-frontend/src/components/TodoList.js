@@ -30,7 +30,7 @@ const TodoList = () => {
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 5;
+  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -109,6 +109,7 @@ const TodoList = () => {
           </select>
         </div>
       </div>
+      {/* Page size selection moved to pagination controls */}
       <table className="table table-striped">
         <thead>
           <tr>
@@ -116,6 +117,7 @@ const TodoList = () => {
             <th>Completed</th>
             <th>Start Date</th>
             <th>End Date</th>
+            <th>Tags</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -144,6 +146,31 @@ const TodoList = () => {
                   : ""}
               </td>
               <td>
+                {todo.tags && todo.tags.length > 0 ? (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                    {todo.tags.map((t) => {
+                      const tagText = typeof t === "string" ? t : t.name;
+                      return (
+                      <span
+                        key={tagText}
+                        style={{
+                          background: "#e0f7fa",
+                          color: "#088",
+                          borderRadius: "4px",
+                          padding: "2px 6px",
+                          fontSize: "0.85em"
+                        }}
+                      >
+                        {tagText}
+                      </span>
+                    );
+                    })}
+                  </div>
+                ) : (
+                  <span style={{ color: "#888", fontSize: "0.9em" }}>No tags</span>
+                )}
+              </td>
+              <td>
                 {user && (
                   <>
                     <Link
@@ -169,7 +196,7 @@ const TodoList = () => {
           ))}
           {pagedTodos.length === 0 && (
             <tr>
-              <td colSpan={5} style={{ textAlign: "center", color: "#888" }}>
+              <td colSpan={7} style={{ textAlign: "center", color: "#888" }}>
                 No todos found.
               </td>
             </tr>
@@ -178,24 +205,47 @@ const TodoList = () => {
       </table>
       {/* Pagination Controls */}
       {totalPages > 1 && (
-        <div className="d-flex justify-content-center align-items-center my-3">
-          <button
-            className="btn btn-outline-primary btn-sm mx-1"
-            onClick={() => setCurrentPage(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            Prev
-          </button>
-          <span style={{ fontWeight: 600, margin: "0 10px" }}>
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            className="btn btn-outline-primary btn-sm mx-1"
-            onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
+        <div className="d-flex align-items-center my-3" style={{ position: "relative" }}>
+          {/* Centered page navigation controls */}
+          <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
+            <div className="d-flex align-items-center">
+              <button
+                className="btn btn-outline-primary btn-sm mx-1"
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Prev
+              </button>
+              <span style={{ fontWeight: 600, margin: "0 10px" }}>
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                className="btn btn-outline-primary btn-sm mx-1"
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+          {/* Page size selection to the far right */}
+          <div className="ms-auto d-flex align-items-center" style={{ minWidth: 170, justifyContent: "flex-end" }}>
+            <label htmlFor="pageSizeSelect" style={{ fontWeight: 500, margin: "0 7px 0 0" }}>Rows per page:</label>
+            <select
+              id="pageSizeSelect"
+              className="form-select form-select-sm"
+              value={pageSize}
+              onChange={e => {
+                setPageSize(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              style={{ width: 70 }}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+            </select>
+          </div>
         </div>
       )}
     </div>
