@@ -55,7 +55,7 @@ describe("TodoUpdate", () => {
     expect((await screen.findByLabelText(/Completed/i)).checked).toBe(true);
   });
 
-  it.skip("hides completed checkbox when activity type is switched to 'regular'", async () => {
+it.skip("hides completed checkbox when activity type is switched to 'regular'", async () => {
     renderUpdate();
     // Wait for data to load
     await screen.findByDisplayValue("Task 1");

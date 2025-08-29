@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,4 +19,7 @@ public class TodoRequest {
     // New fields for extended todo details
     private String activityType; // "regular" or "definite"
     private LocalDateTime endDate;
+
+    // Tags for this todo (list of tag names; can be empty)
+    private List<String> tags;
 }

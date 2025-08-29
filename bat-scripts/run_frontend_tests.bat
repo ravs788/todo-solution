@@ -6,5 +6,14 @@ rmdir /s /q "todo-frontend\test-results"
 rmdir /s /q "todo-frontend\allure-report"
 echo Running frontend tests...
 cd todo-frontend
-npm test -- --ci --watchAll=false
+call npm install
+if %errorlevel% neq 0 (
+    echo "npm install failed"
+    exit /b %errorlevel%
+)
+call npm test -- --ci --watchAll=false
+if %errorlevel% neq 0 (
+    echo "npm test failed"
+    exit /b %errorlevel%
+)
 cd ..

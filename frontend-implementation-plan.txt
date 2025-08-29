@@ -1,0 +1,36 @@
+Frontend Tags Implementation Plan and Progress Snapshot (as of 2025-08-25):
+
+1. Objective:
+   - Extend the todo app frontend so each todo can have multiple tags.
+   - Tags are created during todo creation or editing, can be suggested for reuse, and can be shared by multiple todos.
+
+2. Implementation Steps:
+   1. Create a reusable React component TagInput.js for managing tags input and suggestions.
+   2. Integrate TagInput.js into TodoForm.js for both creation and editing of todos.
+   3. Ensure tags are sent as an array of strings in the todo creation/update payload to the backend.
+   4. Fetch tag suggestions from the backend endpoint /api/tags?search= and display as user types.
+   5. Add UI and logic for adding/removing tags/chips visually in the form.
+   6. For todo editing, prepopulate tags field with associated tags if any.
+   7. Ensure all other todo form logic still works and is unaffected.
+
+3. Current State:
+   - TagInput.js created with chip input, async suggestions, keyboard navigation.
+   - TodoForm.js: Updated to use TagInput, added tags state, hooked tags into form POST payload.
+   - Backend: Already supports tag creation, deduplication, many-to-many, and async suggestion API.
+   - Both create and update (pending) todo flows will use the same TagInput interface.
+
+4. Outstanding or Pending Items:
+   - Integrate TagInput.js into TodoUpdate.js for editing.
+   - Update TodoList.js to display tags on each todo if relevant.
+   - Perform thorough UI/manual testing for the tags feature in various browser/usage scenarios.
+   - Add frontend tests for tag entry and suggestions if using Jest/React Testing Library.
+   - Solicit user feedback on UX, and iterate if usability or performance needs tuning.
+
+5. Notes:
+   - All changes are modular and reusable: future screens can use TagInput.js.
+   - If project structure changes, update file paths above.
+   - For full context of backend implementation (see backend-implementation-plan.txt if saved).
+
+6. How to resume:
+   - Pick up by editing TodoUpdate.js and TodoList.js as needed.
+   - Continue manual/automated testing and refinement steps listed under "Outstanding".
