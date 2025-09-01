@@ -81,51 +81,7 @@ todo-solution/
 
 ---
 
-## 📝 Quickstart
-
-### Setup, Start, and Test
-
-```bash
-git clone <repo-url>
-cd todo-solution/
-
-# Start backend (Java)
-cd todo-backend
-mvn spring-boot:run
-
-# In a separate terminal...
-cd ../todo-frontend
-npm install
-npm start
-
-# Frontend: Unit/Integration Tests
-npm test
-```
-
-### E2E Tests (Playwright)
-
-All Playwright test code, configuration, and dependencies are now fully isolated in `tests-e2e/`.
-- **Locally:** All browsers (Chromium, Firefox, WebKit) are tested in parallel (default 5 workers).
-- **CI:** Only Chromium is run, with tests executed sequentially (1 worker).
-
-```bash
-cd tests-e2e
-npm ci
-npx playwright test                 # Run all tests (across Chromium, Firefox, WebKit *locally*, Chromium *in CI*)
-npx playwright test --grep "@smoke" # Only smoke tests
-npx playwright test --grep "@regression" # Only regression tests
-npx playwright show-report          # Open the HTML report
-```
-
-You can also run a single test file or case:
-```bash
-npx playwright test tests/todo-crud-user.spec.ts
-npx playwright test -g "should add, edit, and delete todos"
-```
-
----
-
-## 📊 Playwright E2E Features
+##  Playwright E2E Features
 
 - **Cross-browser** E2E for Chromium, Firefox, WebKit
 - **Page Object Model (POM):** LoginPage, HomePage, TodoPage, etc.
@@ -180,6 +136,142 @@ See [flow-diagram.md](flow-diagram.md) for:
 ## 🖥️ Scripts
 
 Scripts are provided for starting services and running tests (Windows: `bat-scripts/`, Mac/Linux: `sh-scripts/`). See description in this file above.
+
+---
+
+## 📦 Running and Testing the Application: Automation Scripts
+
+To quickly start or test the application, use the included batch/shell scripts for your platform.
+These scripts handle changing to the right directory and (on Windows) also handle dependency install (where needed).
+
+### 📂 Script Locations
+
+- **Windows (.bat)**: [`bat-scripts/`](bat-scripts/)
+- **Mac/Linux (.sh)**: [`sh-scripts/`](sh-scripts/)
+
+---
+
+### 🚦 Start the Application
+
+#### Windows
+
+- **Start Backend (H2, default):**  
+  ```
+  bat-scripts\run_backend.bat
+  ```
+  Starts the Spring Boot backend **using the in-memory H2 database** (default, zero config).
+
+- **Start Backend (SQL Server, optional):**
+  ```
+  bat-scripts\run_backend_sqlserver.bat
+  ```
+  Starts the Spring Boot backend with SQL Server configuration (ensure `application.properties` is set for SQL Server).
+  > By default, this script uses your settings in `todo-backend/src/main/resources/application.properties` (JDBC URL, username, password).
+  > If you use a specific Spring profile, update the script to run `mvn spring-boot:run -Dspring-boot.run.profiles=sqlserver`
+
+- **Start Frontend:**  
+  ```
+  bat-scripts\run_frontend.bat
+  ```
+  Installs frontend dependencies and starts the React app.
+
+#### Mac/Linux
+
+- **Start Backend:**  
+  ```
+  bash sh-scripts/run_backend.sh
+  ```
+  Starts the Spring Boot backend **using the in-memory H2 database** (default, zero config).
+
+  > **To use SQL Server instead of H2:**  
+  By default, scripts run with the H2 profile for local development.
+  If you want to use SQL Server:
+  1. Edit `todo-backend/src/main/resources/application.properties` and set your SQL Server JDBC settings (see file comments).
+  2. Start the backend manually (not via script) without the H2 profile:
+     ```
+     cd todo-backend
+     mvn spring-boot:run
+     ```
+  3. Or, if you have a custom profile (e.g., `sqlserver`), use:
+     ```
+     mvn spring-boot:run -Dspring-boot.run.profiles=sqlserver
+     ```
+
+- **Start Frontend:**  
+  ```
+  bash sh-scripts/run_frontend.sh
+  ```
+  *Note:* If running for the first time, run `npm install` in `todo-frontend` before starting:
+  ```
+  cd todo-frontend
+  npm install
+  ```
+
+---
+
+### ✅ Run Tests (Unit/Integration)
+
+#### Windows
+
+- **Backend Tests:**  
+  ```
+  bat-scripts\run_backend_tests.bat
+  ```
+- **Frontend Tests:**  
+  ```
+  bat-scripts\run_frontend_tests.bat
+  ```
+- **All Tests (backend + frontend):**  
+  ```
+  bat-scripts\run_all_tests.bat
+  ```
+
+#### Mac/Linux
+
+- **Backend Tests:**  
+  ```
+  bash sh-scripts/run_backend_tests.sh
+  ```
+- **Frontend Tests:**  
+  ```
+  bash sh-scripts/run_frontend_tests.sh
+  ```
+- **All Tests (backend + frontend):**  
+  ```
+  bash sh-scripts/run_all_tests.sh
+  ```
+  *Note:* For first-time use, install frontend dependencies with:
+  ```
+  cd todo-frontend
+  npm install
+  ```
+
+---
+
+### 🤖 Run E2E (Playwright) Tests
+
+#### Windows
+
+- ```
+  bat-scripts\run_playwright_tests.bat
+  ```
+
+#### Mac/Linux
+
+- ```
+  bash sh-scripts/run_playwright_tests.sh
+  ```
+  *Note:* On first run or after dependency updates:
+  ```
+  cd tests-e2e
+  npm install
+  ```
+
+---
+
+### 🔍 Explore the Scripts
+
+See script source in [`bat-scripts/`](bat-scripts/) and [`sh-scripts/`](sh-scripts/) for further details or custom usage.
 
 ---
 
