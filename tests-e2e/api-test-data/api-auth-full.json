@@ -1,0 +1,21 @@
+[
+  {
+    "login": {
+      "username": "testuser262501",
+      "password": "password123"
+    },
+    "register": {
+      "username": "newuser123",
+      "password": "newpass123"
+    },
+    "admin": {
+      "username": "admin",
+      "password": "password"
+    },
+    "passwordReset": {
+      "username": "passwordtestuser",
+      "oldPassword": "password123",
+      "newPassword": "newpassword123"
+    }
+  }
+]

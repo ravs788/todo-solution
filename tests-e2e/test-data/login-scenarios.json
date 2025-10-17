@@ -1,0 +1,37 @@
+[
+  {
+    "scenario": "valid_login",
+    "username": "testuser262501",
+    "password": "password123",
+    "expectedSuccess": true,
+    "expectedText": "todo list"
+  },
+  {
+    "scenario": "invalid_password",
+    "username": "testuser262501",
+    "password": "wrongpassword",
+    "expectedSuccess": false,
+    "expectedError": "invalid|incorrect|wrong"
+  },
+  {
+    "scenario": "non_existent_user",
+    "username": "nonexistentuser",
+    "password": "password123",
+    "expectedSuccess": false,
+    "expectedError": "invalid|not found|does not exist"
+  },
+  {
+    "scenario": "empty_username",
+    "username": "",
+    "password": "password123",
+    "expectedSuccess": false,
+    "expectedError": "username|required|empty"
+  },
+  {
+    "scenario": "empty_password",
+    "username": "testuser262501",
+    "password": "",
+    "expectedSuccess": false,
+    "expectedError": "password|required|empty"
+  }
+]

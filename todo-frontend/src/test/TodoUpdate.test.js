@@ -8,7 +8,7 @@ import AuthContext from "../context/AuthContext";
 // Properly mock axios for component usage
 jest.mock("axios", () => {
   const mockAxios = {
-    get: jest.fn((url, opts) => {
+    get: jest.fn((url) => {
       const match = url.match(/\/api\/todos\/(\d+)/);
       const id = match ? parseInt(match[1], 10) : 1;
       return Promise.resolve({
@@ -18,12 +18,14 @@ jest.mock("axios", () => {
           activityType: id === 1 ? "definite" : "regular",
           completed: id === 1,
           startDate: "2023-08-15T10:00",
-        }
+        },
       });
     }),
-    put: jest.fn(() => Promise.resolve({}))
+    put: jest.fn(() => Promise.resolve({})),
   };
-  return { __esModule: true, default: mockAxios };
+
+  // Support both ES-module default import and CommonJS require
+  return { __esModule: true, default: mockAxios, ...mockAxios };
 });
 
 // Ensure API base URL is set for tests
@@ -55,7 +57,7 @@ describe("TodoUpdate", () => {
     expect((await screen.findByLabelText(/Completed/i)).checked).toBe(true);
   });
 
-it.skip("hides completed checkbox when activity type is switched to 'regular'", async () => {
+  it.skip("hides completed checkbox when activity type is switched to 'regular'", async () => {
     renderUpdate();
     // Wait for data to load
     await screen.findByDisplayValue("Task 1");
