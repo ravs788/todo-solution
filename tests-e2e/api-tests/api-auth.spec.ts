@@ -3,7 +3,7 @@ import authData from '../api-test-data/api-auth.json';
 import config from '../config.json';
 
 for (const user of authData) {
-  test(`should login user ${user.username}`, async ({ request }) => {
+  test(`should login user ${user.username}`, { tag: ['@regression', '@smoke'] }, async ({ request }) => {
     const response = await request.post(`${config.apiBaseUrl}/auth/login`, {
       data: {
         username: user.username,

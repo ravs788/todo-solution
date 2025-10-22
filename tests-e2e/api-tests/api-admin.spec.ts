@@ -18,7 +18,7 @@ for (const admin of adminData) {
       authToken = await loginResponse.text();
     });
 
-    test('should get all users', async ({ request }) => {
+    test('should get all users', { tag: '@regression' }, async ({ request }) => {
       const response = await request.get(`${config.apiBaseUrl}/admin/all-users`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
@@ -30,7 +30,7 @@ for (const admin of adminData) {
       expect(Array.isArray(users)).toBeTruthy();
     });
 
-    test('should get pending users', async ({ request }) => {
+    test('should get pending users', { tag: '@regression' }, async ({ request }) => {
       const response = await request.get(`${config.apiBaseUrl}/admin/pending-users`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
@@ -42,7 +42,7 @@ for (const admin of adminData) {
       expect(Array.isArray(pendingUsers)).toBeTruthy();
     });
 
-    test('should approve user by id', async ({ request }) => {
+    test('should approve user by id', { tag: '@regression' }, async ({ request }) => {
       // First get pending users to find a user ID to approve
       const pendingResponse = await request.get(`${config.apiBaseUrl}/admin/pending-users`, {
         headers: {

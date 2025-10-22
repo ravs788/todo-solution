@@ -19,7 +19,7 @@ for (const userData of todoData) {
       authToken = await loginResponse.text();
     });
 
-    test('should create a new todo', async ({ request }) => {
+    test('should create a new todo', { tag: '@regression' }, async ({ request }) => {
       const todoToCreate = userData.todos[0];
       const response = await request.post(`${config.apiBaseUrl}/todos`, {
         data: {
@@ -39,7 +39,7 @@ for (const userData of todoData) {
       createdTodoId = responseBody.id;
     });
 
-    test('should get all todos', async ({ request }) => {
+    test('should get all todos', { tag: '@regression' }, async ({ request }) => {
       const response = await request.get(`${config.apiBaseUrl}/todos`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
@@ -53,7 +53,7 @@ for (const userData of todoData) {
       expect(todos.length).toBeGreaterThanOrEqual(1);
     });
 
-    test('should get todo by id', async ({ request }) => {
+    test('should get todo by id', { tag: '@regression' }, async ({ request }) => {
       const response = await request.get(`${config.apiBaseUrl}/todos/${createdTodoId}`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
@@ -66,7 +66,7 @@ for (const userData of todoData) {
       expect(todo.title).toBe(userData.todos[0].title);
     });
 
-    test('should update todo', async ({ request }) => {
+    test('should update todo', { tag: '@regression' }, async ({ request }) => {
       const updatedTitle = 'Updated ' + userData.todos[0].title;
       const response = await request.put(`${config.apiBaseUrl}/todos/${createdTodoId}`, {
         data: {
@@ -85,7 +85,7 @@ for (const userData of todoData) {
       expect(updatedTodo.completed).toBeTruthy();
     });
 
-    test('should delete todo', async ({ request }) => {
+    test('should delete todo', { tag: '@regression' }, async ({ request }) => {
       const response = await request.delete(`${config.apiBaseUrl}/todos/${createdTodoId}`, {
         headers: {
           'Authorization': `Bearer ${authToken}`

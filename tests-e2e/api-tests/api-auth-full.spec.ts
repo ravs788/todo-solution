@@ -6,7 +6,7 @@ const API_BASE_URL = config.apiBaseUrl;
 
 for (const testData of authData) {
   test.describe('Complete Authentication API Tests', () => {
-    test('should register a new user', async ({ request }) => {
+    test('should register a new user', { tag: '@regression' }, async ({ request }) => {
       const uniqueUsername = `newuser${Date.now()}`;
       const response = await request.post(`${API_BASE_URL}/auth/register`, {
         data: {
@@ -23,7 +23,7 @@ for (const testData of authData) {
       testData.register.username = uniqueUsername;
     });
 
-    test('should login existing user', async ({ request }) => {
+    test('should login existing user', { tag: '@regression' }, async ({ request }) => {
       const response = await request.post(`${API_BASE_URL}/auth/login`, {
         data: {
           username: testData.login.username,
@@ -37,7 +37,7 @@ for (const testData of authData) {
       expect(token.length).toBeGreaterThan(0);
     });
 
-    test('should reset password for existing user', async ({ request }) => {
+    test('should reset password for existing user', { tag: '@regression' }, async ({ request }) => {
       const response = await request.post(`${API_BASE_URL}/auth/reset-password`, {
         data: {
           username: testData.login.username,
@@ -50,7 +50,7 @@ for (const testData of authData) {
       expect(responseText).toContain('Password has been reset');
     });
 
-    test('should login with new password after reset', async ({ request }) => {
+    test('should login with new password after reset', { tag: '@regression' }, async ({ request }) => {
       const response = await request.post(`${API_BASE_URL}/auth/login`, {
         data: {
           username: testData.login.username,
@@ -64,7 +64,7 @@ for (const testData of authData) {
       expect(token.length).toBeGreaterThan(0);
     });
 
-    test('should reset password back to original', async ({ request }) => {
+    test('should reset password back to original', { tag: '@regression' }, async ({ request }) => {
       const response = await request.post(`${API_BASE_URL}/auth/reset-password`, {
         data: {
           username: testData.login.username,
@@ -92,7 +92,7 @@ for (const testData of authData) {
         adminToken = await loginResponse.text();
       });
 
-      test('admin should approve registered user', async ({ request }) => {
+      test('admin should approve registered user', { tag: '@regression' }, async ({ request }) => {
         // Use the working admin approval endpoint (/api/admin/approve-user/{id})
         // First get the user ID from pending users
         const pendingResponse = await request.get(`${API_BASE_URL}/admin/pending-users`, {
@@ -118,7 +118,7 @@ for (const testData of authData) {
         expect(approveResponse.ok()).toBeTruthy();
       });
 
-      test('approved user should be able to login', async ({ request }) => {
+      test('approved user should be able to login', { tag: '@regression' }, async ({ request }) => {
         const response = await request.post(`${API_BASE_URL}/auth/login`, {
           data: {
             username: testData.register.username,
