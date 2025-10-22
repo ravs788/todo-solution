@@ -1,7 +1,4 @@
 @echo off
-REM Change to the parent directory of this script (project root)
-cd /d "%~dp0.."
-
 echo Changing to E2E tests directory...
 cd tests-e2e
 
@@ -11,7 +8,7 @@ call npm install
 echo Installing Playwright browsers and dependencies...
 call npx playwright install --with-deps
 
-echo Running Playwright E2E tests...
-call npx playwright test
+echo Running Playwright E2E tests in headed mode...
+call npx playwright test ui-tests/todo-crud-user.spec.ts --headed
 
 echo Done.

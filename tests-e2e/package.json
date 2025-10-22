@@ -5,7 +5,12 @@
   "description": "Playwright E2E tests for the todo application",
   "scripts": {
     "test": "npx playwright test --reporter=list,line,junit --output=./test-results",
-    "test:headed": "npx playwright test --headed"
+    "test:headed": "npx playwright test --headed",
+    "test:api": "npx playwright test --project=api --reporter=list,line,junit --output=./test-results",
+    "test:ui": "npx playwright test --project=ui --reporter=list,line,junit --output=./test-results",
+    "test:chromium": "npx playwright test --project=chromium --reporter=list,line,junit --output=./test-results",
+    "test:firefox": "npx playwright test --project=firefox --reporter=list,line,junit --output=./test-results",
+    "test:webkit": "npx playwright test --project=webkit --reporter=list,line,junit --output=./test-results"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0"

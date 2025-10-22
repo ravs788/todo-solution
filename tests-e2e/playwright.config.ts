@@ -18,16 +18,50 @@ export default defineConfig({
   ],
   retries: 0,
   timeout: 30000,
-  use: {
-    trace: 'on',
-    screenshot: 'only-on-failure',
-    video: 'retry-with-video'
-  },
   projects: process.env.CI
-    ? [{ name: 'chromium', use: { browserName: 'chromium' } }]
-    : [
-        { name: 'chromium', use: { browserName: 'chromium' } },
+    ? [
+        {
+          name: 'chromium',
+          use: {
+            browserName: 'chromium',
+            trace: 'on',
+            screenshot: 'only-on-failure',
+            video: 'retry-with-video'
+          }
+        },
         { name: 'firefox', use: { browserName: 'firefox' } },
-        { name: 'webkit', use: { browserName: 'webkit' } }
+        { name: 'api', testDir: './api-tests', use: {}, workers: 1 },
+        { name: 'ui', testDir: './ui-tests', use: {} }
+      ]
+    : [
+        {
+          name: 'chromium',
+          use: {
+            browserName: 'chromium',
+            trace: 'on',
+            screenshot: 'only-on-failure',
+            video: 'retry-with-video'
+          }
+        },
+        {
+          name: 'firefox',
+          use: {
+            browserName: 'firefox',
+            trace: 'on',
+            screenshot: 'only-on-failure',
+            video: 'retry-with-video'
+          }
+        },
+        {
+          name: 'webkit',
+          use: {
+            browserName: 'webkit',
+            trace: 'on',
+            screenshot: 'only-on-failure',
+            video: 'retry-with-video'
+          }
+        },
+        { name: 'api', testDir: './api-tests', use: {}, workers: 1 },
+        { name: 'ui', testDir: './ui-tests', use: {} }
       ]
 });

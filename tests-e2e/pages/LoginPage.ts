@@ -36,23 +36,24 @@ export class LoginPage {
     await this.loginButton.waitFor({ state: 'visible', timeout: 5000 });
   }
 
-  async login(username: string, password: string) {
+  async login(username: string, password: string): Promise<boolean> {
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
     await this.loginButton.click();
 
-    // Wait for either success (dashboard heading) or failure (login error)
-    const dashboardPromise = this.page.getByRole('heading', { name: 'Todo List App' }).waitFor({ state: 'visible', timeout: 15000 }).then(() => true, () => false);
-    const errorPromise = this.page.locator('.error,.alert,[role="alert"]').waitFor({ state: 'visible', timeout: 15000 }).then(() => false, () => true);
-
-    const result = await Promise.race([dashboardPromise, errorPromise]);
-    if (!result) {
-      // Try to surface error text for debugging
-      let errorMsg = '';
+    try {
+      // Wait for success (redirect to dashboard)
+      await this.page.getByRole('heading', { name: 'Todo List App' }).waitFor({ state: 'visible', timeout: 10000 });
+      return true; // Login successful
+    } catch {
+      // If success doesn't happen within timeout, check if we're still on login page
       try {
-        errorMsg = await this.page.locator('.error,.alert,[role="alert"]').innerText();
-      } catch {}
-      throw new Error('Login failed: ' + errorMsg);
+        await this.loginButton.waitFor({ state: 'visible', timeout: 2000 });
+        return false; // Still on login page, login failed
+      } catch {
+        // If login button is not visible, something unexpected happened
+        throw new Error('Login failed: Unexpected page state');
+      }
     }
   }
 

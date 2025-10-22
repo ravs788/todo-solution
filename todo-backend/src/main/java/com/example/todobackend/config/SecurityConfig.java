@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,13 +26,11 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Value("${app.security.enabled:true}")
+    private boolean securityEnabled;
+
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Autowired
     public SecurityConfig(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
@@ -50,9 +49,10 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .headers(headers -> headers.frameOptions().sameOrigin())
+            .headers(headers -> headers.frameOptions().sameOrigin());
 
-            .authorizeHttpRequests(auth -> auth
+        if (securityEnabled) {
+            http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/approve/**").hasRole("ADMIN")
@@ -64,6 +64,11 @@ public class SecurityConfig {
                 .anyRequest().permitAll()
             )
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+        } else {
+            http.authorizeHttpRequests(auth -> auth
+                .anyRequest().permitAll()
+            );
+        }
 
         return http.build();
     }
