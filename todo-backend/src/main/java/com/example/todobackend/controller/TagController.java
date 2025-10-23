@@ -18,7 +18,7 @@ public class TagController {
         this.tagRepository = tagRepository;
     }
 
-    @GetMapping("/suggest")
+    @GetMapping
     public List<String> suggestTags(@RequestParam(value = "search", required = false) String search) {
         if (search == null || search.trim().isEmpty()) {
             return List.of();

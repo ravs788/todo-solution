@@ -3,6 +3,7 @@ import { render, screen, act } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import TodoList from "../components/TodoList";
 import AuthContext from "../context/AuthContext";
+import { ThemeProvider } from "../context/ThemeContext";
 
 // Mock data
 const mockTodos = [
@@ -60,11 +61,13 @@ describe("TodoList", () => {
     });
 
     render(
-      <AuthContext.Provider value={{ user: { status: "ACTIVE" } }}>
-        <MemoryRouter>
-          <TodoList />
-        </MemoryRouter>
-      </AuthContext.Provider>
+      <ThemeProvider>
+        <AuthContext.Provider value={{ user: { status: "ACTIVE" } }}>
+          <MemoryRouter>
+            <TodoList />
+          </MemoryRouter>
+        </AuthContext.Provider>
+      </ThemeProvider>
     );
 
     await screen.findByText(/Todo List/i);
@@ -87,11 +90,13 @@ describe("TodoList", () => {
     require("axios")._getMock.mockImplementationOnce(() => Promise.resolve({ data: manyTodos }));
 
     render(
-      <AuthContext.Provider value={{ user: { status: "ACTIVE" } }}>
-        <MemoryRouter>
-          <TodoList />
-        </MemoryRouter>
-      </AuthContext.Provider>
+      <ThemeProvider>
+        <AuthContext.Provider value={{ user: { status: "ACTIVE" } }}>
+          <MemoryRouter>
+            <TodoList />
+          </MemoryRouter>
+        </AuthContext.Provider>
+      </ThemeProvider>
     );
 
     await screen.findByText(/Todo List/i);

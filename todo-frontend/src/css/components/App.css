@@ -39,10 +39,11 @@
 
 /* Read-only styling for completed todos */
 .completed-task {
-  color: #888;
+  color: var(--completed-task-color);
   font-style: italic;
   text-decoration: line-through;
   font-family: 'Fira Mono', 'Consolas', monospace;
   font-size: 1.05em;
   opacity: 0.85;
+  transition: color 0.3s ease;
 }

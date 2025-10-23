@@ -12,18 +12,20 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const mockAxios = {
-  get: jest.fn(() => Promise.resolve({ data: [] })),
-  post: jest.fn(() => Promise.resolve({ data: {} }))
-};
-jest.mock("axios", () => mockAxios);
+jest.mock("axios", () => ({
+  __esModule: true,
+  default: {
+    get: jest.fn(() => Promise.resolve({ data: [] })),
+    post: jest.fn(() => Promise.resolve({ data: {} })),
+  },
+}));
 
 describe("TodoForm", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it.skip("handles tag input correctly", async () => {
+  it("handles tag input correctly", async () => {
     render(
       <AuthContext.Provider value={{ user: { status: "ACTIVE" } }}>
         <MemoryRouter>
@@ -32,7 +34,7 @@ describe("TodoForm", () => {
       </AuthContext.Provider>
     );
 
-    const tagInput = screen.getByPlaceholderText(/Add tag/i);
+    const tagInput = screen.getByLabelText(/Tag input/i);
     const titleInput = screen.getByPlaceholderText(/Enter todo title/i);
     const startDateInput = screen.getByLabelText(/Start Date/i);
     const createButton = screen.getByText(/Create Todo/i, { selector: "button" });
@@ -53,8 +55,8 @@ describe("TodoForm", () => {
     // Verify the tag input is cleared
     expect(tagInput).toHaveValue("");
 
-    // Simulate form submission
-    const axiosPostSpy = jest.spyOn(axios, 'post');
+    // Simulate form submission (ensure it returns a resolved promise to avoid undefined.then)
+    const axiosPostSpy = jest.spyOn(axios, 'post').mockResolvedValue({ data: {} });
     fireEvent.click(createButton);
 
     // Wait for the axios post request to be called
@@ -69,7 +71,7 @@ describe("TodoForm", () => {
     axiosPostSpy.mockRestore();
   });
 
-  it.skip("uses existing tag suggestions correctly", async () => {
+  it("uses existing tag suggestions correctly", async () => {
     // Mock the axios get request for tag suggestions
     const axiosGetSpy = jest.spyOn(axios, 'get').mockImplementationOnce(() =>
       Promise.resolve({ data: ["existing-tag"] })
@@ -83,7 +85,7 @@ describe("TodoForm", () => {
       </AuthContext.Provider>
     );
 
-    const tagInput = screen.getByPlaceholderText(/Add tag/i);
+    const tagInput = screen.getByLabelText(/Tag input/i);
 
     // Enter a value to trigger suggestions
     fireEvent.change(tagInput, { target: { value: "existing" } });
@@ -139,8 +141,10 @@ describe("TodoForm", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 
-  it.skip("submits form, calls axios.post and navigates to /", async () => {
-    const { default: axios } = await import("axios");
+  it("submits form, calls axios.post and navigates to /", async () => {
+    // Ensure axios.post returns a resolved Promise to avoid undefined.then
+    const axiosPostSpy = jest.spyOn(axios, "post").mockResolvedValue({ data: {} });
+
     render(
       <AuthContext.Provider value={{ user: { status: "ACTIVE" } }}>
         <MemoryRouter>
@@ -148,14 +152,23 @@ describe("TodoForm", () => {
         </MemoryRouter>
       </AuthContext.Provider>
     );
-    fireEvent.change(screen.getByPlaceholderText(/Enter todo title/i), { target: { value: "Test Todo" } });
+
+    fireEvent.change(screen.getByPlaceholderText(/Enter todo title/i), {
+      target: { value: "Test Todo" },
+    });
     fireEvent.change(screen.getByLabelText(/Start Date/i), {
       target: { value: "2023-08-13T12:00" },
     });
+
     fireEvent.click(screen.getByText(/Create Todo/i, { selector: "button" }));
+
     await waitFor(() => {
-      expect(axios.post).toHaveBeenCalled();
+      expect(axiosPostSpy).toHaveBeenCalled();
+    });
+    await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith("/");
     });
+
+    axiosPostSpy.mockRestore();
   });
 });

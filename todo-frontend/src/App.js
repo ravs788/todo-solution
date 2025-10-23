@@ -4,12 +4,15 @@ import TodoList from "./components/TodoList";
 import TodoForm from "./components/TodoForm";
 import TodoUpdate from "./components/TodoUpdate";
 import TodoDelete from "./components/TodoDelete";
+import TodoDetails from "./components/TodoDetails";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import AdminPanel from "./components/AdminPanel";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
+import ThemeToggle from "./components/ThemeToggle";
 import { AuthProvider } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import AuthContext from "./context/AuthContext";
 
 function AllRoutes({ authToken, handleLogin, handleLogout, loginMessage, setLoginMessage }) {
@@ -44,29 +47,35 @@ function AllRoutes({ authToken, handleLogin, handleLogout, loginMessage, setLogi
         <Route
           path="/*"
           element={
-            <div>
-              <h1>Todo List App</h1>
+            <div className="theme-text-primary" style={{
+              minHeight: '100vh',
+              color: 'var(--text-primary) !important'
+            }}>
+              <h1 className="theme-text-primary" style={{
+                marginBottom: '20px'
+              }}>Todo List App</h1>
               <nav
                 style={{
                   marginBottom: "28px",
                   display: "flex",
                   alignItems: "center",
-                  background:
-                    "linear-gradient(90deg, #4f8cff 0%, #36d1c4 100%)",
+                  background: "var(--navbar-bg)",
                   borderRadius: "10px",
                   padding: "10px 30px 10px 16px",
-                  boxShadow: "0 2px 12px 0 rgba(60,70,120,0.10)",
+                  boxShadow: "0 2px 12px 0 var(--shadow-color)",
                   fontSize: "1.11rem",
-                  color: "#fff",
+                  color: "var(--navbar-text)",
+                  transition: "background 0.3s ease, box-shadow 0.3s ease",
                 }}
               >
                 <Link
                   to="/"
                   style={{
-                    color: "#fff",
+                    color: "var(--navbar-text)",
                     fontWeight: 700,
                     textDecoration: "none",
                     marginRight: "24px",
+                    transition: "color 0.3s ease",
                   }}
                 >
                   Home
@@ -74,10 +83,11 @@ function AllRoutes({ authToken, handleLogin, handleLogout, loginMessage, setLogi
                 <Link
                   to="/create"
                   style={{
-                    color: "#fff",
+                    color: "var(--navbar-text)",
                     fontWeight: 500,
                     textDecoration: "none",
                     marginRight: "18px",
+                    transition: "color 0.3s ease",
                   }}
                 >
                   Create Todo
@@ -86,16 +96,18 @@ function AllRoutes({ authToken, handleLogin, handleLogout, loginMessage, setLogi
                   <Link
                     to="/admin"
                     style={{
-                      color: "#fff",
+                      color: "var(--navbar-text)",
                       fontWeight: 500,
                       textDecoration: "none",
                       marginRight: "18px",
+                      transition: "color 0.3s ease",
                     }}
                   >
                     Admin Panel
                   </Link>
                 )}
                 <span style={{ flexGrow: 1 }}></span>
+                <ThemeToggle />
                 <button
                   onClick={handleLogout}
                   style={{
@@ -119,6 +131,7 @@ function AllRoutes({ authToken, handleLogin, handleLogout, loginMessage, setLogi
                 <Route path="/create" element={<TodoForm />} />
                 <Route path="/update/:id" element={<TodoUpdate />} />
                 <Route path="/delete/:id" element={<TodoDelete />} />
+                <Route path="/todo/:id" element={<TodoDetails />} />
                 {(user && (user.role === "ADMIN" || (user.authorities && user.authorities.includes("ROLE_ADMIN")))) && (
                   <Route path="/admin" element={<AdminPanel />} />
                 )}
@@ -171,17 +184,19 @@ function App() {
   const [loginMessage, setLoginMessage] = useState("");
 
   return (
-    <AuthProvider>
-      <Router>
-        <AllRoutes
-          authToken={authToken}
-          handleLogin={handleLogin}
-          handleLogout={handleLogout}
-          loginMessage={loginMessage}
-          setLoginMessage={setLoginMessage}
-        />
-      </Router>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <AllRoutes
+            authToken={authToken}
+            handleLogin={handleLogin}
+            handleLogout={handleLogout}
+            loginMessage={loginMessage}
+            setLoginMessage={setLoginMessage}
+          />
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

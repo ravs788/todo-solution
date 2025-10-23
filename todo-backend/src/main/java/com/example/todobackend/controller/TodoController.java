@@ -43,6 +43,10 @@ public class TodoController {
     @GetMapping
     public List<Todo> getAllTodos() {
         String username = getCurrentUsername();
+        // If unauthenticated or username missing, do not leak data
+        if (username == null || username.trim().isEmpty()) {
+            return java.util.List.of();
+        }
         return todoService.findAllByUsername(username);
     }
 

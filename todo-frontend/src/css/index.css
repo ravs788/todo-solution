@@ -1,0 +1,102 @@
+/* Default theme variables (light theme) - will be overridden by [data-theme] selectors */
+:root {
+  /* Light theme colors - following accessibility guidelines */
+  --bg-primary: #ffffff;        /* Pure white background */
+  --bg-secondary: #f5f5f5;      /* Soft neutral surface */
+  --bg-tertiary: #fafafa;       /* Subtle surface variation */
+  --text-primary: #222222;      /* Dark text for high contrast */
+  --text-secondary: #666666;    /* Muted secondary text */
+  --text-muted: #888888;        /* Subtle muted text */
+  --border-color: #e0e0e0;      /* Soft borders */
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --panel-bg: #ffffff;         /* Elevated panel bg (light mode) */
+  --panel-border: #e5e7eb;     /* Subtle panel border (light mode) */
+  --panel-shadow: rgba(0, 0, 0, 0.15); /* Stronger elevation than base shadow */
+  --navbar-bg: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); /* Soft blue gradient */
+  --navbar-text: #ffffff;
+  --btn-primary: #1a73e8;       /* Professional blue */
+  --btn-primary-hover: #1557b0;
+  --btn-secondary: #4a5568;     /* Muted gray */
+  --btn-danger: #c53030;        /* Accessible red */
+  --btn-success: #38a169;       /* Accessible green */
+  --accent-gold: #d4af37;       /* Subtle gold accent */
+  --table-header-bg: #2563eb;   /* Same shade as navbar end */
+  --table-border: #dbeafe;      /* Soft blue border */
+  --table-bg-secondary: #e0f2fe; /* Light blue first data row */
+  --table-bg-tertiary: #bfdbfe;  /* Slightly darker blue alternate row */
+  --input-bg: #ffffff;
+  --input-border: #dadce0;
+  --input-focus-border: #1a73e8;
+  --completed-task-color: #666666;
+  --tag-bg: #e3f2fd;            /* Light blue tags */
+  --tag-text: #1565c0;
+}
+
+
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Theme-aware utility classes */
+.theme-bg-primary { background-color: var(--bg-primary); }
+.theme-bg-secondary { background-color: var(--bg-secondary); }
+.theme-text-primary { color: var(--text-primary); }
+.theme-text-secondary { color: var(--text-secondary); }
+.theme-border { border-color: var(--border-color); }
+
+/* Custom table styling without Bootstrap interference */
+.custom-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1rem;
+  background-color: var(--bg-secondary);
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 0.75rem;
+  vertical-align: top;
+  border: 1px solid var(--table-border);
+}
+
+.custom-table thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid var(--table-border);
+  background-color: var(--table-header-bg);
+  color: #ffffff; /* White text for dark header background */
+  font-weight: 700;
+  font-size: 1.1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.custom-table tbody tr:hover {
+  background-color: #eff6ff; /* subtle blue hover */
+}
+
+/* Table row alternating colors with high specificity */
+.custom-table .table-row-even {
+  background-color: var(--table-bg-secondary) !important; /* light blue row */
+  color: var(--text-primary) !important; /* dark text on light blue */
+}
+
+.custom-table .table-row-odd {
+  background-color: var(--table-bg-tertiary) !important; /* slightly darker blue row */
+  color: var(--text-primary) !important; /* dark text on medium-light blue */
+}

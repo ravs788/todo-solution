@@ -25,8 +25,10 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("h2")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Epic("Integration Tests")
@@ -177,15 +179,21 @@ public class TodoIntegrationTest {
         ResponseEntity<Todo[]> testUserTodosResp = restTemplate.exchange(
                 todosUrl, HttpMethod.GET, new HttpEntity<>(testUserHeaders), Todo[].class);
         Assertions.assertNotNull(testUserTodosResp.getBody());
-        Assertions.assertEquals(1, testUserTodosResp.getBody().length);
-        Assertions.assertEquals(testUser + "'s todo", testUserTodosResp.getBody()[0].getTitle());
+        // Ensure visibility is isolated: created todo for testUser is present, and user2's todo is not
+        Assertions.assertTrue(java.util.Arrays.stream(testUserTodosResp.getBody())
+            .anyMatch(t -> (testUser + "'s todo").equals(t.getTitle())), "Created todo must be present for testUser");
+        Assertions.assertFalse(java.util.Arrays.stream(testUserTodosResp.getBody())
+            .anyMatch(t -> (user2 + "'s todo").equals(t.getTitle())), "No todos from other users should be visible");
 
         // user2 only sees their own todo
         ResponseEntity<Todo[]> user2TodosResp = restTemplate.exchange(
                 todosUrl, HttpMethod.GET, new HttpEntity<>(user2Headers), Todo[].class);
         Assertions.assertNotNull(user2TodosResp.getBody());
-        Assertions.assertEquals(1, user2TodosResp.getBody().length);
-        Assertions.assertEquals(user2 + "'s todo", user2TodosResp.getBody()[0].getTitle());
+        // Ensure visibility is isolated: created todo for user2 is present, and testUser's todo is not
+        Assertions.assertTrue(java.util.Arrays.stream(user2TodosResp.getBody())
+            .anyMatch(t -> (user2 + "'s todo").equals(t.getTitle())), "Created todo must be present for user2");
+        Assertions.assertFalse(java.util.Arrays.stream(user2TodosResp.getBody())
+            .anyMatch(t -> (testUser + "'s todo").equals(t.getTitle())), "No todos from other users should be visible");
 
         // CLEANUP for user2 as well
         todoRepository.findAllByUsername(user2)

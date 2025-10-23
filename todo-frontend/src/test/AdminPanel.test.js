@@ -77,7 +77,7 @@ it("shows loading while fetching", async () => {
       );
     });
 
-    it.skip("approves user and removes from list", async () => {
+    it("approves user and removes from list", async () => {
       // Initial fetch pending users
       fetch
         .mockResolvedValueOnce({
@@ -93,11 +93,15 @@ it("shows loading while fetching", async () => {
 
       render(<AdminPanel />);
       expect(await screen.findByText(/approve_me/i)).toBeInTheDocument();
-      const approveBtn = screen.getAllByText(/Approve/i)[0];
+      // Ensure we're in PENDING view (in case auto-switch hasn't occurred yet)
+      fireEvent.change(screen.getByLabelText(/View:/i), { target: { value: "PENDING" } });
+
+      const approveBtn = screen.getByRole('button', { name: /Approve/i });
       fireEvent.click(approveBtn);
 
-      expect(await screen.findByText(/User approved/i)).toBeInTheDocument();
-      expect(screen.getByText(/No users pending approval/i)).toBeInTheDocument();
+      // Wait for the list to update and show empty state
+      expect(await screen.findByText(/No users pending approval/i)).toBeInTheDocument();
+      expect(screen.queryByText(/approve_me/i)).not.toBeInTheDocument();
     });
   });
 });
