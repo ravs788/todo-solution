@@ -20,7 +20,8 @@ test('should fail login for invalid password', async ({ page }) => {
   expect(loginSuccess).toBe(false);
 
   // Should still be on login page
-  await expect(page).toHaveURL(/.*login.*/);
+  await expect(page).toHaveURL(/(\/login|\/)$/);
+  await expect(loginPage.usernameInput).toBeVisible();
 });
 
 test('should fail login for non-existent user', async ({ page }) => {
@@ -31,7 +32,8 @@ test('should fail login for non-existent user', async ({ page }) => {
   expect(loginSuccess).toBe(false);
 
   // Should still be on login page
-  await expect(page).toHaveURL(/.*login.*/);
+  await expect(page).toHaveURL(/(\/login|\/)$/);
+  await expect(loginPage.usernameInput).toBeVisible();
 });
 
 test('should fail login for empty username', async ({ page }) => {
@@ -42,7 +44,8 @@ test('should fail login for empty username', async ({ page }) => {
   expect(loginSuccess).toBe(false);
 
   // Should still be on login page
-  await expect(page).toHaveURL(/.*login.*/);
+  await expect(page).toHaveURL(/(\/login|\/)$/);
+  await expect(loginPage.usernameInput).toBeVisible();
 });
 
 test('should fail login for empty password', async ({ page }) => {

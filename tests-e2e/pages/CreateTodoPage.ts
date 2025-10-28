@@ -33,8 +33,9 @@ export class CreateTodoPage {
 
   async goto() {
     await this.page.goto(this.baseUrl + '/create');
-    await this.page.waitForLoadState('networkidle');
-    await this.titleInput.waitFor({ state: 'visible', timeout: 5000 });
+    // Avoid waiting for networkidle due to dev server websockets; DOMContentLoaded is sufficient
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.titleInput.waitFor({ state: 'visible', timeout: 10000 });
   }
 
   /**

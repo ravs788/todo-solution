@@ -17,10 +17,12 @@ export class DeleteTodoPage {
   constructor(page: Page, baseUrl: string) {
     this.page = page;
     this.baseUrl = baseUrl;
-    this.tableRowWithTitle = (title: string) =>
-      this.page.locator('table.table-striped tbody tr').filter({
-        has: this.page.locator('td').first().filter({ hasText: title })
+    this.tableRowWithTitle = (title: string) => {
+      const displayTitle = title && title.length > 40 ? title.slice(0, 40) : title;
+      return this.page.locator('table.custom-table tbody tr').filter({
+        has: this.page.locator('td').first().filter({ hasText: displayTitle })
       });
+    };
     this.deleteLinkInRow = (row: Locator) => row.locator('a.btn.btn-danger');
     this.confirmHeading = page.getByRole('heading', { name: /confirm deletion/i });
     this.confirmYesButton = page.getByRole('button', { name: /yes, delete/i });
@@ -30,8 +32,10 @@ export class DeleteTodoPage {
   // Navigate to todo listing
   async goto() {
     await this.page.goto(this.baseUrl + '/');
-    await this.page.waitForLoadState('networkidle');
-    await this.page.getByRole('heading', { name: 'Todo List App' }).waitFor({ state: 'visible', timeout: 5000 });
+    // Use a lighter wait to avoid hanging on dev server websockets
+    await this.page.waitForLoadState('domcontentloaded');
+    // App-level heading confirms the page is ready for interactions
+    await this.page.getByRole('heading', { name: 'Todo List App' }).waitFor({ state: 'visible', timeout: 10000 });
   }
 
   /**

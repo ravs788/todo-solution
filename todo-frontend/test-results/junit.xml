@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="26" failures="0" errors="0" time="8.402">
-  <testsuite name="TodoUpdate" errors="0" failures="0" skipped="4" timestamp="2025-10-23T19:47:17" time="3.327" tests="4">
+<testsuites name="jest tests" tests="26" failures="0" errors="0" time="7.281">
+  <testsuite name="TodoUpdate" errors="0" failures="0" skipped="4" timestamp="2025-10-28T11:12:00" time="3.37" tests="4">
     <testcase classname="TodoUpdate shows correct initial values for id=1, including activity type and completed checkbox" name="TodoUpdate shows correct initial values for id=1, including activity type and completed checkbox" time="0">
       <skipped/>
     </testcase>
@@ -14,59 +14,59 @@
       <skipped/>
     </testcase>
   </testsuite>
-  <testsuite name="unit" errors="0" failures="0" skipped="0" timestamp="2025-10-23T19:47:17" time="3.564" tests="7">
-    <testcase classname="unit ForgotPassword renders form fields and back button" name="unit ForgotPassword renders form fields and back button" time="0.116">
+  <testsuite name="unit" errors="0" failures="0" skipped="0" timestamp="2025-10-28T11:12:00" time="3.499" tests="7">
+    <testcase classname="unit ForgotPassword renders form fields and back button" name="unit ForgotPassword renders form fields and back button" time="0.062">
     </testcase>
-    <testcase classname="unit ForgotPassword shows error when required fields missing" name="unit ForgotPassword shows error when required fields missing" time="0.03">
+    <testcase classname="unit ForgotPassword shows error when required fields missing" name="unit ForgotPassword shows error when required fields missing" time="0.016">
     </testcase>
-    <testcase classname="unit ForgotPassword shows error if passwords do not match" name="unit ForgotPassword shows error if passwords do not match" time="0.035">
+    <testcase classname="unit ForgotPassword shows error if passwords do not match" name="unit ForgotPassword shows error if passwords do not match" time="0.02">
     </testcase>
-    <testcase classname="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" name="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" time="0.056">
+    <testcase classname="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" name="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" time="0.031">
     </testcase>
-    <testcase classname="unit ForgotPassword shows error if server returns !ok" name="unit ForgotPassword shows error if server returns !ok" time="0.04">
+    <testcase classname="unit ForgotPassword shows error if server returns !ok" name="unit ForgotPassword shows error if server returns !ok" time="0.02">
     </testcase>
-    <testcase classname="unit ForgotPassword shows error on network/server failure" name="unit ForgotPassword shows error on network/server failure" time="0.032">
+    <testcase classname="unit ForgotPassword shows error on network/server failure" name="unit ForgotPassword shows error on network/server failure" time="0.019">
     </testcase>
-    <testcase classname="unit ForgotPassword calls switchToLogin when Back to Login clicked" name="unit ForgotPassword calls switchToLogin when Back to Login clicked" time="0.012">
+    <testcase classname="unit ForgotPassword calls switchToLogin when Back to Login clicked" name="unit ForgotPassword calls switchToLogin when Back to Login clicked" time="0.005">
     </testcase>
   </testsuite>
-  <testsuite name="TodoList" errors="0" failures="0" skipped="1" timestamp="2025-10-23T19:47:17" time="3.627" tests="2">
+  <testsuite name="Login Component" errors="0" failures="0" skipped="0" timestamp="2025-10-28T11:12:00" time="3.55" tests="3">
+    <testcase classname="Login Component renders username and password inputs and login button" name="Login Component renders username and password inputs and login button" time="0.121">
+    </testcase>
+    <testcase classname="Login Component calls onLogin with a token when valid credentials are entered" name="Login Component calls onLogin with a token when valid credentials are entered" time="0.039">
+    </testcase>
+    <testcase classname="Login Component shows error with invalid credentials" name="Login Component shows error with invalid credentials" time="0.048">
+    </testcase>
+  </testsuite>
+  <testsuite name="unit" errors="0" failures="0" skipped="0" timestamp="2025-10-28T11:12:00" time="3.552" tests="4">
+    <testcase classname="unit AdminPanel renders and shows no users pending approval" name="unit AdminPanel renders and shows no users pending approval" time="0.087">
+    </testcase>
+    <testcase classname="unit AdminPanel renders a list of pending users with approve buttons" name="unit AdminPanel renders a list of pending users with approve buttons" time="0.051">
+    </testcase>
+    <testcase classname="unit AdminPanel shows loading while fetching" name="unit AdminPanel shows loading while fetching" time="0.019">
+    </testcase>
+    <testcase classname="unit AdminPanel approves user and removes from list" name="unit AdminPanel approves user and removes from list" time="0.108">
+    </testcase>
+  </testsuite>
+  <testsuite name="TodoList" errors="0" failures="0" skipped="1" timestamp="2025-10-28T11:12:00" time="3.562" tests="2">
     <testcase classname="TodoList renders pagination controls when there are multiple pages" name="TodoList renders pagination controls when there are multiple pages" time="0">
       <skipped/>
     </testcase>
-    <testcase classname="TodoList updates pagination when next button is clicked" name="TodoList updates pagination when next button is clicked" time="0.316">
+    <testcase classname="TodoList updates pagination when next button is clicked" name="TodoList updates pagination when next button is clicked" time="0.235">
     </testcase>
   </testsuite>
-  <testsuite name="unit" errors="0" failures="0" skipped="0" timestamp="2025-10-23T19:47:17" time="3.612" tests="4">
-    <testcase classname="unit AdminPanel renders and shows no users pending approval" name="unit AdminPanel renders and shows no users pending approval" time="0.148">
-    </testcase>
-    <testcase classname="unit AdminPanel renders a list of pending users with approve buttons" name="unit AdminPanel renders a list of pending users with approve buttons" time="0.065">
-    </testcase>
-    <testcase classname="unit AdminPanel shows loading while fetching" name="unit AdminPanel shows loading while fetching" time="0.047">
-    </testcase>
-    <testcase classname="unit AdminPanel approves user and removes from list" name="unit AdminPanel approves user and removes from list" time="0.136">
-    </testcase>
-  </testsuite>
-  <testsuite name="Login Component" errors="0" failures="0" skipped="0" timestamp="2025-10-23T19:47:17" time="3.654" tests="3">
-    <testcase classname="Login Component renders username and password inputs and login button" name="Login Component renders username and password inputs and login button" time="0.172">
-    </testcase>
-    <testcase classname="Login Component calls onLogin with a token when valid credentials are entered" name="Login Component calls onLogin with a token when valid credentials are entered" time="0.082">
-    </testcase>
-    <testcase classname="Login Component shows error with invalid credentials" name="Login Component shows error with invalid credentials" time="0.072">
-    </testcase>
-  </testsuite>
-  <testsuite name="TodoForm" errors="0" failures="0" skipped="0" timestamp="2025-10-23T19:47:17" time="4.343" tests="6">
-    <testcase classname="TodoForm handles tag input correctly" name="TodoForm handles tag input correctly" time="0.158">
+  <testsuite name="TodoForm" errors="0" failures="0" skipped="0" timestamp="2025-10-28T11:12:00" time="3.611" tests="6">
+    <testcase classname="TodoForm handles tag input correctly" name="TodoForm handles tag input correctly" time="0.148">
     </testcase>
     <testcase classname="TodoForm uses existing tag suggestions correctly" name="TodoForm uses existing tag suggestions correctly" time="0.047">
     </testcase>
-    <testcase classname="TodoForm renders the Create Todo form" name="TodoForm renders the Create Todo form" time="0.014">
+    <testcase classname="TodoForm renders the Create Todo form" name="TodoForm renders the Create Todo form" time="0.009">
     </testcase>
-    <testcase classname="TodoForm shows pending approval message if user.status is PENDING" name="TodoForm shows pending approval message if user.status is PENDING" time="0.007">
+    <testcase classname="TodoForm shows pending approval message if user.status is PENDING" name="TodoForm shows pending approval message if user.status is PENDING" time="0.003">
     </testcase>
-    <testcase classname="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" name="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" time="0.011">
+    <testcase classname="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" name="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" time="0.01">
     </testcase>
-    <testcase classname="TodoForm submits form, calls axios.post and navigates to /" name="TodoForm submits form, calls axios.post and navigates to /" time="0.06">
+    <testcase classname="TodoForm submits form, calls axios.post and navigates to /" name="TodoForm submits form, calls axios.post and navigates to /" time="0.022">
     </testcase>
   </testsuite>
 </testsuites>

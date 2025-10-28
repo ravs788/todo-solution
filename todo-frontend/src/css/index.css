@@ -9,7 +9,7 @@
   --text-muted: #888888;        /* Subtle muted text */
   --border-color: #e0e0e0;      /* Soft borders */
   --shadow-color: rgba(0, 0, 0, 0.1);
-  --panel-bg: #ffffff;         /* Elevated panel bg (light mode) */
+  --panel-bg: #e9ecef;         /* Elevated panel bg (light mode) - darker for stronger contrast */
   --panel-border: #e5e7eb;     /* Subtle panel border (light mode) */
   --panel-shadow: rgba(0, 0, 0, 0.15); /* Stronger elevation than base shadow */
   --navbar-bg: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); /* Soft blue gradient */

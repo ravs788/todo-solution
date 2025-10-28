@@ -35,10 +35,23 @@ export class ResetPasswordPage {
   }
 
   async resetPassword(username: string, newPassword: string, confirmPassword: string) {
+    // Ensure all fields are visible and interactable before filling
+    await this.usernameInput.waitFor({ state: 'visible', timeout: 5000 });
+    await this.usernameInput.click();
     await this.usernameInput.fill(username);
+
+    await this.newPasswordInput.waitFor({ state: 'visible', timeout: 5000 });
+    // Attempt a trial click to surface any overlays before filling
+    await this.newPasswordInput.click({ trial: true }).catch(() => {});
     await this.newPasswordInput.fill(newPassword);
+
+    await this.confirmPasswordInput.waitFor({ state: 'visible', timeout: 5000 });
+    await this.confirmPasswordInput.click({ trial: true }).catch(() => {});
     await this.confirmPasswordInput.fill(confirmPassword);
+
+    await this.submitButton.waitFor({ state: 'visible', timeout: 5000 });
     await this.submitButton.click();
+
     // Wait for login page to be loaded as the synchronization point after successful reset
     const loginPage = new (await import('./LoginPage')).LoginPage(this.page, this.baseUrl);
     await loginPage.expectLoaded();

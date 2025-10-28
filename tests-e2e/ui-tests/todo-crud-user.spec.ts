@@ -37,11 +37,12 @@ async function addTodo(
   const filterInput = page.locator('input.form-control[placeholder="Filter by Title"]');
   await filterInput.fill(uniqueTitle);
   // Wait for at least one row to appear in the todo table
-  const row = page.locator('table.table-striped tbody tr').filter({
-    has: page.locator('td').first().filter({ hasText: uniqueTitle }),
+  const displayTitle = uniqueTitle.length > 40 ? uniqueTitle.slice(0, 40) : uniqueTitle;
+  const row = page.locator('table.custom-table tbody tr').filter({
+    has: page.locator('td').first().filter({ hasText: displayTitle }),
   });
   await row.waitFor({ state: 'visible', timeout: 7000 });
-  await expect(page.getByText(uniqueTitle)).toBeVisible();
+  await expect(page.getByText(displayTitle)).toBeVisible();
   return uniqueTitle;
 }
 
@@ -107,7 +108,7 @@ test('should create todos with different activity types', { tag: '@regression' }
   await page.locator('h2.mb-4', { hasText: 'Todo List' }).waitFor({ state: 'visible', timeout: 5000 });
 
   // Check if the table has any rows (todos were created)
-  const todoRows = page.locator('table.table-striped tbody tr');
+  const todoRows = page.locator('table.custom-table tbody tr');
   const rowCount = await todoRows.count();
   expect(rowCount).toBeGreaterThan(0);
 
@@ -116,10 +117,10 @@ test('should create todos with different activity types', { tag: '@regression' }
   try {
     await deleteTodoPage.goto();
     // Try to delete todos that might exist
-    if (await page.locator('table.table-striped tbody tr').filter({ hasText: 'Definite Task Activity' }).count() > 0) {
+    if (await page.locator('table.custom-table tbody tr').filter({ hasText: 'Definite Task Activity' }).count() > 0) {
       await deleteTodoPage.deleteTodo('Definite Task Activity');
     }
-    if (await page.locator('table.table-striped tbody tr').filter({ hasText: 'Regular Task Activity' }).count() > 0) {
+    if (await page.locator('table.custom-table tbody tr').filter({ hasText: 'Regular Task Activity' }).count() > 0) {
       await deleteTodoPage.deleteTodo('Regular Task Activity');
     }
   } catch (e) {
@@ -187,7 +188,7 @@ test('should filter and search todos', { tag: '@regression' }, async ({ page }) 
   await page.locator('h2.mb-4', { hasText: 'Todo List' }).waitFor({ state: 'visible', timeout: 5000 });
 
   // Verify at least some todos exist in the table
-  const todoRows = page.locator('table.table-striped tbody tr');
+  const todoRows = page.locator('table.custom-table tbody tr');
   const rowCount = await todoRows.count();
   expect(rowCount).toBeGreaterThan(0); // At least one todo exists
 
@@ -200,7 +201,7 @@ test('should filter and search todos', { tag: '@regression' }, async ({ page }) 
   await page.waitForTimeout(500); // Allow time for filtering
 
   // Check that some filtering occurred (either shopping items are visible or car repair is hidden)
-  const currentRows = page.locator('table.table-striped tbody tr');
+  const currentRows = page.locator('table.custom-table tbody tr');
   const rowCountAfterFilter = await currentRows.count();
 
   // The filter should have some effect - either reducing rows or showing specific ones
@@ -212,13 +213,13 @@ test('should filter and search todos', { tag: '@regression' }, async ({ page }) 
   try {
     await deleteTodoPage.goto();
     // Try to delete the todos that were created
-    if (await page.locator('table.table-striped tbody tr').filter({ hasText: 'Apple shopping filter' }).count() > 0) {
+    if (await page.locator('table.custom-table tbody tr').filter({ hasText: 'Apple shopping filter' }).count() > 0) {
       await deleteTodoPage.deleteTodo('Apple shopping filter');
     }
-    if (await page.locator('table.table-striped tbody tr').filter({ hasText: 'Banana shopping filter' }).count() > 0) {
+    if (await page.locator('table.custom-table tbody tr').filter({ hasText: 'Banana shopping filter' }).count() > 0) {
       await deleteTodoPage.deleteTodo('Banana shopping filter');
     }
-    if (await page.locator('table.table-striped tbody tr').filter({ hasText: 'Car repair filter' }).count() > 0) {
+    if (await page.locator('table.custom-table tbody tr').filter({ hasText: 'Car repair filter' }).count() > 0) {
       await deleteTodoPage.deleteTodo('Car repair filter');
     }
   } catch (e) {
@@ -238,7 +239,8 @@ test('should handle todo validation and edge cases', { tag: '@regression' }, asy
   // Test creating todo with very long title
   const longTitle = 'A'.repeat(200);
   const longTitleTodo = await addTodo(page, config.baseUrl, { title: longTitle });
-  await expect(page.getByText(longTitleTodo)).toBeVisible();
+  const longDisplay = longTitleTodo.length > 40 ? longTitleTodo.slice(0, 40) : longTitleTodo;
+  await expect(page.getByText(longDisplay)).toBeVisible();
 
   // Test creating todo with special characters
   const specialTitle = 'Task with @#$%^&*() symbols!';
@@ -280,7 +282,7 @@ test('should handle bulk todo operations', { tag: '@regression' }, async ({ page
   await page.locator('h2.mb-4', { hasText: 'Todo List' }).waitFor({ state: 'visible', timeout: 5000 });
 
   // Check that at least some todos exist
-  const todoRows = page.locator('table.table-striped tbody tr');
+  const todoRows = page.locator('table.custom-table tbody tr');
   const rowCount = await todoRows.count();
   expect(rowCount).toBeGreaterThan(0); // At least one todo exists
 
@@ -296,7 +298,7 @@ test('should handle bulk todo operations', { tag: '@regression' }, async ({ page
 
   // Verify the edit worked (only if the edit operation succeeded)
   await page.goto(config.baseUrl + '/');
-  const editedExists = await page.locator('table.table-striped tbody tr').filter({ hasText: 'Bulk Task 1 (edited)' }).count() > 0;
+  const editedExists = await page.locator('table.custom-table tbody tr').filter({ hasText: 'Bulk Task 1 (edited)' }).count() > 0;
 
   // If edit failed due to duplicates, that's acceptable - the test verifies bulk creation works
   if (!editedExists) {
@@ -308,13 +310,13 @@ test('should handle bulk todo operations', { tag: '@regression' }, async ({ page
   const deleteTodoPage = new DeleteTodoPage(page, config.baseUrl);
   try {
     await deleteTodoPage.goto();
-    if (await page.locator('table.table-striped tbody tr').filter({ hasText: 'Bulk Task 1 (edited)' }).count() > 0) {
+    if (await page.locator('table.custom-table tbody tr').filter({ hasText: 'Bulk Task 1 (edited)' }).count() > 0) {
       await deleteTodoPage.deleteTodo('Bulk Task 1 (edited)');
     }
-    if (await page.locator('table.table-striped tbody tr').filter({ hasText: 'Bulk Task 2' }).count() > 0) {
+    if (await page.locator('table.custom-table tbody tr').filter({ hasText: 'Bulk Task 2' }).count() > 0) {
       await deleteTodoPage.deleteTodo('Bulk Task 2');
     }
-    if (await page.locator('table.table-striped tbody tr').filter({ hasText: 'Bulk Task 3' }).count() > 0) {
+    if (await page.locator('table.custom-table tbody tr').filter({ hasText: 'Bulk Task 3' }).count() > 0) {
       await deleteTodoPage.deleteTodo('Bulk Task 3');
     }
   } catch (e) {

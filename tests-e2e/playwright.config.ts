@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test';
 import path from 'path';
 
 export default defineConfig({
-  workers: process.env.CI ? 1 : 5,
+  workers: process.env.CI ? 1 : 3,
   testDir: path.join(__dirname, 'tests'),
   outputDir: path.join(__dirname, 'test-results'),
   reporter: [
@@ -18,6 +18,20 @@ export default defineConfig({
   ],
   retries: 0,
   timeout: 30000,
+  webServer: [
+    {
+      command: 'cmd /c "cd ..\\todo-backend && mvn -q -DskipTests spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=h2"',
+      port: 8081,
+      reuseExistingServer: true,
+      timeout: 180000
+    },
+    {
+      command: 'cmd /c "cd ..\\todo-frontend && npm start"',
+      port: 3000,
+      reuseExistingServer: true,
+      timeout: 180000
+    }
+  ],
   projects: process.env.CI
     ? [
         {

@@ -54,16 +54,11 @@ const AdminPanel = () => {
       );
       if (resp.ok) {
         setStatusMsg("User approved");
-        // Update user status in state and remove from pending view
+        // Update user status to ACTIVE but keep user in state; PENDING view will naturally exclude it
         setUsers((prev) => {
-          const updated = prev.map((u) =>
+          return prev.map((u) =>
             u.id === userId ? { ...u, status: "ACTIVE" } : u
           );
-          // If currently viewing PENDING users, remove the approved user from the list
-          if (view === "PENDING") {
-            return updated.filter((u) => !(u.id === userId && u.status === "ACTIVE"));
-          }
-          return updated;
         });
       } else {
         setStatusMsg("Failed to approve user.");
