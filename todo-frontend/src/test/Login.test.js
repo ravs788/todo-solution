@@ -3,13 +3,16 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Login from "../components/Login";
 import { AuthProvider } from "../context/AuthContext";
+import { ThemeProvider } from "../context/ThemeContext";
 
 describe("Login Component", () => {
 it("renders username and password inputs and login button", () => {
     render(
-      <AuthProvider>
-        <Login />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <Login />
+        </AuthProvider>
+      </ThemeProvider>
     );
     expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
@@ -25,9 +28,11 @@ it("calls onLogin with a token when valid credentials are entered", async () => 
 
     const mockLogin = jest.fn();
     render(
-      <AuthProvider>
-        <Login onLogin={mockLogin} />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <Login onLogin={mockLogin} />
+        </AuthProvider>
+      </ThemeProvider>
     );
 
     fireEvent.change(screen.getByLabelText(/username/i), { target: { value: "user1" } });
@@ -46,9 +51,11 @@ it("calls onLogin with a token when valid credentials are entered", async () => 
 it("shows error with invalid credentials", async () => {
     global.fetch = jest.fn().mockResolvedValue({ ok: false });
     render(
-      <AuthProvider>
-        <Login />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <Login />
+        </AuthProvider>
+      </ThemeProvider>
     );
 
     fireEvent.change(screen.getByLabelText(/username/i), { target: { value: "failuser" } });

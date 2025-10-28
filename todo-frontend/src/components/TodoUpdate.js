@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import TagInput from "./TagInput";
-import "./TodoUpdate.css";
+import "../css/components/TodoUpdate.css";
 
 const TodoUpdate = () => {
   const { id } = useParams();

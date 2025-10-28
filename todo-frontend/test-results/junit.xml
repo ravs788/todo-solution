@@ -1,292 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="26" failures="4" errors="0" time="6.036">
-  <testsuite name="unit" errors="0" failures="0" skipped="1" timestamp="2025-10-17T10:18:42" time="2.66" tests="4">
-    <testcase classname="unit AdminPanel renders and shows no users pending approval" name="unit AdminPanel renders and shows no users pending approval" time="0.138">
+<testsuites name="jest tests" tests="26" failures="0" errors="0" time="7.281">
+  <testsuite name="TodoUpdate" errors="0" failures="0" skipped="4" timestamp="2025-10-28T11:12:00" time="3.37" tests="4">
+    <testcase classname="TodoUpdate shows correct initial values for id=1, including activity type and completed checkbox" name="TodoUpdate shows correct initial values for id=1, including activity type and completed checkbox" time="0">
+      <skipped/>
     </testcase>
-    <testcase classname="unit AdminPanel renders a list of pending users with approve buttons" name="unit AdminPanel renders a list of pending users with approve buttons" time="0.052">
+    <testcase classname="TodoUpdate hides completed checkbox when activity type is switched to &apos;regular&apos;" name="TodoUpdate hides completed checkbox when activity type is switched to &apos;regular&apos;" time="0">
+      <skipped/>
     </testcase>
-    <testcase classname="unit AdminPanel shows loading while fetching" name="unit AdminPanel shows loading while fetching" time="0.036">
+    <testcase classname="TodoUpdate allows changing title and activity type, submits update and sends correct payload" name="TodoUpdate allows changing title and activity type, submits update and sends correct payload" time="0">
+      <skipped/>
     </testcase>
-    <testcase classname="unit AdminPanel approves user and removes from list" name="unit AdminPanel approves user and removes from list" time="0">
+    <testcase classname="TodoUpdate shows error message if update fails" name="TodoUpdate shows error message if update fails" time="0">
       <skipped/>
     </testcase>
   </testsuite>
-  <testsuite name="unit" errors="0" failures="0" skipped="0" timestamp="2025-10-17T10:18:42" time="2.765" tests="7">
-    <testcase classname="unit ForgotPassword renders form fields and back button" name="unit ForgotPassword renders form fields and back button" time="0.102">
+  <testsuite name="unit" errors="0" failures="0" skipped="0" timestamp="2025-10-28T11:12:00" time="3.499" tests="7">
+    <testcase classname="unit ForgotPassword renders form fields and back button" name="unit ForgotPassword renders form fields and back button" time="0.062">
     </testcase>
-    <testcase classname="unit ForgotPassword shows error when required fields missing" name="unit ForgotPassword shows error when required fields missing" time="0.034">
+    <testcase classname="unit ForgotPassword shows error when required fields missing" name="unit ForgotPassword shows error when required fields missing" time="0.016">
     </testcase>
-    <testcase classname="unit ForgotPassword shows error if passwords do not match" name="unit ForgotPassword shows error if passwords do not match" time="0.038">
+    <testcase classname="unit ForgotPassword shows error if passwords do not match" name="unit ForgotPassword shows error if passwords do not match" time="0.02">
     </testcase>
-    <testcase classname="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" name="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" time="0.033">
+    <testcase classname="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" name="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" time="0.031">
     </testcase>
-    <testcase classname="unit ForgotPassword shows error if server returns !ok" name="unit ForgotPassword shows error if server returns !ok" time="0.028">
+    <testcase classname="unit ForgotPassword shows error if server returns !ok" name="unit ForgotPassword shows error if server returns !ok" time="0.02">
     </testcase>
-    <testcase classname="unit ForgotPassword shows error on network/server failure" name="unit ForgotPassword shows error on network/server failure" time="0.027">
+    <testcase classname="unit ForgotPassword shows error on network/server failure" name="unit ForgotPassword shows error on network/server failure" time="0.019">
     </testcase>
-    <testcase classname="unit ForgotPassword calls switchToLogin when Back to Login clicked" name="unit ForgotPassword calls switchToLogin when Back to Login clicked" time="0.009">
+    <testcase classname="unit ForgotPassword calls switchToLogin when Back to Login clicked" name="unit ForgotPassword calls switchToLogin when Back to Login clicked" time="0.005">
     </testcase>
   </testsuite>
-  <testsuite name="TodoList" errors="0" failures="0" skipped="1" timestamp="2025-10-17T10:18:42" time="2.764" tests="2">
+  <testsuite name="Login Component" errors="0" failures="0" skipped="0" timestamp="2025-10-28T11:12:00" time="3.55" tests="3">
+    <testcase classname="Login Component renders username and password inputs and login button" name="Login Component renders username and password inputs and login button" time="0.121">
+    </testcase>
+    <testcase classname="Login Component calls onLogin with a token when valid credentials are entered" name="Login Component calls onLogin with a token when valid credentials are entered" time="0.039">
+    </testcase>
+    <testcase classname="Login Component shows error with invalid credentials" name="Login Component shows error with invalid credentials" time="0.048">
+    </testcase>
+  </testsuite>
+  <testsuite name="unit" errors="0" failures="0" skipped="0" timestamp="2025-10-28T11:12:00" time="3.552" tests="4">
+    <testcase classname="unit AdminPanel renders and shows no users pending approval" name="unit AdminPanel renders and shows no users pending approval" time="0.087">
+    </testcase>
+    <testcase classname="unit AdminPanel renders a list of pending users with approve buttons" name="unit AdminPanel renders a list of pending users with approve buttons" time="0.051">
+    </testcase>
+    <testcase classname="unit AdminPanel shows loading while fetching" name="unit AdminPanel shows loading while fetching" time="0.019">
+    </testcase>
+    <testcase classname="unit AdminPanel approves user and removes from list" name="unit AdminPanel approves user and removes from list" time="0.108">
+    </testcase>
+  </testsuite>
+  <testsuite name="TodoList" errors="0" failures="0" skipped="1" timestamp="2025-10-28T11:12:00" time="3.562" tests="2">
     <testcase classname="TodoList renders pagination controls when there are multiple pages" name="TodoList renders pagination controls when there are multiple pages" time="0">
       <skipped/>
     </testcase>
-    <testcase classname="TodoList updates pagination when next button is clicked" name="TodoList updates pagination when next button is clicked" time="0.223">
+    <testcase classname="TodoList updates pagination when next button is clicked" name="TodoList updates pagination when next button is clicked" time="0.235">
     </testcase>
   </testsuite>
-  <testsuite name="Login Component" errors="0" failures="0" skipped="0" timestamp="2025-10-17T10:18:42" time="2.724" tests="3">
-    <testcase classname="Login Component renders username and password inputs and login button" name="Login Component renders username and password inputs and login button" time="0.149">
+  <testsuite name="TodoForm" errors="0" failures="0" skipped="0" timestamp="2025-10-28T11:12:00" time="3.611" tests="6">
+    <testcase classname="TodoForm handles tag input correctly" name="TodoForm handles tag input correctly" time="0.148">
     </testcase>
-    <testcase classname="Login Component calls onLogin with a token when valid credentials are entered" name="Login Component calls onLogin with a token when valid credentials are entered" time="0.051">
+    <testcase classname="TodoForm uses existing tag suggestions correctly" name="TodoForm uses existing tag suggestions correctly" time="0.047">
     </testcase>
-    <testcase classname="Login Component shows error with invalid credentials" name="Login Component shows error with invalid credentials" time="0.073">
+    <testcase classname="TodoForm renders the Create Todo form" name="TodoForm renders the Create Todo form" time="0.009">
     </testcase>
-  </testsuite>
-  <testsuite name="TodoForm" errors="0" failures="0" skipped="3" timestamp="2025-10-17T10:18:42" time="2.692" tests="6">
-    <testcase classname="TodoForm handles tag input correctly" name="TodoForm handles tag input correctly" time="0">
-      <skipped/>
+    <testcase classname="TodoForm shows pending approval message if user.status is PENDING" name="TodoForm shows pending approval message if user.status is PENDING" time="0.003">
     </testcase>
-    <testcase classname="TodoForm uses existing tag suggestions correctly" name="TodoForm uses existing tag suggestions correctly" time="0">
-      <skipped/>
+    <testcase classname="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" name="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" time="0.01">
     </testcase>
-    <testcase classname="TodoForm renders the Create Todo form" name="TodoForm renders the Create Todo form" time="0.127">
-    </testcase>
-    <testcase classname="TodoForm shows pending approval message if user.status is PENDING" name="TodoForm shows pending approval message if user.status is PENDING" time="0.008">
-    </testcase>
-    <testcase classname="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" name="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" time="0.016">
-    </testcase>
-    <testcase classname="TodoForm submits form, calls axios.post and navigates to /" name="TodoForm submits form, calls axios.post and navigates to /" time="0">
-      <skipped/>
-    </testcase>
-  </testsuite>
-  <testsuite name="TodoUpdate" errors="0" failures="4" skipped="0" timestamp="2025-10-17T10:18:42" time="2.833" tests="4">
-    <testcase classname="TodoUpdate shows correct initial values for id=1, including activity type and completed checkbox" name="TodoUpdate shows correct initial values for id=1, including activity type and completed checkbox" time="0.123">
-      <failure>TypeError: Cannot read properties of undefined (reading &apos;then&apos;)
-    at C:\Learning\System Design\todo-solution\todo-frontend\src\components\TodoUpdate.js:26:9
-    at Object.react_stack_bottom_frame (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:23953:20)
-    at runWithFiberInDEV (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:1522:13)
-    at commitHookEffectListMount (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:11905:29)
-    at commitHookPassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:12028:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13841:13)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13853:11)
-    at flushPassiveEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:15737:9)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:15379:15
-    at flushActQueue (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:566:34)
-    at Object.&lt;anonymous&gt;.process.env.NODE_ENV.exports.act (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:860:10)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\act-compat.js:47:25
-    at renderRoot (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:190:26)
-    at render (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:292:10)
-    at renderUpdate (C:\Learning\System Design\todo-solution\todo-frontend\src\test\TodoUpdate.test.js:40:11)
-    at C:\Learning\System Design\todo-solution\todo-frontend\src\test\TodoUpdate.test.js:53:5
-    at Generator.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regenerator.js:52:51)
-    at Generator.next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regeneratorDefine.js:11:21)
-    at asyncGeneratorStep (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
-    at _next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:22:7
-    at new Promise (&lt;anonymous&gt;)
-    at Object.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:14:12)
-    at Promise.then.completed (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:391:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:316:10)
-    at _callCircusTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:218:40)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at _runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:155:3)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:66:9)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:60:9)
-    at run (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:25:3)
-    at runAndTransformResultsToJestFormat (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:170:21)
-    at jestAdapter (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:82:19)
-    at runTestInternal (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:389:16)
-    at runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:475:34)
-    at Object.worker (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\testWorker.js:133:12)</failure>
-    </testcase>
-    <testcase classname="TodoUpdate hides completed checkbox when activity type is switched to &apos;regular&apos;" name="TodoUpdate hides completed checkbox when activity type is switched to &apos;regular&apos;" time="0.009">
-      <failure>TypeError: Cannot read properties of undefined (reading &apos;then&apos;)
-    at C:\Learning\System Design\todo-solution\todo-frontend\src\components\TodoUpdate.js:26:9
-    at Object.react_stack_bottom_frame (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:23953:20)
-    at runWithFiberInDEV (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:1522:13)
-    at commitHookEffectListMount (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:11905:29)
-    at commitHookPassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:12028:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13841:13)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13853:11)
-    at flushPassiveEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:15737:9)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:15379:15
-    at flushActQueue (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:566:34)
-    at Object.&lt;anonymous&gt;.process.env.NODE_ENV.exports.act (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:860:10)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\act-compat.js:47:25
-    at renderRoot (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:190:26)
-    at render (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:292:10)
-    at renderUpdate (C:\Learning\System Design\todo-solution\todo-frontend\src\test\TodoUpdate.test.js:40:11)
-    at C:\Learning\System Design\todo-solution\todo-frontend\src\test\TodoUpdate.test.js:61:5
-    at Generator.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regenerator.js:52:51)
-    at Generator.next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regeneratorDefine.js:11:21)
-    at asyncGeneratorStep (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
-    at _next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:22:7
-    at new Promise (&lt;anonymous&gt;)
-    at Object.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:14:12)
-    at Promise.then.completed (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:391:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:316:10)
-    at _callCircusTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:218:40)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at _runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:155:3)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:66:9)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:60:9)
-    at run (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:25:3)
-    at runAndTransformResultsToJestFormat (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:170:21)
-    at jestAdapter (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:82:19)
-    at runTestInternal (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:389:16)
-    at runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:475:34)
-    at Object.worker (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\testWorker.js:133:12)</failure>
-    </testcase>
-    <testcase classname="TodoUpdate allows changing title and activity type, submits update and sends correct payload" name="TodoUpdate allows changing title and activity type, submits update and sends correct payload" time="0.01">
-      <failure>TypeError: Cannot read properties of undefined (reading &apos;then&apos;)
-    at C:\Learning\System Design\todo-solution\todo-frontend\src\components\TodoUpdate.js:26:9
-    at Object.react_stack_bottom_frame (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:23953:20)
-    at runWithFiberInDEV (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:1522:13)
-    at commitHookEffectListMount (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:11905:29)
-    at commitHookPassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:12028:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13841:13)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13853:11)
-    at flushPassiveEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:15737:9)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:15379:15
-    at flushActQueue (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:566:34)
-    at Object.&lt;anonymous&gt;.process.env.NODE_ENV.exports.act (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:860:10)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\act-compat.js:47:25
-    at renderRoot (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:190:26)
-    at render (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:292:10)
-    at renderUpdate (C:\Learning\System Design\todo-solution\todo-frontend\src\test\TodoUpdate.test.js:40:11)
-    at C:\Learning\System Design\todo-solution\todo-frontend\src\test\TodoUpdate.test.js:71:5
-    at Generator.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regenerator.js:52:51)
-    at Generator.next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regeneratorDefine.js:11:21)
-    at asyncGeneratorStep (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
-    at _next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:22:7
-    at new Promise (&lt;anonymous&gt;)
-    at Object.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:14:12)
-    at Promise.then.completed (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:391:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:316:10)
-    at _callCircusTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:218:40)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at _runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:155:3)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:66:9)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:60:9)
-    at run (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:25:3)
-    at runAndTransformResultsToJestFormat (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:170:21)
-    at jestAdapter (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:82:19)
-    at runTestInternal (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:389:16)
-    at runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:475:34)
-    at Object.worker (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\testWorker.js:133:12)</failure>
-    </testcase>
-    <testcase classname="TodoUpdate shows error message if update fails" name="TodoUpdate shows error message if update fails" time="0.011">
-      <failure>TypeError: Cannot read properties of undefined (reading &apos;then&apos;)
-    at C:\Learning\System Design\todo-solution\todo-frontend\src\components\TodoUpdate.js:26:9
-    at Object.react_stack_bottom_frame (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:23953:20)
-    at runWithFiberInDEV (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:1522:13)
-    at commitHookEffectListMount (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:11905:29)
-    at commitHookPassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:12028:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13841:13)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13834:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13957:11)
-    at recursivelyTraversePassiveMountEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13815:11)
-    at commitPassiveMountOnFiber (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:13853:11)
-    at flushPassiveEffects (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:15737:9)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:15379:15
-    at flushActQueue (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:566:34)
-    at Object.&lt;anonymous&gt;.process.env.NODE_ENV.exports.act (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:860:10)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\act-compat.js:47:25
-    at renderRoot (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:190:26)
-    at render (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:292:10)
-    at renderUpdate (C:\Learning\System Design\todo-solution\todo-frontend\src\test\TodoUpdate.test.js:40:11)
-    at C:\Learning\System Design\todo-solution\todo-frontend\src\test\TodoUpdate.test.js:92:5
-    at Generator.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regenerator.js:52:51)
-    at Generator.next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regeneratorDefine.js:11:21)
-    at asyncGeneratorStep (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
-    at _next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:22:7
-    at new Promise (&lt;anonymous&gt;)
-    at Object.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:14:12)
-    at Promise.then.completed (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:391:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:316:10)
-    at _callCircusTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:218:40)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at _runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:155:3)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:66:9)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:60:9)
-    at run (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:25:3)
-    at runAndTransformResultsToJestFormat (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:170:21)
-    at jestAdapter (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:82:19)
-    at runTestInternal (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:389:16)
-    at runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:475:34)
-    at Object.worker (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\testWorker.js:133:12)</failure>
+    <testcase classname="TodoForm submits form, calls axios.post and navigates to /" name="TodoForm submits form, calls axios.post and navigates to /" time="0.022">
     </testcase>
   </testsuite>
 </testsuites>

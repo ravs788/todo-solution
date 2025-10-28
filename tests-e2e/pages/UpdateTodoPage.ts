@@ -38,8 +38,9 @@ export class UpdateTodoPage {
   // Navigates to home (listing), not to update 
   async goto() {
     await this.page.goto(this.baseUrl + '/');
-    await this.page.waitForLoadState('networkidle');
-    await this.page.getByRole('heading', { name: 'Todo List App' }).waitFor({ state: 'visible', timeout: 5000 });
+    // Avoid hanging on dev server websockets; DOMContentLoaded is sufficient
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.getByRole('heading', { name: 'Todo List App' }).waitFor({ state: 'visible', timeout: 10000 });
   }
 
   /**
@@ -70,6 +71,7 @@ export class UpdateTodoPage {
   async editTodoFromModel(req: import('../models/UpdateTodoRequest').UpdateTodoRequest & { _uiOldTitle?: string, tags?: string[] }) {
     // Use _uiOldTitle for UI lookup; fallback to req.title.
     const originalTitle = req._uiOldTitle || req.title;
+    const displayOriginal = originalTitle && originalTitle.length > 40 ? originalTitle.slice(0, 40) : originalTitle;
     // Filter by the todo title before locating the row
     let filterInput = this.page.locator('input.form-control[placeholder="Filter by Title"]');
     await filterInput.fill(originalTitle || "");
@@ -77,8 +79,8 @@ export class UpdateTodoPage {
     await this.page.waitForLoadState('networkidle');
     await this.page.waitForTimeout(300); // allow react table update tick
     // Wait for the table to update (row appears)
-    const row = this.page.locator('table.table-striped tbody tr').filter({
-      has: this.page.locator('td').first().filter({ hasText: originalTitle }),
+    const row = this.page.locator('table.custom-table tbody tr').filter({
+      has: this.page.locator('td').first().filter({ hasText: displayOriginal }),
     });
     await row.waitFor({ state: 'visible', timeout: 7000 });
     const updateLink = row.locator('a.btn.btn-sm.btn-primary.me-2');
@@ -123,8 +125,9 @@ export class UpdateTodoPage {
     // Wait for the updated title to appear on home/list
     if (req.title) {
       await filterInput.fill(req.title);
+      const displayUpdated = req.title.length > 40 ? req.title.slice(0, 40) : req.title;
       // Wait longer for slow environments and backend/db sync
-      await this.page.getByText(req.title).waitFor({ state: 'visible', timeout: 10000 });
+      await this.page.getByText(displayUpdated).waitFor({ state: 'visible', timeout: 10000 });
     }
   }
 
@@ -168,11 +171,12 @@ export class UpdateTodoPage {
 
   async completeTodo(title: string) {
     // Filter by the todo title before locating the row
+    const displayTitle = title && title.length > 40 ? title.slice(0, 40) : title;
     const filterInput = this.page.locator('input.form-control[placeholder="Filter by Title"]');
     await filterInput.fill(title);
     // Find row and click update
-    const row = this.page.locator('table.table-striped tbody tr').filter({
-      has: this.page.locator('td').first().filter({ hasText: title }),
+    const row = this.page.locator('table.custom-table tbody tr').filter({
+      has: this.page.locator('td').first().filter({ hasText: displayTitle }),
     });
     await row.waitFor({ state: 'visible', timeout: 7000 });
     const updateLink = row.locator('a.btn.btn-sm.btn-primary.me-2');
@@ -199,8 +203,8 @@ export class UpdateTodoPage {
     await filterInput2.fill(title);
 
     // Wait for the todo to appear with 'Yes' in Completed column (2nd cell)
-    const updatedRow = this.page.locator('table.table-striped tbody tr').filter({
-      has: this.page.locator('td').first().filter({ hasText: title }),
+    const updatedRow = this.page.locator('table.custom-table tbody tr').filter({
+      has: this.page.locator('td').first().filter({ hasText: displayTitle }),
     });
     await updatedRow.waitFor({ state: 'visible', timeout: 5000 });
     const completedCell = updatedRow.locator('td').nth(1); // 2nd <td>

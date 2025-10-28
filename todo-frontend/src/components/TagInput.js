@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import "./TagInput.css";
+import "../css/components/TagInput.css";
 
 const TagInput = ({ value, onChange, apiBase }) => {
   const [inputValue, setInputValue] = useState("");

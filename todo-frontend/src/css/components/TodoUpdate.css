@@ -1,17 +1,17 @@
 /* Page Wrapper */
-.todoform-fullscreen-bg {
+.todoupdate-fullscreen-bg {
   min-height: 100vh;
-  background: linear-gradient(120deg, #e0e7ff 0%, #d0fcfa 100%);
+  background: linear-gradient(120deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 /* Form Container */
-.todoform-container {
-  background: #fff;
+.todoupdate-container {
+  background: var(--bg-secondary);
   border-radius: 18px;
-  box-shadow: 0 6px 36px 0 rgba(38,80,160,0.16);
+  box-shadow: 0 6px 36px 0 var(--shadow-color);
   max-width: 375px;
   width: 98%;
   padding: 38px 24px 32px 24px;
@@ -21,27 +21,27 @@
 }
 
 /* Logo Image Section */
-.todoform-logo-section {
+.todoupdate-logo-section {
   margin-bottom: 16px;
 }
 
-.todoform-logo-img {
+.todoupdate-logo-img {
   width: 54px;
   border-radius: 13px;
-  box-shadow: 0 1px 6px 0 #ddd;
+  box-shadow: 0 1px 6px 0 var(--shadow-color);
 }
 
 /* Heading */
-.todoform-heading {
+.todoupdate-heading {
   font-weight: 700;
   margin: 0;
-  color: #107782;
+  color: var(--text-primary);
   font-size: 2rem;
   letter-spacing: 0.02em;
 }
 
 /* Main Form */
-.todoform-form {
+.todoupdate-form {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -50,59 +50,59 @@
 }
 
 /* Label */
-.todoform-label {
+.todoupdate-label {
   font-weight: 500;
-  color: #10848a;
+  color: var(--text-primary);
 }
 
 /* Text Input, Select, Date Input */
-.todoform-input,
-.todoform-select,
-.todoform-date {
+.todoupdate-input,
+.todoupdate-select,
+.todoupdate-date {
   border-radius: 7px;
-  border: 1.2px solid #a4cbfd;
+  border: 1.2px solid var(--input-border);
   padding: 10px;
   font-size: 1.03rem;
   margin-top: 3px;
   width: 100%;
-  background: #f8fbff;
+  background: var(--input-bg);
 }
 
 /* Select specific tweak */
-.todoform-select {
+.todoupdate-select {
   padding: 8px;
 }
 
 /* Completed checkbox row */
-.todoform-checkbox-row {
+.todoupdate-checkbox-row {
   display: flex;
   align-items: center;
   margin-left: 0.35rem;
 }
 
 /* Completed checkbox input */
-.todoform-checkbox {
+.todoupdate-checkbox {
   margin-right: 9px;
   width: 17px;
   height: 17px;
 }
 
 /* Completed label */
-.todoform-checkbox-label {
-  color: #1976d2;
+.todoupdate-checkbox-label {
+  color: var(--btn-primary);
   font-weight: 500;
 }
 
 /* Button Row */
-.todoform-button-row {
+.todoupdate-button-row {
   display: flex;
   gap: 7px;
 }
 
-/* Primary Button */
-.todoform-btn-primary {
+/* Primary Button (Update) */
+.todoupdate-btn-primary {
   width: 100%;
-  background: linear-gradient(90deg, #36d1c4 0%, #4f8cff 100%);
+  background: var(--btn-primary);
   border: none;
   color: #fff;
   font-weight: 700;
@@ -110,29 +110,29 @@
   font-size: 1.03rem;
   padding: 10px;
   margin-top: 2px;
-  box-shadow: 0 2px 10px 0 rgba(34,124,195,0.08);
+  box-shadow: 0 2px 10px 0 var(--shadow-color);
   cursor: pointer;
 }
 
 /* Secondary Button */
-.todoform-btn-secondary {
+.todoupdate-btn-secondary {
   width: 100%;
-  background: #f3f6fb;
-  color: #1849a9;
-  border: 1.5px solid #bcd5ee;
+  background: var(--bg-secondary);
+  color: var(--btn-secondary);
+  border: 1.5px solid var(--border-color);
   font-weight: 600;
   font-size: 1.03rem;
   border-radius: 7px;
   padding: 10px;
   cursor: pointer;
-  box-shadow: 0 1px 8px 0 #e2edf7;
+  box-shadow: 0 1px 8px 0 var(--shadow-color);
 }
 
 /* Pending Block */
-.todoform-pending-block {
-  background: #fff;
+.todoupdate-pending-block {
+  background: var(--bg-secondary);
   border-radius: 18px;
-  box-shadow: 0 6px 36px 0 rgba(38,80,160,0.16);
+  box-shadow: 0 6px 36px 0 var(--shadow-color);
   max-width: 375px;
   width: 98%;
   padding: 38px 24px 32px 24px;
@@ -142,12 +142,10 @@
 }
 
 /* Pending Heading */
-.todoform-pending-heading {
-  color: orange;
+.todoupdate-pending-heading {
+  color: var(--accent-gold);
   font-weight: bold;
 }
 
 /* Text - can be reused for all p blocks inside containers */
-.todoform-text {
-  /* Add custom text styles if needed */
-}
+.todoupdate-text {}

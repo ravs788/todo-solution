@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
+import ThemeContext from "../context/ThemeContext";
 
 const api = axios.create({
   baseURL: `${process.env.REACT_APP_API_BASE_URL}/api`,
@@ -23,6 +24,7 @@ api.interceptors.request.use(
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
   const { user } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
 
   // Filter states
   const [titleFilter, setTitleFilter] = useState("");
@@ -69,9 +71,12 @@ const TodoList = () => {
 
   if (user && user.status === "PENDING") {
     return (
-      <div className="container mt-5">
-        <h2 style={{ color: "orange" }}>Account Pending Approval</h2>
-        <p>
+      <div className="container mt-5 theme-bg-primary theme-text-primary">
+        <h2 style={{
+          color: "orange",
+          transition: 'color 0.3s ease'
+        }}>Account Pending Approval</h2>
+        <p className="theme-text-secondary">
           Your registration is successful but your account is pending approval by an admin.
         </p>
       </div>
@@ -79,8 +84,8 @@ const TodoList = () => {
   }
 
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4">Todo List</h2>
+    <div className="container mt-5 theme-bg-primary theme-text-primary">
+      <h2 className="mb-4 theme-text-primary">Todo List</h2>
       {user && (
         <Link to="/create" className="btn btn-primary mb-3">
           Create New Todo
@@ -110,7 +115,7 @@ const TodoList = () => {
         </div>
       </div>
       {/* Page size selection moved to pagination controls */}
-      <table className="table table-striped">
+      <table key={`table-${isDarkMode ? 'dark' : 'light'}`} className="custom-table">
         <thead>
           <tr>
             <th>Title</th>
@@ -122,11 +127,32 @@ const TodoList = () => {
           </tr>
         </thead>
         <tbody>
-          {pagedTodos.map((todo) => (
-            <tr key={todo.id}>
-              <td className={todo.completed ? "completed-task" : ""}>{todo.title}</td>
-              <td>{todo.completed ? "Yes" : "No"}</td>
-              <td>
+          {pagedTodos.map((todo, index) => (
+            <tr key={todo.id} className={index % 2 === 0 ? 'table-row-even' : 'table-row-odd'} style={{
+              borderBottom: '1px solid var(--table-border)'
+            }}>
+              <td style={{
+                borderLeft: '1px solid var(--table-border)',
+                borderRight: '1px solid var(--table-border)',
+                padding: '8px'
+              }} className={todo.completed ? "completed-task" : ""}>
+                {todo.title && todo.title.length > 40 ? (
+                  <>
+                    {todo.title.slice(0, 40)}
+                    <Link to={`/todo/${todo.id}`} style={{ textDecoration: "none", marginLeft: "2px" }}>…</Link>
+                  </>
+                ) : (
+                  todo.title
+                )}
+              </td>
+              <td style={{
+                borderRight: '1px solid var(--table-border)',
+                padding: '8px'
+              }}>{todo.completed ? "Yes" : "No"}</td>
+              <td style={{
+                borderRight: '1px solid var(--table-border)',
+                padding: '8px'
+              }}>
                 {new Date(todo.startDate).getDate().toString().padStart(2, "0")}
                 -
                 {new Intl.DateTimeFormat("en", { month: "short" }).format(
@@ -134,7 +160,10 @@ const TodoList = () => {
                 )}
                 -{new Date(todo.startDate).getFullYear()}
               </td>
-              <td>
+              <td style={{
+                borderRight: '1px solid var(--table-border)',
+                padding: '8px'
+              }}>
                 {todo.endDate
                   ? (new Date(todo.endDate).getDate().toString().padStart(2, "0") +
                     "-" +
@@ -145,7 +174,10 @@ const TodoList = () => {
                     new Date(todo.endDate).getFullYear())
                   : ""}
               </td>
-              <td>
+              <td style={{
+                borderRight: '1px solid var(--table-border)',
+                padding: '8px'
+              }}>
                 {todo.tags && todo.tags.length > 0 ? (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
                     {todo.tags.map((t) => {
@@ -154,11 +186,12 @@ const TodoList = () => {
                       <span
                         key={tagText}
                         style={{
-                          background: "#e0f7fa",
-                          color: "#088",
+                          background: "var(--tag-bg)",
+                          color: "var(--tag-text)",
                           borderRadius: "4px",
                           padding: "2px 6px",
-                          fontSize: "0.85em"
+                          fontSize: "0.85em",
+                          transition: "background-color 0.3s ease, color 0.3s ease"
                         }}
                       >
                         {tagText}
@@ -167,12 +200,21 @@ const TodoList = () => {
                     })}
                   </div>
                 ) : (
-                  <span style={{ color: "#888", fontSize: "0.9em" }}>No tags</span>
+                  <span className="theme-text-secondary" style={{ fontSize: "0.9em" }}>No tags</span>
                 )}
               </td>
-              <td>
+              <td style={{
+                borderRight: '1px solid var(--table-border)',
+                padding: '8px'
+              }}>
                 {user && (
                   <>
+                    <Link
+                      to={`/todo/${todo.id}`}
+                      className="btn btn-sm btn-secondary me-2"
+                    >
+                      Details
+                    </Link>
                     <Link
                       to={`/update/${todo.id}`}
                       className="btn btn-sm btn-primary me-2"
@@ -196,7 +238,7 @@ const TodoList = () => {
           ))}
           {pagedTodos.length === 0 && (
             <tr>
-              <td colSpan={7} style={{ textAlign: "center", color: "#888" }}>
+              <td colSpan={7} style={{ textAlign: "center" }} className="theme-text-secondary">
                 No todos found.
               </td>
             </tr>

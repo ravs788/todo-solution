@@ -20,7 +20,7 @@ export class HomePage {
     this.baseUrl = baseUrl;
     this.header = page.locator('h2.mb-4', { hasText: 'Todo List' });
     this.createNewTodoButton = page.locator('a.btn.btn-primary.mb-3', { hasText: 'Create New Todo' });
-    this.todoTable = page.locator('table.table.table-striped');
+    this.todoTable = page.locator('table.custom-table');
     this.titleFilterInput = page.locator('input.form-control[placeholder="Filter by Title"]');
     this.statusFilterSelect = page.locator('select.form-select');
     this.pagerPrevButton = page.locator('button.btn-outline-primary.btn-sm:has-text("Prev")');

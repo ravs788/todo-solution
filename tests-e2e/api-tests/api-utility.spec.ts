@@ -5,7 +5,6 @@ const API_BASE_URL = config.apiBaseUrl;
 
 test.describe('Utility API Tests', () => {
   // Note: These utility endpoints may not be implemented or may require different paths
-  // Skipping these tests as they return 404 in the current backend configuration
 
   test('should check database health', { tag: '@regression' }, async ({ request }) => {
     const response = await request.get(`${API_BASE_URL}/db-health`);
