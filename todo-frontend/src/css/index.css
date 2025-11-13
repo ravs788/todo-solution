@@ -30,8 +30,33 @@
   --completed-task-color: #666666;
   --tag-bg: #e3f2fd;            /* Light blue tags */
   --tag-text: #1565c0;
-}
 
+  /* Responsive design tokens */
+  --bp-sm: 480px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1440px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --container-sm: 540px;
+  --container-md: 720px;
+  --container-lg: 960px;
+  --container-xl: 1140px;
+
+  --font-size-body: clamp(14px, 1.5vw, 16px);
+  --font-size-h1: clamp(24px, 4vw, 36px);
+  --font-size-h2: clamp(20px, 3vw, 28px);
+}
 
 
 body {
@@ -43,6 +68,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  font-size: var(--font-size-body);
   transition: background-color 0.3s ease, color 0.3s ease;
   min-height: 100vh;
 }
@@ -97,6 +123,20 @@ code {
 }
 
 .custom-table .table-row-odd {
-  background-color: var(--table-bg-tertiary) !important; /* slightly darker blue row */
+  background-color: var(--table-bg-tertiary) !important; /* slightly darker blue alternate row */
   color: var(--text-primary) !important; /* dark text on medium-light blue */
 }
+
+/* Fluid typography helpers */
+h1 { font-size: var(--font-size-h1); margin: 0 0 var(--space-4); }
+h2 { font-size: var(--font-size-h2); margin: 0 0 var(--space-3); }
+
+/* Mobile interaction fixes: keep action buttons clickable and avoid overlaps */
+.custom-table { position: relative; }
+.custom-table thead { position: static; z-index: 0; pointer-events: none; }
+.custom-table tbody td { position: relative; z-index: 1; pointer-events: auto; }
+.custom-table tbody a.btn { position: relative; z-index: 2; pointer-events: auto; }
+
+/* Ensure nearby elements don't overlay the table on small screens */
+.todo-list-title { position: static; z-index: auto; pointer-events: none; }
+.filters-row { position: static; z-index: auto; margin-bottom: var(--space-4); }

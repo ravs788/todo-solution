@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import "../css/components/AppCard.css";
+import ThemeToggle from "./ThemeToggle";
 
 const ResetPassword = ({ tokenProp, onSuccess }) => {
   // Accept token as a prop or from query string
@@ -9,7 +11,7 @@ const ResetPassword = ({ tokenProp, onSuccess }) => {
   const [message, setMessage] = useState("");
 
   // On mount, if no tokenProp, parse from URL
-  React.useEffect(() => {
+  useEffect(() => {
     if (!token) {
       const params = new URLSearchParams(window.location.search);
       const tokenFromQS = params.get("token");
@@ -21,6 +23,7 @@ const ResetPassword = ({ tokenProp, onSuccess }) => {
     e.preventDefault();
     setError("");
     setMessage("");
+
     if (!token || !password) {
       setError("All fields are required.");
       return;
@@ -50,61 +53,69 @@ const ResetPassword = ({ tokenProp, onSuccess }) => {
   };
 
   return (
-    <div style={{ marginTop: "2rem" }}>
-      <h2>Reset Password</h2>
-      <form onSubmit={handleSubmit}>
-        {!token && (
-          <div style={{ color: "red" }}>
-            Invalid or missing token.
+    <div className="app-gradient-bg">
+      <div className="container">
+        <div className="app-card">
+          <div className="app-card-actions">
+            <ThemeToggle colorVar="--text-primary" />
           </div>
-        )}
-        <div>
-          <label>New Password: </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            disabled={!token}
-          />
+          <img src="/logo192.png" alt="Logo" className="app-card-logo" />
+          <h2 className="app-card-title">Reset Password</h2>
+          <div className="app-card-subtitle">Set a new password for your account</div>
+
+          {!token && (
+            <div className="alert alert-error">Invalid or missing token.</div>
+          )}
+
+          <form onSubmit={handleSubmit} className="app-form">
+            <div>
+              <label htmlFor="rp-password" className="app-label">
+                New Password
+              </label>
+              <input
+                id="rp-password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={!token}
+                className="app-input"
+                placeholder="Type your new password"
+              />
+            </div>
+            <div>
+              <label htmlFor="rp-password-confirm" className="app-label">
+                Confirm Password
+              </label>
+              <input
+                id="rp-password-confirm"
+                type="password"
+                value={passwordConfirm}
+                onChange={(e) => setPasswordConfirm(e.target.value)}
+                required
+                disabled={!token}
+                className="app-input"
+                placeholder="Repeat new password"
+              />
+            </div>
+            <button type="submit" disabled={!token} className="app-button-primary">
+              Reset Password
+            </button>
+          </form>
+
+          {error && <div className="alert alert-error">{error}</div>}
+          {message && <div className="alert alert-success">{message}</div>}
+
+          <div className="app-links-container">
+            <button
+              type="button"
+              onClick={onSuccess}
+              className="app-button-secondary"
+            >
+              ← Back to Login
+            </button>
+          </div>
         </div>
-        <div>
-          <label>Confirm Password: </label>
-          <input
-            type="password"
-            value={passwordConfirm}
-            onChange={(e) => setPasswordConfirm(e.target.value)}
-            required
-            disabled={!token}
-          />
-        </div>
-        <button type="submit" disabled={!token}>
-          Reset Password
-        </button>
-      </form>
-      {error && <div style={{ color: "red", marginTop: "1rem" }}>{error}</div>}
-      {message && (
-        <div style={{ color: "green", marginTop: "1rem" }}>{message}</div>
-      )}
-      <div style={{ marginTop: "2.1rem", display: "flex", flexDirection: "column", width: "100%" }}>
-        <button
-          type="button"
-          onClick={onSuccess}
-          style={{
-            background: "#f3f6fb",
-            color: "#1849a9",
-            border: "1.5px solid #bcd5ee",
-            fontWeight: 600,
-            fontSize: "1.03rem",
-            borderRadius: "7px",
-            padding: "10px",
-            width: "100%",
-            cursor: "pointer",
-            boxShadow: "0 1px 8px 0 #e2edf7"
-          }}
-        >
-          ← Back to Login
-        </button>
       </div>
     </div>
   );

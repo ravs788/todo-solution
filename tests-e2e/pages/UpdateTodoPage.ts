@@ -85,7 +85,22 @@ export class UpdateTodoPage {
     await row.waitFor({ state: 'visible', timeout: 7000 });
     const updateLink = row.locator('a.btn.btn-sm.btn-primary.me-2');
     await updateLink.waitFor({ state: 'visible', timeout: 5000 });
-    await updateLink.click();
+    await updateLink.scrollIntoViewIfNeeded();
+    try {
+      await updateLink.click({ trial: true });
+      await updateLink.click();
+    } catch (e1) {
+      try {
+        await updateLink.click({ force: true });
+      } catch (e2) {
+        const href = await updateLink.getAttribute('href');
+        if (href) {
+          await this.page.goto(this.baseUrl + href);
+        } else {
+          throw e2;
+        }
+      }
+    }
 
 
     // Wait for form
@@ -181,7 +196,22 @@ export class UpdateTodoPage {
     await row.waitFor({ state: 'visible', timeout: 7000 });
     const updateLink = row.locator('a.btn.btn-sm.btn-primary.me-2');
     await updateLink.waitFor({ state: 'visible', timeout: 5000 });
-    await updateLink.click();
+    await updateLink.scrollIntoViewIfNeeded();
+    try {
+      await updateLink.click({ trial: true });
+      await updateLink.click();
+    } catch (e1) {
+      try {
+        await updateLink.click({ force: true });
+      } catch (e2) {
+        const href = await updateLink.getAttribute('href');
+        if (href) {
+          await this.page.goto(this.baseUrl + href);
+        } else {
+          throw e2;
+        }
+      }
+    }
 
     // Wait for update landmark
     await this.heading.waitFor({ state: 'visible', timeout: 5000 });

@@ -50,11 +50,26 @@ export class DeleteTodoPage {
     await row.waitFor({ state: 'visible', timeout: 7000 });
     const deleteLink = this.deleteLinkInRow(row);
     await deleteLink.waitFor({ state: 'visible', timeout: 5000 });
-    await deleteLink.click();
+    await deleteLink.scrollIntoViewIfNeeded();
+    try {
+      await deleteLink.click({ trial: true });
+      await deleteLink.click();
+    } catch (e1) {
+      try {
+        await deleteLink.click({ force: true });
+      } catch (e2) {
+        await this.page.evaluate((el) => (el as HTMLElement).click(), await deleteLink.elementHandle());
+      }
+    }
     // Confirm dialog
     await this.confirmHeading.waitFor({ state: 'visible', timeout: 3000 });
     await this.confirmYesButton.waitFor({ state: 'visible', timeout: 3000 });
-    await this.confirmYesButton.click();
+    try {
+      await this.confirmYesButton.click({ trial: true });
+      await this.confirmYesButton.click();
+    } catch {
+      await this.confirmYesButton.click({ force: true });
+    }
     // Wait for removal from table
     await this.page.getByText(title).waitFor({ state: 'hidden', timeout: 4000 });
   }

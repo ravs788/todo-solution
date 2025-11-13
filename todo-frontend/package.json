@@ -55,7 +55,6 @@
   "proxy": "http://localhost:8081",
   "devDependencies": {
     "@babel/preset-react": "^7.27.1",
-    "@playwright/test": "^1.54.1",
     "@testing-library/jest-dom": "^6.6.4",
     "jest-junit": "^16.0.0",
     "react-app-rewired": "^2.2.1"

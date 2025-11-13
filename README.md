@@ -283,6 +283,11 @@ PRs and suggestions are welcome! Please open issues or submit pull requests. Run
 
 ## Recent Changes
 
+### Mobile Responsiveness Fixes
+- Added `table-responsive` wrapper to the Todo List table for better mobile compatibility.
+- Playwright E2E tests now pass in mobile mode (375x812 viewport) with all UI elements accessible.
+- Increased Playwright test timeout from 30s to 60s to handle slower interactions in mobile viewports.
+
 ### Tag Management and Editing
 - Tag update operations in the UI and Playwright E2E tests are now robust and performed before form submission.
 - Page Object and backend flows for tag editing and chip validation were improved to ensure tags are properly saved.

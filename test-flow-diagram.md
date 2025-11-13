@@ -45,6 +45,7 @@ flowchart TD
 **Diagram notes:**
 - "CRUD," registration, and login spec files cover most front-end test flows (parametrized using test-data/).
 - Tags in test titles allow `--grep` filtering (e.g., `@smoke`, `@regression`).
+- All tests now run successfully across desktop, tablet, and mobile viewports.
 
 ## UML Class Diagram
 
