@@ -12,5 +12,6 @@
     "@types/node": "^20.19.9"
   },
   "dependencies": {
+    "e2e-layer": "file:"
   }
 }

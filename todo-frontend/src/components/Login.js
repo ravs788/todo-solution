@@ -10,11 +10,6 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
   const [error, setError] = useState("");
   const { login: authContextLogin } = useContext(AuthContext);
 
-  // Autosizing input (kept dynamic width inline; all other styles moved to CSS)
-  const getInputWidth = (value) => {
-    let len = Math.min(Math.max(value.length || 1, 50), 100);
-    return `${len + 1}ch`;
-  };
 
   useEffect(() => {
     if (typeof onRender === "function") {
@@ -53,7 +48,8 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
 
   return (
     <div className="app-gradient-bg">
-      <div className="app-card">
+      <div className="container">
+        <div className="app-card">
         <div className="app-card-actions">
           <ThemeToggle colorVar="--text-primary" />
         </div>
@@ -73,7 +69,6 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
               maxLength={100}
               onChange={(e) => setUsername(e.target.value)}
               required
-              style={{ width: getInputWidth(username) }}
               className="app-input"
               placeholder="e.g. johndoe"
             />
@@ -89,7 +84,6 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
               maxLength={100}
               onChange={(e) => setPassword(e.target.value)}
               required
-              style={{ width: getInputWidth(password) }}
               className="app-input"
               placeholder="Enter your password"
             />
@@ -116,6 +110,7 @@ const Login = ({ message, onLogin, switchToRegister, switchToForgot, onRender })
           <button type="button" onClick={switchToForgot} className="text-link-button">
             Forgot password?
           </button>
+        </div>
         </div>
       </div>
     </div>

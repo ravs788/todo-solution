@@ -85,14 +85,14 @@ const TodoList = () => {
 
   return (
     <div className="container mt-5 theme-bg-primary theme-text-primary">
-      <h2 className="mb-4 theme-text-primary">Todo List</h2>
+      <h2 className="mb-4 theme-text-primary todo-list-title">Todo List</h2>
       {user && (
         <Link to="/create" className="btn btn-primary mb-3">
           Create New Todo
         </Link>
       )}
       {/* Filter controls */}
-      <div className="row g-3 mb-3">
+      <div className="row g-3 mb-3 filters-row">
         <div className="col-md-6">
           <input
             type="text"
@@ -115,7 +115,8 @@ const TodoList = () => {
         </div>
       </div>
       {/* Page size selection moved to pagination controls */}
-      <table key={`table-${isDarkMode ? 'dark' : 'light'}`} className="custom-table">
+      <div className="table-responsive">
+        <table key={`table-${isDarkMode ? 'dark' : 'light'}`} className="custom-table">
         <thead>
           <tr>
             <th>Title</th>
@@ -245,6 +246,7 @@ const TodoList = () => {
           )}
         </tbody>
       </table>
+      </div>
       {/* Pagination Controls */}
       {totalPages > 1 && (
         <div className="d-flex align-items-center my-3" style={{ position: "relative" }}>

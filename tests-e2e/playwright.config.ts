@@ -17,7 +17,7 @@ export default defineConfig({
     ]
   ],
   retries: 0,
-  timeout: 30000,
+  timeout: 60000,
   webServer: [
     {
       command: 'cmd /c "cd ..\\todo-backend && mvn -q -DskipTests spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=h2"',
@@ -45,7 +45,10 @@ export default defineConfig({
         },
         { name: 'firefox', use: { browserName: 'firefox' } },
         { name: 'api', testDir: './api-tests', use: {}, workers: 1 },
-        { name: 'ui', testDir: './ui-tests', use: {} }
+        { name: 'ui', testDir: './ui-tests', use: {} },
+        { name: 'ui-mobile', testDir: './ui-tests', use: { browserName: 'chromium', viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 } },
+        { name: 'ui-tablet', testDir: './ui-tests', use: { browserName: 'chromium', viewport: { width: 768, height: 1024 } } },
+        { name: 'ui-desktop', testDir: './ui-tests', use: { browserName: 'chromium', viewport: { width: 1280, height: 800 } } }
       ]
     : [
         {
@@ -76,6 +79,9 @@ export default defineConfig({
           }
         },
         { name: 'api', testDir: './api-tests', use: {}, workers: 1 },
-        { name: 'ui', testDir: './ui-tests', use: {} }
+        { name: 'ui', testDir: './ui-tests', use: {} },
+        { name: 'ui-mobile', testDir: './ui-tests', use: { browserName: 'chromium', viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 } },
+        { name: 'ui-tablet', testDir: './ui-tests', use: { browserName: 'chromium', viewport: { width: 768, height: 1024 } } },
+        { name: 'ui-desktop', testDir: './ui-tests', use: { browserName: 'chromium', viewport: { width: 1280, height: 800 } } }
       ]
 });

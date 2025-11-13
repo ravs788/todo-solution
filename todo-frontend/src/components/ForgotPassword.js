@@ -50,7 +50,8 @@ const ForgotPassword = ({ switchToLogin }) => {
 
   return (
     <div className="app-gradient-bg">
-      <div className="app-card">
+      <div className="container">
+        <div className="app-card">
         <div className="app-card-actions">
           <ThemeToggle colorVar="--text-primary" />
         </div>
@@ -117,6 +118,7 @@ const ForgotPassword = ({ switchToLogin }) => {
           >
             ← Back to Login
           </button>
+        </div>
         </div>
       </div>
     </div>

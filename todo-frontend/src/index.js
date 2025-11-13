@@ -4,6 +4,7 @@ import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./css/index.css";
 import "./css/theme.css";
+import "./css/utilities/layout.css";
 
 const root = createRoot(document.getElementById("root"));
 root.render(

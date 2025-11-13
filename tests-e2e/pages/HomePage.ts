@@ -30,8 +30,10 @@ export class HomePage {
 
   async goto() {
     await this.page.goto(this.baseUrl + '/');
-    await this.page.waitForLoadState('networkidle');
-    await this.header.waitFor({ state: 'visible', timeout: 5000 });
+    // Avoid hanging on dev server websockets on mobile; DOMContentLoaded is sufficient
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.header.waitFor({ state: 'visible', timeout: 10000 });
+    await this.todoTable.waitFor({ state: 'visible', timeout: 10000 });
   }
 
   async isLoaded(): Promise<boolean> {

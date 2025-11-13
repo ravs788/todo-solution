@@ -47,12 +47,10 @@
   padding: 10px;
   font-size: 1.13rem;
   margin-top: 5px;
-  width: auto;
-  min-width: 80px;
-  max-width: 100%;
-  max-width: 520px;
+  width: 100%;
+  min-width: 0;
   background: var(--input-bg);
-  transition: width 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
   box-sizing: border-box;
 }
 
