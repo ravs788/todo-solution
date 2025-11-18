@@ -5,6 +5,7 @@ import TodoForm from "./components/TodoForm";
 import TodoUpdate from "./components/TodoUpdate";
 import TodoDelete from "./components/TodoDelete";
 import TodoDetails from "./components/TodoDetails";
+import Settings from "./components/Settings";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import AdminPanel from "./components/AdminPanel";
@@ -13,7 +14,9 @@ import ResetPassword from "./components/ResetPassword";
 import ThemeToggle from "./components/ThemeToggle";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { ToastProvider } from "./context/ToastContext";
 import AuthContext from "./context/AuthContext";
+import ToastContainer from "./components/ToastContainer";
 
 function AllRoutes({ authToken, handleLogin, handleLogout, loginMessage, setLoginMessage }) {
   const { user } = useContext(AuthContext) || {};
@@ -92,6 +95,18 @@ function AllRoutes({ authToken, handleLogin, handleLogout, loginMessage, setLogi
                 >
                   Create Todo
                 </Link>
+                <Link
+                  to="/settings"
+                  style={{
+                    color: "var(--navbar-text)",
+                    fontWeight: 500,
+                    textDecoration: "none",
+                    marginRight: "18px",
+                    transition: "color 0.3s ease",
+                  }}
+                >
+                  Settings
+                </Link>
                 {user && (user.role === "ADMIN" || (user.authorities && user.authorities.includes("ROLE_ADMIN"))) && (
                   <Link
                     to="/admin"
@@ -129,6 +144,7 @@ function AllRoutes({ authToken, handleLogin, handleLogout, loginMessage, setLogi
               <Routes>
                 <Route path="/" element={<TodoList />} />
                 <Route path="/create" element={<TodoForm />} />
+                <Route path="/settings" element={<Settings />} />
                 <Route path="/update/:id" element={<TodoUpdate />} />
                 <Route path="/delete/:id" element={<TodoDelete />} />
                 <Route path="/todo/:id" element={<TodoDetails />} />
@@ -186,15 +202,18 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <Router>
-          <AllRoutes
-            authToken={authToken}
-            handleLogin={handleLogin}
-            handleLogout={handleLogout}
-            loginMessage={loginMessage}
-            setLoginMessage={setLoginMessage}
-          />
-        </Router>
+        <ToastProvider>
+          <Router>
+            <AllRoutes
+              authToken={authToken}
+              handleLogin={handleLogin}
+              handleLogout={handleLogout}
+              loginMessage={loginMessage}
+              setLoginMessage={setLoginMessage}
+            />
+            <ToastContainer />
+          </Router>
+        </ToastProvider>
       </AuthProvider>
     </ThemeProvider>
   );

@@ -79,7 +79,15 @@ test.describe("Todo Other Operations", () => {
 // Ensure we always logout at end of each test
 test.afterEach(async ({ page }) => {
   const homePage = new HomePage(page, config.baseUrl);
+  // Set a reasonable timeout for logout to avoid hanging the test suite
+  const logoutPromise = homePage.logout();
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('Logout timeout')), 20000)
+  );
+
   try {
-    await homePage.logout();
-  } catch {}
+    await Promise.race([logoutPromise, timeoutPromise]);
+  } catch (error) {
+    console.warn('Logout failed or timed out, continuing test cleanup');
+  }
 });

@@ -3,6 +3,7 @@ const path = require('path');
 
 const DOMAIN = 'repository.eng.netsuite.com';
 const targets = [
+  'package-lock.json',
   path.join('todo-frontend', 'package-lock.json'),
   path.join('tests-e2e', 'package-lock.json'),
 ];
