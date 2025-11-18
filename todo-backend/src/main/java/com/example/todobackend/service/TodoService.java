@@ -60,9 +60,11 @@ public class TodoService {
             .activityType(dto.getActivityType())
             .endDate(dto.getEndDate())
             .tags(tags)
+            .reminderAt(dto.getReminderAt())
+            .reminderStatus(dto.getReminderAt() != null ? com.example.todobackend.model.ReminderStatus.PENDING : null)
             .build();
         Todo savedTodo = repo.save(todo);
-        log.info("Saved Todo with id: {} (with tags)", savedTodo.getId());
+        log.info("Saved Todo with id: {} (with tags and reminders)", savedTodo.getId());
         return savedTodo;
     }
 

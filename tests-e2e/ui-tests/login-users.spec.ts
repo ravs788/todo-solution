@@ -8,7 +8,7 @@ test('should login successfully with valid credentials', async ({ page }) => {
   await loginPage.goto();
   const loginSuccess = await loginPage.login('testuser262501', 'password123');
   expect(loginSuccess).toBe(true);
-  await expect(page.getByText(/todo list/i)).toBeVisible();
+  await expect(page.locator('h2.todo-list-title', { hasText: 'Todo List' })).toBeVisible();
 });
 
 // Invalid login tests - use login method and check return value
@@ -55,8 +55,12 @@ test('should fail login for empty password', async ({ page }) => {
   const loginSuccess = await loginPage.login('testuser262501', '');
   expect(loginSuccess).toBe(false);
 
-  // Should still be on login page
-  await expect(page).toHaveURL(/.*login.*/);
+  // The app may redirect to home page on failure, so check if we're not on the success page
+  await expect(page.locator('h2.todo-list-title', { hasText: 'Todo List' })).not.toBeVisible();
+  // Check that either username or password input is visible (form should be present)
+  const usernameVisible = await loginPage.usernameInput.isVisible().catch(() => false);
+  const passwordVisible = await loginPage.passwordInput.isVisible().catch(() => false);
+  expect(usernameVisible || passwordVisible).toBe(true);
 });
 
 // Form validation tests

@@ -171,4 +171,68 @@ describe("TodoForm", () => {
 
     axiosPostSpy.mockRestore();
   });
+
+  it("includes reminderAt in payload when set", async () => {
+    const axiosPostSpy = jest.spyOn(axios, "post").mockResolvedValue({ data: {} });
+
+    render(
+      <AuthContext.Provider value={{ user: { status: "ACTIVE" } }}>
+        <MemoryRouter>
+          <TodoForm />
+        </MemoryRouter>
+      </AuthContext.Provider>
+    );
+
+    fireEvent.change(screen.getByPlaceholderText(/Enter todo title/i), {
+      target: { value: "Test Todo with Reminder" },
+    });
+    fireEvent.change(screen.getByLabelText(/Start Date/i), {
+      target: { value: "2023-08-13T12:00" },
+    });
+    const reminderInput = screen.getByLabelText(/Reminder At \(optional\)/i);
+    fireEvent.change(reminderInput, {
+      target: { value: "2023-08-14T10:00" },
+    });
+
+    fireEvent.click(screen.getByText(/Create Todo/i, { selector: "button" }));
+
+    await waitFor(() => {
+      expect(axiosPostSpy).toHaveBeenCalled();
+    });
+
+    const payload = axiosPostSpy.mock.calls[0][1];
+    expect(payload.reminderAt).toBe("2023-08-14T10:00");
+
+    axiosPostSpy.mockRestore();
+  });
+
+  it("does not include reminderAt in payload when not set", async () => {
+    const axiosPostSpy = jest.spyOn(axios, "post").mockResolvedValue({ data: {} });
+
+    render(
+      <AuthContext.Provider value={{ user: { status: "ACTIVE" } }}>
+        <MemoryRouter>
+          <TodoForm />
+        </MemoryRouter>
+      </AuthContext.Provider>
+    );
+
+    fireEvent.change(screen.getByPlaceholderText(/Enter todo title/i), {
+      target: { value: "Test Todo without Reminder" },
+    });
+    fireEvent.change(screen.getByLabelText(/Start Date/i), {
+      target: { value: "2023-08-13T12:00" },
+    });
+
+    fireEvent.click(screen.getByText(/Create Todo/i, { selector: "button" }));
+
+    await waitFor(() => {
+      expect(axiosPostSpy).toHaveBeenCalled();
+    });
+
+    const payload = axiosPostSpy.mock.calls[0][1];
+    expect(payload.reminderAt).toBeUndefined();
+
+    axiosPostSpy.mockRestore();
+  });
 });

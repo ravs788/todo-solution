@@ -14,6 +14,7 @@ export class CreateTodoPage {
   readonly activityTypeOptionRegular: Locator;
   readonly completedCheckbox: Locator;
   readonly startDateInput: Locator;
+  readonly reminderAtInput: Locator;
   readonly createButton: Locator;
   readonly backButton: Locator;
 
@@ -26,7 +27,8 @@ export class CreateTodoPage {
     this.activityTypeOptionDefinite = page.locator('option[value="definite"]');
     this.activityTypeOptionRegular = page.locator('option[value="regular"]');
     this.completedCheckbox = page.locator('#completedInput');
-    this.startDateInput = page.locator('input[type="datetime-local"]');
+    this.startDateInput = page.locator('input[type="datetime-local"][required]');
+    this.reminderAtInput = page.locator('input[type="datetime-local"]:not([required])');
     this.createButton = page.getByRole('button', { name: /^Create Todo$/ });
     this.backButton = page.getByRole('button', { name: /^Back$/ });
   }

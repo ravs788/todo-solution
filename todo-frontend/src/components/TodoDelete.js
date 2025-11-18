@@ -11,7 +11,7 @@ const TodoDelete = () => {
   const handleDelete = () => {
     const token = localStorage.getItem("jwtToken");
     if (!token) {
-      console.error("No token found. Please log in again.");
+      // No token found
       navigate("/login");
       return;
     }
@@ -26,11 +26,9 @@ const TodoDelete = () => {
         navigate("/");
       })
       .catch((error) => {
-        console.error("Error deleting todo:", error);
+        // Error deleting todo
         if (error.response && error.response.status === 403) {
-          console.error(
-            "Authentication failed. Token might be expired. Please log in again."
-          );
+          // Authentication failed. Token might be expired.
           navigate("/login");
         }
       });

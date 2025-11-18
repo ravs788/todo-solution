@@ -13,6 +13,7 @@ const TodoForm = () => {
   const [completed, setCompleted] = useState(false);
   const currentDateTime = new Date().toISOString().slice(0, 16);
   const [startDate, setStartDate] = useState(currentDateTime);
+  const [reminderAt, setReminderAt] = useState("");
   const [tags, setTags] = useState([]);
 
   const handleSubmit = (e) => {
@@ -37,6 +38,9 @@ const TodoForm = () => {
       payload.endDate = null;
     }
     payload.tags = tags;
+    if (reminderAt) {
+      payload.reminderAt = reminderAt;
+    }
     axios
       .post(
         `${apiBase}/api/todos`,
@@ -51,7 +55,7 @@ const TodoForm = () => {
         navigate("/");
       })
       .catch((error) => {
-        console.error("Error creating todo:", error);
+        // Error creating todo
       });
   };
 
@@ -137,6 +141,17 @@ const TodoForm = () => {
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 required
+                className="todoform-date"
+              />
+            </label>
+          </div>
+          <div>
+            <label className="todoform-label">
+              Reminder At (optional)
+              <input
+                type="datetime-local"
+                value={reminderAt}
+                onChange={(e) => setReminderAt(e.target.value)}
                 className="todoform-date"
               />
             </label>

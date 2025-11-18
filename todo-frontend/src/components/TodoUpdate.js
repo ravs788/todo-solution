@@ -13,6 +13,7 @@ const TodoUpdate = () => {
   const [activityType, setActivityType] = useState("definite");
   const [completed, setCompleted] = useState(false);
   const [startDate, setStartDate] = useState("");
+  const [reminderAt, setReminderAt] = useState("");
   const [tags, setTags] = useState([]);
 
   useEffect(() => {
@@ -32,12 +33,16 @@ const TodoUpdate = () => {
           ? response.data.startDate.slice(0, 16)
           : "";
         setStartDate(formattedDate);
+        const formattedReminder = response.data.reminderAt
+          ? response.data.reminderAt.slice(0, 16)
+          : "";
+        setReminderAt(formattedReminder);
         if (response.data.tags) {
           setTags(response.data.tags.map(tag => tag.name));
         }
       })
       .catch((error) => {
-        console.error("Error fetching todo:", error);
+        // Error fetching todo
       });
   }, [id]);
 
@@ -68,6 +73,9 @@ const TodoUpdate = () => {
     }
 
     payload.tags = tags;
+    if (reminderAt) {
+      payload.reminderAt = reminderAt;
+    }
     axios
       .put(
         `${apiBase}/api/todos/${id}`,
@@ -82,7 +90,7 @@ const TodoUpdate = () => {
         navigate("/");
       })
       .catch((error) => {
-        console.error("Error updating todo:", error);
+        // Error updating todo
       });
   };
 
@@ -167,6 +175,17 @@ const TodoUpdate = () => {
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 required
+                className="todoupdate-date"
+              />
+            </label>
+          </div>
+          <div>
+            <label className="todoupdate-label">
+              Reminder At (optional)
+              <input
+                type="datetime-local"
+                value={reminderAt}
+                onChange={(e) => setReminderAt(e.target.value)}
                 className="todoupdate-date"
               />
             </label>

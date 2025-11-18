@@ -48,4 +48,12 @@ public class Todo {
     )
     private Set<Tag> tags;
 
+    // DUE DATE REMINDERS FIELDS:
+    @Column(columnDefinition = "DATETIME")
+    private LocalDateTime reminderAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    private ReminderStatus reminderStatus;
+
 }
