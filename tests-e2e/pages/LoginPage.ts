@@ -93,4 +93,32 @@ export class LoginPage {
   async clickForgotPassword() {
     await this.forgotPasswordButton.click();
   }
+
+  /**
+   * Login with robust retry logic in case the page context reloads or becomes detached.
+   */
+  async loginWithRetry(username: string, password: string, attempts = 3): Promise<boolean> {
+    for (let i = 0; i < attempts; i++) {
+      try {
+        // Check if already authenticated (for logouts that may not have completed cleanly)
+        const jwt = await this.page.evaluate(() => localStorage.getItem('jwtToken'));
+        if (jwt) {
+          // Try navigating to main app to validate
+          await this.page.goto(this.baseUrl + '/');
+          const success = await this.page.getByRole('heading', { name: 'Todo List App' })
+            .isVisible({ timeout: 3500 })
+            .catch(() => false);
+          if (success) return true;
+        }
+        await this.page.goto(this.baseUrl + '/login', { waitUntil: 'domcontentloaded' });
+        await this.expectLoaded();
+        const loginSucceeded = await this.login(username, password);
+        if (loginSucceeded) return true;
+      } catch (err) {
+        // Wait and try again
+        await this.page.waitForTimeout(1000).catch(() => {});
+      }
+    }
+    throw new Error(`loginWithRetry failed after ${attempts} attempts`);
+  }
 }

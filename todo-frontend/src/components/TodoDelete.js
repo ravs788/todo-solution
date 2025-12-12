@@ -1,39 +1,76 @@
 import React, { useContext } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
+import { createCommands } from "../hooks/useCommands";
+import { useToast } from "../context/ToastContext";
 
 const TodoDelete = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  const { showToast } = useToast();
+  const location = useLocation();
+  // Prefer todoData passed via navigation state, else fallback to global
+  let todoData = location.state && location.state.todoData ? location.state.todoData : null;
+  if (!todoData && window.__recentTodoDelete) {
+    todoData = window.__recentTodoDelete;
+  }
+
+  const commands = createCommands(() => {}, showToast);
 
   const handleDelete = () => {
-    const token = localStorage.getItem("jwtToken");
-    if (!token) {
-      console.error("No token found. Please log in again.");
-      navigate("/login");
-      return;
-    }
-    const apiBase = process.env.REACT_APP_API_BASE_URL;
-    axios
-      .delete(`${apiBase}/api/todos/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(() => {
+    // If todoData is available (from details), use undo popup exactly as in TodoList.js
+    if (todoData && id && commands) {
+      const command = commands.deleteTodoCommand(id, todoData);
+      command.do().then(() => {
+        showToast('Todo deleted successfully', 'success', {
+          action: 'Undo',
+          onAction: async () => {
+            await command.undo();
+            if (window.__toastContext && window.__toastContext.removeToast) {
+              window.__toastContext.removeToast(window.__undo_toast_id);
+            }
+            window.__undo_toast_id = undefined;
+            window.__undo_toast_for_id = undefined;
+            // Always navigate to main list after Undo so the restored item is visible
+            // Also trigger a reload event for TodoList.js to refetch from backend
+            window.dispatchEvent(new Event('refresh-todos'));
+            navigate("/");
+          },
+          persistent: false,
+          duration: 8000
+        });
         navigate("/");
-      })
-      .catch((error) => {
-        console.error("Error deleting todo:", error);
-        if (error.response && error.response.status === 403) {
-          console.error(
-            "Authentication failed. Token might be expired. Please log in again."
-          );
-          navigate("/login");
-        }
       });
+    } else {
+      // fallback: old logic if details missing
+      const token = localStorage.getItem("jwtToken");
+      if (!token) {
+        console.error("No token found. Please log in again.");
+        navigate("/login");
+        return;
+      }
+      const apiBase = process.env.REACT_APP_API_BASE_URL;
+      axios
+        .delete(`${apiBase}/api/todos/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(() => {
+          navigate("/");
+        })
+        .catch((error) => {
+          console.error("Error deleting todo:", error);
+          if (error.response && error.response.status === 403) {
+            console.error(
+              "Authentication failed. Token might be expired. Please log in again."
+            );
+            navigate("/login");
+          }
+        });
+    }
   };
 
   const handleCancel = () => {

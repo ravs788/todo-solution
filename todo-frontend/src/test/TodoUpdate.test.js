@@ -5,27 +5,30 @@ import TodoUpdate from "../components/TodoUpdate";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 
-// Properly mock axios for component usage
-jest.mock("axios", () => {
-  const mockAxios = {
-    get: jest.fn((url) => {
-      const match = url.match(/\/api\/todos\/(\d+)/);
-      const id = match ? parseInt(match[1], 10) : 1;
-      return Promise.resolve({
-        data: {
-          id,
-          title: `Task ${id}`,
-          activityType: id === 1 ? "definite" : "regular",
-          completed: id === 1,
-          startDate: "2023-08-15T10:00",
-        },
-      });
-    }),
+// Mock axios properly
+jest.mock("axios", () => ({
+  __esModule: true,
+  default: {
+    get: jest.fn(),
     put: jest.fn(() => Promise.resolve({})),
-  };
+  },
+}));
 
-  // Support both ES-module default import and CommonJS require
-  return { __esModule: true, default: mockAxios, ...mockAxios };
+const mockAxios = require('axios');
+
+// Set up axios.get to return different data based on URL
+mockAxios.default.get.mockImplementation((url) => {
+  const match = url.match(/\/api\/todos\/(\d+)/);
+  const id = match ? parseInt(match[1], 10) : 1;
+  return Promise.resolve({
+    data: {
+      id,
+      title: `Task ${id}`,
+      activityType: id === 1 ? "definite" : "regular",
+      completed: id === 1,
+      startDate: "2023-08-15T10:00",
+    },
+  });
 });
 
 // Ensure API base URL is set for tests

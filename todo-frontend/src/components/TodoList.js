@@ -3,6 +3,9 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import ThemeContext from "../context/ThemeContext";
+import { useHistory } from "../hooks/useHistory";
+import { createCommands } from "../hooks/useCommands";
+import { useToast } from "../context/ToastContext";
 
 const api = axios.create({
   baseURL: `${process.env.REACT_APP_API_BASE_URL}/api`,
@@ -25,6 +28,50 @@ const TodoList = () => {
   const [todos, setTodos] = useState([]);
   const { user } = useContext(AuthContext);
   const { isDarkMode } = useContext(ThemeContext);
+  const { push, undo } = useHistory();
+  const { showToast } = useToast();
+
+  // Create command factory
+  const commands = createCommands(setTodos, showToast);
+
+  // Handlers for undo/redo actions
+  const handleToggleComplete = async (todo) => {
+    const command = commands.toggleCompleteCommand(todo.id, todo.completed);
+    await command.do();
+    push(command);
+  };
+
+  const handleDelete = async (todo) => {
+    const command = commands.deleteTodoCommand(todo.id, {
+      title: todo.title,
+      description: todo.description || '',
+      completed: todo.completed,
+      startDate: todo.startDate,
+      endDate: todo.endDate,
+      tags: todo.tags || []
+    });
+    await command.do();
+    push(command);
+
+    // Prevent multiple toasts: only show Toast if not already present for this todo
+    if (!(window.__undo_toast_id && window.__undo_toast_for_id === todo.id)) {
+      window.__undo_toast_for_id = todo.id;
+      window.__undo_toast_id = showToast('Todo deleted successfully', 'success', {
+        action: 'Undo',
+        onAction: async () => {
+          await undo();
+          // Hide this toast immediately after successful undo click
+          if (window.__undo_toast_id && typeof window.__undo_toast_id === "number" && window.__toastContext && window.__toastContext.removeToast) {
+            window.__toastContext.removeToast(window.__undo_toast_id);
+          }
+          window.__undo_toast_id = undefined;
+          window.__undo_toast_for_id = undefined;
+        },
+        persistent: false, // Not pinned by default
+        duration: 8000 // 8 seconds auto-dismiss (ensures E2E can see Undo even in busy CI/browser)
+      });
+    }
+  };
 
   // Filter states
   const [titleFilter, setTitleFilter] = useState("");
@@ -34,6 +81,7 @@ const TodoList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
+  // Only fetch todos on mount or if user changed, or after a "refresh-todos" custom event
   useEffect(() => {
     const fetchTodos = async () => {
       try {
@@ -43,8 +91,23 @@ const TodoList = () => {
         console.error("Error fetching todos:", error);
       }
     };
-    fetchTodos();
-  }, []);
+
+    // Fetch todos after login/user change (fix first-login bug)
+    if (user && user.status === 'ACTIVE') {
+      fetchTodos();
+    }
+
+    // Listen for a custom event to trigger a todos refresh (e.g., after undo from details)
+    const refreshHandler = () => {
+      if (user && user.status === 'ACTIVE') {
+        fetchTodos();
+      }
+    };
+    window.addEventListener('refresh-todos', refreshHandler);
+
+    // Do not re-fetch due to todos update, only due to user or custom event
+    return () => window.removeEventListener('refresh-todos', refreshHandler);
+  }, [user]);
 
   // Filter logic with improved date handling
   const filteredTodos = todos
@@ -119,12 +182,12 @@ const TodoList = () => {
         <table key={`table-${isDarkMode ? 'dark' : 'light'}`} className="custom-table">
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Completed</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Tags</th>
-            <th>Actions</th>
+            <th style={{ fontSize: "1rem", textTransform: "capitalize" }}>Title</th>
+            <th style={{ fontSize: "1rem", textTransform: "capitalize" }}>Completed</th>
+            <th style={{ fontSize: "1rem", textTransform: "capitalize" }}>Start Date</th>
+            <th style={{ fontSize: "1rem", textTransform: "capitalize" }}>End Date</th>
+            <th style={{ fontSize: "1rem", textTransform: "capitalize" }}>Tags</th>
+            <th style={{ fontSize: "1rem", textTransform: "capitalize" }}>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -213,6 +276,15 @@ const TodoList = () => {
                     <Link
                       to={`/todo/${todo.id}`}
                       className="btn btn-sm btn-secondary me-2"
+                      style={{
+                        textTransform: "capitalize",
+                        minWidth: "90px",
+                        fontWeight: "bold",
+                        fontSize: "0.97rem",
+                        borderRadius: "5px",
+                        padding: "5px 15px",
+                        textAlign: "center"
+                      }}
                     >
                       Details
                     </Link>
@@ -220,18 +292,38 @@ const TodoList = () => {
                       to={`/update/${todo.id}`}
                       className="btn btn-sm btn-primary me-2"
                       disabled={todo.completed}
-                      style={todo.completed ? { pointerEvents: "none", opacity: 0.5 } : {}}
+                      style={{
+                        textTransform: "capitalize",
+                        minWidth: "90px",
+                        fontWeight: "bold",
+                        fontSize: "0.97rem",
+                        borderRadius: "5px",
+                        padding: "5px 15px",
+                        opacity: todo.completed ? 0.5 : 1,
+                        pointerEvents: todo.completed ? "none" : "auto",
+                        textAlign: "center"
+                      }}
                     >
                       Update
                     </Link>
-                    <Link
-                      to={`/delete/${todo.id}`}
+                    <button
+                      onClick={() => handleDelete(todo)}
                       className="btn btn-sm btn-danger"
                       disabled={todo.completed}
-                      style={todo.completed ? { pointerEvents: "none", opacity: 0.5 } : {}}
+                      style={{
+                        textTransform: "capitalize",
+                        minWidth: "90px",
+                        fontWeight: "bold",
+                        fontSize: "0.97rem",
+                        borderRadius: "5px",
+                        padding: "5px 15px",
+                        opacity: todo.completed ? 0.5 : 1,
+                        pointerEvents: todo.completed ? "none" : "auto",
+                        textAlign: "center"
+                      }}
                     >
                       Delete
-                    </Link>
+                    </button>
                   </>
                 )}
               </td>

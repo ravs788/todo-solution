@@ -47,11 +47,12 @@ public class TodoServiceTest {
     private TodoService todoService;
 
     private final ObjectMapper objectMapper = new ObjectMapper()
-        .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+            .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
 
     private Todo loadTodoFromFile(String filename) throws IOException {
         try (java.io.InputStream is = getClass().getClassLoader().getResourceAsStream("test-data/" + filename)) {
-            if (is == null) throw new java.io.FileNotFoundException("test-data/" + filename + " not found in classpath");
+            if (is == null)
+                throw new java.io.FileNotFoundException("test-data/" + filename + " not found in classpath");
             return objectMapper.readValue(is, Todo.class);
         }
     }
@@ -213,5 +214,222 @@ public class TodoServiceTest {
 
         // Assert
         verify(todoRepository, times(1)).deleteById(1);
+    }
+
+    @Test
+    @Story("Save From Request - Error Handling")
+    @Description("Test error handling when tag repository fails")
+    @Severity(SeverityLevel.CRITICAL)
+    void testSaveFromRequest_TagRepositoryError() {
+        // Arrange
+        TodoRequest req = TodoRequest.builder()
+                .title("Test Todo with Tag")
+                .completed(false)
+                .tags(List.of("newtag"))
+                .build();
+
+        when(tagRepository.findByNameIgnoreCase("newtag")).thenReturn(Optional.empty());
+        when(tagRepository.save(any(Tag.class))).thenThrow(new RuntimeException("Database error"));
+
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> todoService.saveFromRequest(req, "user1"));
+        verify(tagRepository, times(1)).save(any(Tag.class));
+        verify(todoRepository, never()).save(any(Todo.class));
+    }
+
+    @Test
+    @Story("Save From Request - Empty Tags")
+    @Description("Test saving todo with empty tags list")
+    @Severity(SeverityLevel.NORMAL)
+    void testSaveFromRequest_EmptyTags() {
+        // Arrange
+        TodoRequest req = TodoRequest.builder()
+                .title("Todo with Empty Tags")
+                .completed(false)
+                .tags(List.of())
+                .build();
+
+        Todo savedTodo = Todo.builder()
+                .id(3)
+                .title("Todo with Empty Tags")
+                .completed(false)
+                .tags(Set.of())
+                .build();
+
+        when(todoRepository.save(any(Todo.class))).thenReturn(savedTodo);
+
+        // Act
+        Todo result = todoService.saveFromRequest(req, "user1");
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(0, result.getTags().size());
+        verify(tagRepository, never()).findByNameIgnoreCase(anyString());
+        verify(tagRepository, never()).save(any(Tag.class));
+        verify(todoRepository).save(any(Todo.class));
+    }
+
+    @Test
+    @Story("Save From Request - Null Tags")
+    @Description("Test saving todo with null tags")
+    @Severity(SeverityLevel.NORMAL)
+    void testSaveFromRequest_NullTags() {
+        // Arrange
+        TodoRequest req = TodoRequest.builder()
+                .title("Todo with Null Tags")
+                .completed(false)
+                .tags(null)
+                .build();
+
+        Todo savedTodo = Todo.builder()
+                .id(4)
+                .title("Todo with Null Tags")
+                .completed(false)
+                .tags(Set.of())
+                .build();
+
+        when(todoRepository.save(any(Todo.class))).thenReturn(savedTodo);
+
+        // Act
+        Todo result = todoService.saveFromRequest(req, "user1");
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(0, result.getTags().size());
+        verify(tagRepository, never()).findByNameIgnoreCase(anyString());
+        verify(tagRepository, never()).save(any(Tag.class));
+        verify(todoRepository).save(any(Todo.class));
+    }
+
+    @Test
+    @Story("Find All Todos - Repository Error")
+    @Description("Test error handling when repository fails")
+    @Severity(SeverityLevel.NORMAL)
+    void testFindAll_RepositoryError() {
+        // Arrange
+        when(todoRepository.findAll()).thenThrow(new RuntimeException("Database connection failed"));
+
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> todoService.findAll());
+        verify(todoRepository, times(1)).findAll();
+    }
+
+    @Test
+    @Story("Find By Id - Repository Error")
+    @Description("Test error handling when findById fails")
+    @Severity(SeverityLevel.NORMAL)
+    void testFindById_RepositoryError() {
+        // Arrange
+        when(todoRepository.findById(1)).thenThrow(new RuntimeException("Database error"));
+
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> todoService.findById(1));
+        verify(todoRepository, times(1)).findById(1);
+    }
+
+    @Test
+    @Story("Save Todo - Repository Error")
+    @Description("Test error handling when save fails")
+    @Severity(SeverityLevel.NORMAL)
+    void testSave_RepositoryError() throws IOException {
+        // Arrange
+        Todo todo = loadTodoFromFile("todo1.json");
+        when(todoRepository.save(any(Todo.class))).thenThrow(new RuntimeException("Save failed"));
+
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> todoService.save(todo));
+        verify(todoRepository, times(1)).save(any(Todo.class));
+    }
+
+    @Test
+    @Story("Delete By Id - Repository Error")
+    @Description("Test error handling when delete fails")
+    @Severity(SeverityLevel.NORMAL)
+    void testDeleteById_RepositoryError() {
+        // Arrange
+        doThrow(new RuntimeException("Delete failed")).when(todoRepository).deleteById(1);
+
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> todoService.deleteById(1));
+        verify(todoRepository, times(1)).deleteById(1);
+    }
+
+    @Test
+    @Story("Save From Request - Multiple New Tags")
+    @Description("Test saving todo with multiple new tags")
+    @Severity(SeverityLevel.NORMAL)
+    void testSaveFromRequest_MultipleNewTags() {
+        // Arrange
+        TodoRequest req = TodoRequest.builder()
+                .title("Todo with Multiple New Tags")
+                .completed(false)
+                .tags(List.of("tag1", "tag2", "tag3"))
+                .build();
+
+        Tag tag1 = Tag.builder().id(10).name("tag1").build();
+        Tag tag2 = Tag.builder().id(11).name("tag2").build();
+        Tag tag3 = Tag.builder().id(12).name("tag3").build();
+
+        when(tagRepository.findByNameIgnoreCase("tag1")).thenReturn(Optional.empty());
+        when(tagRepository.findByNameIgnoreCase("tag2")).thenReturn(Optional.empty());
+        when(tagRepository.findByNameIgnoreCase("tag3")).thenReturn(Optional.empty());
+
+        when(tagRepository.save(any(Tag.class))).thenReturn(tag1, tag2, tag3);
+
+        Todo savedTodo = Todo.builder()
+                .id(5)
+                .title("Todo with Multiple New Tags")
+                .completed(false)
+                .tags(Set.of(tag1, tag2, tag3))
+                .build();
+
+        when(todoRepository.save(any(Todo.class))).thenReturn(savedTodo);
+
+        // Act
+        Todo result = todoService.saveFromRequest(req, "user1");
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(3, result.getTags().size());
+        verify(tagRepository, times(3)).save(any(Tag.class));
+        verify(todoRepository).save(any(Todo.class));
+    }
+
+    @Test
+    @Story("Save From Request - Mixed Existing and New Tags")
+    @Description("Test saving todo with mix of existing and new tags")
+    @Severity(SeverityLevel.NORMAL)
+    void testSaveFromRequest_MixedTags() {
+        // Arrange
+        TodoRequest req = TodoRequest.builder()
+                .title("Todo with Mixed Tags")
+                .completed(false)
+                .tags(List.of("existing", "new"))
+                .build();
+
+        Tag existingTag = Tag.builder().id(20).name("existing").build();
+        Tag newTag = Tag.builder().id(21).name("new").build();
+
+        when(tagRepository.findByNameIgnoreCase("existing")).thenReturn(Optional.of(existingTag));
+        when(tagRepository.findByNameIgnoreCase("new")).thenReturn(Optional.empty());
+        when(tagRepository.save(any(Tag.class))).thenReturn(newTag);
+
+        Todo savedTodo = Todo.builder()
+                .id(6)
+                .title("Todo with Mixed Tags")
+                .completed(false)
+                .tags(Set.of(existingTag, newTag))
+                .build();
+
+        when(todoRepository.save(any(Todo.class))).thenReturn(savedTodo);
+
+        // Act
+        Todo result = todoService.saveFromRequest(req, "user1");
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.getTags().size());
+        verify(tagRepository, times(1)).save(any(Tag.class)); // Only save the new tag
+        verify(todoRepository).save(any(Todo.class));
     }
 }

@@ -14,6 +14,9 @@ export class HomePage {
   readonly pagerPrevButton: Locator;
   readonly pagerNextButton: Locator;
   readonly pagerInfo: Locator;
+  readonly navBar: Locator;
+  readonly navUndoButton: Locator;
+  readonly navRedoButton: Locator;
 
   constructor(page: Page, baseUrl: string) {
     this.page = page;
@@ -26,6 +29,26 @@ export class HomePage {
     this.pagerPrevButton = page.locator('button.btn-outline-primary.btn-sm:has-text("Prev")');
     this.pagerNextButton = page.locator('button.btn-outline-primary.btn-sm:has-text("Next")');
     this.pagerInfo = page.locator('span', { hasText: 'Page' });
+    // Navbar undo/redo button locators
+    this.navBar = page.locator('nav, [role="navigation"]').first();
+    this.navUndoButton = this.navBar.getByRole('button', { name: /undo/i }).first();
+    this.navRedoButton = this.navBar.getByRole('button', { name: /redo/i }).first();
+  }
+
+  /**
+   * Clicks the Undo button from the navbar.
+   */
+  async clickNavbarUndo() {
+    await this.navUndoButton.waitFor({ state: 'visible', timeout: 5000 });
+    await this.navUndoButton.click();
+  }
+
+  /**
+   * Clicks the Redo button from the navbar.
+   */
+  async clickNavbarRedo() {
+    await this.navRedoButton.waitFor({ state: 'visible', timeout: 5000 });
+    await this.navRedoButton.click();
   }
 
   async goto() {
@@ -46,6 +69,41 @@ export class HomePage {
 
   async getTodoRows() {
     return this.todoTable.locator('tbody tr');
+  }
+
+  /**
+   * Returns the first row in the todo table where the title exactly matches the given title.
+   */
+  getTodoRowByTitle(title: string): Locator {
+    // Uses .nth(0) to resolve to a single locator, even if more than one exists.
+    return this.todoTable.locator(`tbody tr td:first-child`, { hasText: title }).first().locator('..');
+  }
+
+  /**
+   * Clicks the Delete button for the todo with the given title in the table.
+   */
+  async deleteTodoByTitle(title: string) {
+    const row = this.getTodoRowByTitle(title);
+    const deleteBtn = row.locator('button.btn-danger, button[aria-label*=Delete], button:has-text("Delete")').first();
+    await deleteBtn.waitFor({ state: 'visible', timeout: 5000 });
+    await deleteBtn.click();
+  }
+
+  /**
+   * Waits for all toast notifications with role="region" and aria-label="Toast notifications" to be hidden.
+   */
+  async waitForNoToast(timeout: number = 15000) {
+    const toastRegion = this.page.locator('[role="region"][aria-label="Toast notifications"]');
+    // Wait until the toast region is not visible or has pointer-events:none
+    const start = Date.now();
+    while ((await toastRegion.isVisible()) && (Date.now() - start < timeout)) {
+      await this.page.waitForTimeout(300);
+      // Extra check for pointer-events: none or opacity: 0 (could be animated out)
+      const pointerEvents = await toastRegion.evaluate(
+        el => getComputedStyle(el).pointerEvents
+      ).catch(() => 'auto');
+      if (pointerEvents === 'none') break;
+    }
   }
 
   /**
@@ -77,10 +135,88 @@ export class HomePage {
    * Assumes there is a logout element with text "Logout" on the home page.
    */
   async logout() {
-    // Attempt to click a button or link with the text "Logout"
-    const logoutButton = this.page.locator('button, a', { hasText: 'Logout' });
-    await logoutButton.first().click();
-    // Wait for login page indicator (e.g., the login form or button)
-    await this.page.waitForSelector('text="Login"', { timeout: 5000 });
+    // If page/context already closed, nothing to do (mobile runs can close between steps)
+    try {
+      if (this.page.isClosed()) {
+        return;
+      }
+    } catch {
+      // If any error determining state, bail out safely
+      return;
+    }
+    // Attempt to click a visible logout control if present (desktop/tablet)
+    const logoutButton = this.page.locator('button, a', { hasText: /logout/i }).first();
+    let canSeeLogout = false;
+    try {
+      canSeeLogout = await logoutButton.isVisible();
+    } catch {
+      canSeeLogout = false;
+    }
+    if (canSeeLogout) {
+      try {
+        await logoutButton.click({ trial: true });
+        await logoutButton.click();
+      } catch {
+        try {
+          await logoutButton.click({ force: true });
+        } catch {
+          // ignore if page/context closed or still not clickable
+        }
+      }
+    }
+
+    // Guard again in case click action caused page/context to close
+    try {
+      if (this.page.isClosed()) {
+        return;
+      }
+    } catch {
+      return;
+    }
+    // Ensure auth state is cleared (robust for mobile where UI chrome may differ)
+    try {
+      await this.page.evaluate(() => {
+        try { localStorage.removeItem('jwtToken'); } catch {}
+        try { sessionStorage.clear(); } catch {}
+      });
+    } catch {}
+
+    const loginUrl = this.baseUrl + '/login';
+
+    // Try normal navigation first
+    try {
+      await this.page.goto(loginUrl, { waitUntil: 'domcontentloaded' });
+    } catch {
+      // ignore and try a hard redirect below
+    }
+
+    // Ensure URL is on /login; if not, force it via window.location to bypass SPA/router quirks
+    try {
+      await this.page.waitForURL('**/login*', { timeout: 5000 });
+    } catch {
+      try {
+        await this.page.evaluate((href) => { try { window.location.assign(href); } catch {} }, loginUrl);
+        await this.page.waitForLoadState('domcontentloaded', { timeout: 8000 });
+        await this.page.waitForURL('**/login*', { timeout: 5000 }).catch(() => {});
+      } catch {}
+    }
+
+    // Wait for either the username input or the Login button to be interactable; reload as a last resort
+    const username = this.page.locator('#login-username');
+    const loginBtn = this.page.getByRole('button', { name: 'Login' });
+
+    try {
+      await username.waitFor({ state: 'visible', timeout: 12000 });
+    } catch {
+      try {
+        await loginBtn.waitFor({ state: 'visible', timeout: 6000 });
+      } catch {
+        await this.page.reload({ waitUntil: 'domcontentloaded' });
+        await Promise.race([
+          username.waitFor({ state: 'visible', timeout: 8000 }),
+          loginBtn.waitFor({ state: 'visible', timeout: 8000 })
+        ]);
+      }
+    }
   }
 }

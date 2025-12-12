@@ -174,6 +174,17 @@ const TodoDetails = () => {
                     to={`/delete/${todo.id}`}
                     className="app-button-secondary"
                     style={{ flex: 1, background: "var(--btn-danger)", color: "#fff", border: "none", textDecoration: "none", textAlign: "center" }}
+                    state={{ todoData: todo }}
+                    onClick={() => {
+                      // Also set global for safety/fallback in TodoDelete
+                      window.__recentTodoDelete = {
+                        title: todo.title,
+                        completed: todo.completed,
+                        startDate: todo.startDate,
+                        endDate: todo.endDate,
+                        tags: todo.tags
+                      };
+                    }}
                   >
                     Delete
                   </Link>

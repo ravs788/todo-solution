@@ -72,7 +72,8 @@ const AdminPanel = () => {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 5;
+  // Mobile screens get fewer rows to avoid vertical scrolling
+  const pageSize = (typeof window !== "undefined" && window.innerWidth <= 480) ? 3 : 5;
 
   // Filter and sort users
   let visibleUsers = [];
@@ -134,6 +135,7 @@ const AdminPanel = () => {
 
   return (
     <div
+      className="admin-panel"
       style={{
         minHeight: "100vh",
         background: "linear-gradient(120deg, #e0e7ff 0%, #d0fcfa 100%)",
@@ -143,6 +145,7 @@ const AdminPanel = () => {
       }}
     >
       <div
+        className="admin-panel-card"
         style={{
           background: "#fff",
           borderRadius: "18px",
