@@ -14,6 +14,7 @@ export class CreateTodoPage {
   readonly activityTypeOptionRegular: Locator;
   readonly completedCheckbox: Locator;
   readonly startDateInput: Locator;
+  readonly reminderAtInput: Locator;
   readonly createButton: Locator;
   readonly backButton: Locator;
 

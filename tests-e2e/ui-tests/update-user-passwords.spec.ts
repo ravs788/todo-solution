@@ -14,6 +14,6 @@ for (const user of usersData) {
     const loginPage = new LoginPage(page, config.baseUrl);
     await loginPage.goto();
     await loginPage.login(user.username, user.password);
-    await expect(page.getByText(/todo list/i)).toBeVisible();
+    await expect(page.locator('h2.todo-list-title', { hasText: 'Todo List' })).toBeVisible();
   });
 }

@@ -24,6 +24,9 @@
 - **Admin approval** required before new users can log in
 - Secure **JWT-based authentication**
 - **Direct password reset** (no token/email required)
+- **Push Notifications**: Browser notifications for todo reminders (even when app is closed)
+- **Due Date Reminders**: Set reminder times and get notified when todos are due
+- **Snooze Functionality**: 5/10/30 minute snooze options for reminders
 - **SQL Server database** in all environments (Azure SQL compatible)
 - Interactive **Admin Panel**: approve/reject users, manage accounts
 - **Allure reporting** on backend Java tests
@@ -33,10 +36,36 @@
 - Easy deploy to **Azure App Service** (backend) and **Azure Static Web Apps** (frontend)
 - **React Context API** for user/auth state management
 - **Bootstrap styling** throughout
+- **Accessibility**: ARIA labels, keyboard navigation, screen reader support
 
 ---
 
-## 📂 Project Structure
+## � Push Notifications
+
+The Todo app supports browser push notifications to remind users of upcoming todo deadlines, even when the app is not actively open.
+
+### Features
+- **Browser Notifications**: Receive native browser notifications for todo reminders
+- **Background Processing**: Notifications work even when the browser tab is closed
+- **VAPID Encryption**: Secure push notification delivery using VAPID keys
+- **User Control**: Enable/disable notifications via Settings page
+- **Cross-Platform**: Works on desktop and mobile browsers (Chrome, Firefox, Edge, etc.)
+
+### How It Works
+1. **Enable Notifications**: Go to Settings → Push Notifications → Enable Notifications
+2. **Grant Permission**: Allow browser notification permission when prompted
+3. **Set Reminders**: Create todos with reminder dates/times
+4. **Receive Alerts**: Get notified when reminders are due, even if app is closed
+
+### Technical Implementation
+- **Backend**: Spring Boot scheduled job checks for due reminders every 30 seconds
+- **Frontend**: Service Worker handles push events and displays notifications
+- **Security**: VAPID keys ensure secure, authenticated push delivery
+- **Database**: Push subscriptions stored encrypted in database
+
+---
+
+## �📂 Project Structure
 
 ```plaintext
 todo-solution/

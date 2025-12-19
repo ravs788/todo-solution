@@ -259,7 +259,7 @@
     </testcase>
     <testcase classname="TodoForm renders the Create Todo form" name="TodoForm renders the Create Todo form" time="0.01">
     </testcase>
-    <testcase classname="TodoForm shows pending approval message if user.status is PENDING" name="TodoForm shows pending approval message if user.status is PENDING" time="0.003">
+    <testcase classname="TodoForm submits form, calls axios.post and navigates to /" name="TodoForm submits form, calls axios.post and navigates to /" time="0.047">
     </testcase>
     <testcase classname="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" name="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" time="0.011">
     </testcase>

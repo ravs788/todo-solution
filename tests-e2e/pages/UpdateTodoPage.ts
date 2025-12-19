@@ -15,6 +15,7 @@ export class UpdateTodoPage {
   readonly activityTypeOptionRegular: Locator;
   readonly completedCheckbox: Locator;
   readonly startDateInput: Locator;
+  readonly reminderAtInput: Locator;
   /** Input box inside TagInput component used to enter tags */
   readonly tagInput: Locator;
   readonly updateButton: Locator;
@@ -29,7 +30,8 @@ export class UpdateTodoPage {
     this.activityTypeOptionDefinite = page.locator('option[value="definite"]');
     this.activityTypeOptionRegular = page.locator('option[value="regular"]');
     this.completedCheckbox = page.locator('#completedUpdateInput');
-    this.startDateInput = page.locator('input[type="datetime-local"]');
+    this.startDateInput = page.locator('input[type="datetime-local"][required]');
+    this.reminderAtInput = page.locator('input[type="datetime-local"]:not([required])');
     this.tagInput = page.locator('input[aria-label="Tag input"]');
     this.updateButton = page.getByRole('button', { name: /update todo/i });
     this.backButton = page.getByRole('button', { name: /back/i });

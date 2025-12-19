@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -31,6 +32,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("h2")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Import(TestConfig.class)
 @Epic("Integration Tests")
 @Feature("Todo Integration Tests")
 public class TodoIntegrationTest {
@@ -268,5 +270,87 @@ public class TodoIntegrationTest {
         String[] suggestions = suggestResp.getBody();
         Assertions.assertNotNull(suggestions);
         Assertions.assertTrue(java.util.Arrays.asList(suggestions).contains("work"));
+    }
+
+    @Test
+    @Story("Create and Update Todo with Reminders")
+    @Description("Test creating a todo with reminderAt, and updating reminderAt")
+    @Severity(SeverityLevel.CRITICAL)
+    public void create_and_update_todo_with_reminders() throws IOException {
+        String uniqueUser = "reminderuser_" + System.currentTimeMillis();
+
+        LoginRequest loginRequest = loadTestData("login-request.json", LoginRequest.class);
+        loginRequest.setUsername(uniqueUser);
+
+        // Register and approve as above
+        restTemplate.postForEntity("/api/auth/register", loginRequest, String.class);
+
+        LoginRequest adminLogin = new LoginRequest();
+        adminLogin.setUsername("admin");
+        adminLogin.setPassword("password");
+        String adminToken = restTemplate.postForEntity(
+            "/api/auth/login",
+            adminLogin,
+            String.class
+        ).getBody();
+        HttpHeaders adminHeaders = new HttpHeaders();
+        adminHeaders.set("Authorization", "Bearer " + adminToken);
+        restTemplate.postForEntity(
+            "/api/auth/approve/" + uniqueUser,
+            new HttpEntity<>(adminHeaders),
+            String.class
+        );
+        // Login as test user
+        String token = restTemplate.postForEntity("/api/auth/login", loginRequest, String.class).getBody();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Create todo with reminderAt
+        TodoRequest todoRequest = new TodoRequest();
+        todoRequest.setTitle("Todo With Reminder");
+        todoRequest.setCompleted(false);
+        todoRequest.setReminderAt(java.time.LocalDateTime.now().plusDays(1)); // tomorrow
+        HttpEntity<TodoRequest> req = new HttpEntity<>(todoRequest, headers);
+
+        ResponseEntity<Todo> todoResponse = restTemplate.postForEntity("/api/todos", req, Todo.class);
+        Assertions.assertEquals(HttpStatus.OK, todoResponse.getStatusCode());
+        Todo created = todoResponse.getBody();
+        Assertions.assertNotNull(created);
+        Assertions.assertNotNull(created.getReminderAt());
+        Assertions.assertEquals(com.example.todobackend.model.ReminderStatus.PENDING, created.getReminderStatus());
+
+        // Update reminderAt to null
+        TodoRequest updateRequest = new TodoRequest();
+        updateRequest.setTitle("Updated Todo");
+        updateRequest.setReminderAt(null); // clear reminder
+        HttpEntity<TodoRequest> updateReq = new HttpEntity<>(updateRequest, headers);
+
+        ResponseEntity<Todo> updateResponse = restTemplate.exchange(
+            "/api/todos/" + created.getId(),
+            HttpMethod.PUT,
+            updateReq,
+            Todo.class
+        );
+        Assertions.assertEquals(HttpStatus.OK, updateResponse.getStatusCode());
+        Todo updated = updateResponse.getBody();
+        Assertions.assertNotNull(updated);
+        Assertions.assertNull(updated.getReminderAt());
+        Assertions.assertNull(updated.getReminderStatus());
+
+        // Update with new reminderAt
+        updateRequest.setReminderAt(java.time.LocalDateTime.now().plusHours(2));
+        updateReq = new HttpEntity<>(updateRequest, headers);
+        ResponseEntity<Todo> updateResponse2 = restTemplate.exchange(
+            "/api/todos/" + created.getId(),
+            HttpMethod.PUT,
+            updateReq,
+            Todo.class
+        );
+        Assertions.assertEquals(HttpStatus.OK, updateResponse2.getStatusCode());
+        Todo updated2 = updateResponse2.getBody();
+        Assertions.assertNotNull(updated2);
+        Assertions.assertNotNull(updated2.getReminderAt());
+        Assertions.assertEquals(com.example.todobackend.model.ReminderStatus.PENDING, updated2.getReminderStatus());
     }
 }

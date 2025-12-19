@@ -22,4 +22,7 @@ public class TodoRequest {
 
     // Tags for this todo (list of tag names; can be empty)
     private List<String> tags;
+
+    // Due date reminders
+    private LocalDateTime reminderAt;
 }

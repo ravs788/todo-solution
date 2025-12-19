@@ -104,6 +104,15 @@ public class TodoController {
             up.getTags().clear();
             up.getTags().addAll(tags);
         }
+        // Handle reminderAt update
+        if (todoRequest.getReminderAt() != null) {
+            up.setReminderAt(todoRequest.getReminderAt());
+            up.setReminderStatus(com.example.todobackend.model.ReminderStatus.PENDING);
+        } else {
+            // ReminderAt is being cleared
+            up.setReminderAt(null);
+            up.setReminderStatus(null);
+        }
         // Auto set endDate if marking completed (transition from false->true)
         if ((wasCompleted == null || !wasCompleted) && willBeCompleted) {
             up.setEndDate(LocalDateTime.now());
