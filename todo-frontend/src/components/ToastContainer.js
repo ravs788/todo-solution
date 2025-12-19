@@ -12,7 +12,7 @@ const ToastContainer = () => {
     <div
       style={{
         position: 'fixed',
-        top: '20px',
+        bottom: '20px',  // place toast at bottom right to avoid navbar overlap
         right: '20px',
         zIndex: 9999,
         maxWidth: '400px'

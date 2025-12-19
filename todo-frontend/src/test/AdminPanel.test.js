@@ -1,5 +1,8 @@
+/* eslint-disable */
+// @ts-nocheck
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { MemoryRouter } from 'react-router-dom';
 import AdminPanel from "../components/AdminPanel";
 
 // LocalStorage mock
@@ -11,6 +14,11 @@ beforeAll(() => {
       removeItem: jest.fn(),
       clear: jest.fn(),
     },
+    writable: true,
+  });
+  // Mock window.innerWidth for consistent pageSize
+  Object.defineProperty(window, "innerWidth", {
+    value: 1024,
     writable: true,
   });
 });
@@ -32,7 +40,11 @@ it("renders and shows no users pending approval", async () => {
         json: async () => [],
       });
 
-      render(<AdminPanel />);
+render(
+  <MemoryRouter>
+    <AdminPanel />
+  </MemoryRouter>
+);
       expect(screen.getByText(/Admin Panel/i)).toBeInTheDocument();
       expect(fetch).toHaveBeenCalled();
       expect(await screen.findByText(/No active users/i)).toBeInTheDocument();
@@ -53,7 +65,11 @@ it("renders a list of pending users with approve buttons", async () => {
         ],
       });
 
-      render(<AdminPanel />);
+      render(
+        <MemoryRouter>
+          <AdminPanel />
+        </MemoryRouter>
+      );
       // Switch to pending users tab using dropdown
       fireEvent.change(screen.getByLabelText(/View:/i), {
         target: { value: "PENDING" }
@@ -69,7 +85,11 @@ it("shows loading while fetching", async () => {
           resolve = res;
         })
       );
-      render(<AdminPanel />);
+      render(
+        <MemoryRouter>
+          <AdminPanel />
+        </MemoryRouter>
+      );
       expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
       resolve({ ok: true, json: async () => [] });
       await waitFor(() =>
@@ -78,7 +98,7 @@ it("shows loading while fetching", async () => {
     });
 
     it("approves user and removes from list", async () => {
-      // Initial fetch pending users
+      // Initial fetch: only pending user (no active, so auto-switches to PENDING)
       fetch
         .mockResolvedValueOnce({
           ok: true,
@@ -91,10 +111,13 @@ it("shows loading while fetching", async () => {
         json: async () => ({}),
       });
 
-      render(<AdminPanel />);
+      render(
+        <MemoryRouter>
+          <AdminPanel />
+        </MemoryRouter>
+      );
+      // Wait for auto-switch to PENDING view if needed, then ensure "approve_me" is visible
       expect(await screen.findByText(/approve_me/i)).toBeInTheDocument();
-      // Ensure we're in PENDING view (in case auto-switch hasn't occurred yet)
-      fireEvent.change(screen.getByLabelText(/View:/i), { target: { value: "PENDING" } });
 
       const approveBtn = screen.getByRole('button', { name: /Approve/i });
       fireEvent.click(approveBtn);

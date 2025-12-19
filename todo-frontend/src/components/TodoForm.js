@@ -74,17 +74,47 @@ const TodoForm = () => {
 
   return (
     <div className="todoform-fullscreen-bg">
-      <div className="todoform-container">
-        <div className="todoform-logo-section">
-          <img
-            src="/logo192.png"
-            alt="Logo"
-            className="todoform-logo-img"
-          />
-        </div>
-        <h2 className="todoform-heading">
+      {/* Minimalist sticky header for mobile */}
+      <div
+        style={{
+          width: "100%",
+          background: "#fff",
+          boxShadow: "0 2px 10px 0 #e2e2e2",
+          padding: "12px 0 8px 0",
+          textAlign: "center",
+          zIndex: 50,
+          position: "sticky",
+          top: 0,
+          marginBottom: "16px",
+          display: window.innerWidth <= 700 ? "block" : "none"
+        }}
+      >
+        <h2 style={{
+          fontSize: "1.2rem",
+          margin: 0,
+          letterSpacing: "0.02em"
+        }}>
           Create Todo
         </h2>
+      </div>
+      <div className="todoform-container" style={{
+        marginTop: window.innerWidth <= 700 ? 0 : undefined,
+        padding: window.innerWidth <= 700 ? "13px 6vw" : undefined
+      }}>
+        {/* Hide logo on mobile for maximal space */}
+        {window.innerWidth > 700 && (
+          <div className="todoform-logo-section">
+            <img
+              src="/logo192.png"
+              alt="Logo"
+              className="todoform-logo-img"
+            />
+          </div>
+        )}
+        {/* Only show full "Create Todo" heading on desktop/tablet, mobile sees sticky+short */}
+        {window.innerWidth > 700 && (
+          <h2 className="todoform-heading">Create Todo</h2>
+        )}
         <form
           onSubmit={handleSubmit}
           className="todoform-form"

@@ -1,0 +1,23 @@
+/* Admin Panel horizontal scroll support */
+.admin-panel-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 9px;
+  /* Always show scrollbar (uncomment if you want it always visible): */
+  /* overflow-x: scroll; */
+}
+
+/* Make the table wider than card to enable scroll if needed */
+.admin-panel-table-scroll table {
+  min-width: 600px; /* You can adjust this based on how many columns/info you want visible before needing to scroll */
+}
+
+/* Optional: Style scrollbar for better visibility (webkit browsers) */
+.admin-panel-table-scroll::-webkit-scrollbar {
+  height: 10px;
+}
+
+.admin-panel-table-scroll::-webkit-scrollbar-thumb {
+  background: #cdd5ee;
+  border-radius: 4px;
+}

@@ -6,7 +6,13 @@ jest.mock('../../hooks/useHistory', () => ({
   useHistory: jest.fn()
 }));
 
+// Mock the useUndoRedo hook to prevent "must be used within UndoRedoProvider" errors
+jest.mock('../../context/UndoRedoContext', () => ({
+  useUndoRedo: jest.fn()
+}));
+
 const mockUseHistory = require('../../hooks/useHistory').useHistory;
+const mockUseUndoRedo = require('../../context/UndoRedoContext').useUndoRedo;
 
 describe('HistoryControls', () => {
   beforeEach(() => {
@@ -14,12 +20,14 @@ describe('HistoryControls', () => {
   });
 
   it('should render undo and redo buttons', () => {
-    mockUseHistory.mockReturnValue({
+    const mockVal = {
       canUndo: true,
       canRedo: true,
       undo: jest.fn(),
       redo: jest.fn()
-    });
+    };
+    mockUseHistory.mockReturnValue(mockVal);
+    mockUseUndoRedo.mockReturnValue(mockVal);
 
     render(<HistoryControls />);
 
@@ -28,12 +36,14 @@ describe('HistoryControls', () => {
   });
 
   it('should enable undo button when canUndo is true', () => {
-    mockUseHistory.mockReturnValue({
+    const mockVal = {
       canUndo: true,
       canRedo: false,
       undo: jest.fn(),
       redo: jest.fn()
-    });
+    };
+    mockUseHistory.mockReturnValue(mockVal);
+    mockUseUndoRedo.mockReturnValue(mockVal);
 
     render(<HistoryControls />);
 
@@ -43,12 +53,14 @@ describe('HistoryControls', () => {
   });
 
   it('should disable undo button when canUndo is false', () => {
-    mockUseHistory.mockReturnValue({
+    const mockVal = {
       canUndo: false,
       canRedo: true,
       undo: jest.fn(),
       redo: jest.fn()
-    });
+    };
+    mockUseHistory.mockReturnValue(mockVal);
+    mockUseUndoRedo.mockReturnValue(mockVal);
 
     render(<HistoryControls />);
 
@@ -58,12 +70,14 @@ describe('HistoryControls', () => {
   });
 
   it('should enable redo button when canRedo is true', () => {
-    mockUseHistory.mockReturnValue({
+    const mockVal = {
       canUndo: false,
       canRedo: true,
       undo: jest.fn(),
       redo: jest.fn()
-    });
+    };
+    mockUseHistory.mockReturnValue(mockVal);
+    mockUseUndoRedo.mockReturnValue(mockVal);
 
     render(<HistoryControls />);
 
@@ -73,12 +87,14 @@ describe('HistoryControls', () => {
   });
 
   it('should disable redo button when canRedo is false', () => {
-    mockUseHistory.mockReturnValue({
+    const mockVal = {
       canUndo: true,
       canRedo: false,
       undo: jest.fn(),
       redo: jest.fn()
-    });
+    };
+    mockUseHistory.mockReturnValue(mockVal);
+    mockUseUndoRedo.mockReturnValue(mockVal);
 
     render(<HistoryControls />);
 
@@ -89,12 +105,14 @@ describe('HistoryControls', () => {
 
   it('should call undo when undo button is clicked', () => {
     const mockUndo = jest.fn();
-    mockUseHistory.mockReturnValue({
+    const mockVal = {
       canUndo: true,
       canRedo: false,
       undo: mockUndo,
       redo: jest.fn()
-    });
+    };
+    mockUseHistory.mockReturnValue(mockVal);
+    mockUseUndoRedo.mockReturnValue(mockVal);
 
     render(<HistoryControls />);
 
@@ -106,12 +124,14 @@ describe('HistoryControls', () => {
 
   it('should call redo when redo button is clicked', () => {
     const mockRedo = jest.fn();
-    mockUseHistory.mockReturnValue({
+    const mockVal = {
       canUndo: false,
       canRedo: true,
       undo: jest.fn(),
       redo: mockRedo
-    });
+    };
+    mockUseHistory.mockReturnValue(mockVal);
+    mockUseUndoRedo.mockReturnValue(mockVal);
 
     render(<HistoryControls />);
 
@@ -122,12 +142,14 @@ describe('HistoryControls', () => {
   });
 
   it('should have correct tooltips', () => {
-    mockUseHistory.mockReturnValue({
+    const mockVal = {
       canUndo: true,
       canRedo: true,
       undo: jest.fn(),
       redo: jest.fn()
-    });
+    };
+    mockUseHistory.mockReturnValue(mockVal);
+    mockUseUndoRedo.mockReturnValue(mockVal);
 
     render(<HistoryControls />);
 
@@ -139,12 +161,14 @@ describe('HistoryControls', () => {
   });
 
   it('should have correct ARIA labels', () => {
-    mockUseHistory.mockReturnValue({
+    const mockVal = {
       canUndo: true,
       canRedo: true,
       undo: jest.fn(),
       redo: jest.fn()
-    });
+    };
+    mockUseHistory.mockReturnValue(mockVal);
+    mockUseUndoRedo.mockReturnValue(mockVal);
 
     render(<HistoryControls />);
 

@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 
 /**
  * Page Object for the Todo List page updated to match latest HTML.
@@ -37,17 +37,55 @@ export class HomePage {
 
   /**
    * Clicks the Undo button from the navbar.
+   * Waits for button to be both visible and enabled.
    */
   async clickNavbarUndo() {
     await this.navUndoButton.waitFor({ state: 'visible', timeout: 5000 });
+    await this.navUndoButton.waitFor({ state: 'attached', timeout: 5000 });
+    await expect(this.navUndoButton).toBeEnabled({ timeout: 5000 });
     await this.navUndoButton.click();
+
+    // After undo, close "todo deletion undone" toast if visible
+    const toastAlert = this.page.locator('[role="region"][aria-label="Toast notifications"] [role="alert"]');
+    // Wait up to 2s for matching alert toast to appear with 'undone' text
+    if (await toastAlert.filter({ hasText: 'undone' }).waitFor({ state: "visible", timeout: 2000 }).catch(() => false)) {
+      // Highlight for debug
+      await toastAlert.evaluate(el => {
+        el.style.outline = "4px solid magenta";
+        el.style.background = "#fdffe6";
+        el.style.boxShadow = "0 0 18px 6px #ff25eb";
+        el.scrollIntoView({ block: "center", inline: "center" });
+      }).catch(() => {});
+      await this.page.waitForTimeout(500);
+
+      const closeBtn = toastAlert.locator('button[aria-label*="close"], button[aria-label*="Close"]').first();
+      if (await closeBtn.isVisible().catch(() => false)) {
+        await closeBtn.waitFor({ state: "attached", timeout: 1500 }).catch(() => {});
+        await closeBtn.waitFor({ state: "visible", timeout: 1500 }).catch(() => {});
+        // Wait for enabled
+        for (let t = 0; t < 10; t++) {
+          if (await closeBtn.isEnabled().catch(() => false)) break;
+          await this.page.waitForTimeout(100);
+        }
+        await closeBtn.click({ timeout: 2000 }).catch(() => {});
+        await this.page.waitForTimeout(300);
+      }
+    }
   }
 
   /**
    * Clicks the Redo button from the navbar.
+   * Waits for button to be both visible and enabled.
    */
   async clickNavbarRedo() {
     await this.navRedoButton.waitFor({ state: 'visible', timeout: 5000 });
+    await this.navRedoButton.waitFor({ state: 'attached', timeout: 5000 });
+    await expect(this.navRedoButton).toBeEnabled({ timeout: 5000 });
+
+    // Ensure any toast alert is hidden before clicking Redo
+    await this.page.locator('[role="region"][aria-label="Toast notifications"] [role="alert"]').waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+    // Small buffer to guarantee removal
+    await this.page.waitForTimeout(500);
     await this.navRedoButton.click();
   }
 
@@ -75,8 +113,8 @@ export class HomePage {
    * Returns the first row in the todo table where the title exactly matches the given title.
    */
   getTodoRowByTitle(title: string): Locator {
-    // Uses .nth(0) to resolve to a single locator, even if more than one exists.
-    return this.todoTable.locator(`tbody tr td:first-child`, { hasText: title }).first().locator('..');
+    // More robust: tr that has a td with exact text
+    return this.todoTable.locator(`tbody tr`, { has: this.page.locator(`td:first-child`, { hasText: title }) }).first();
   }
 
   /**
@@ -97,6 +135,28 @@ export class HomePage {
     // Wait until the toast region is not visible or has pointer-events:none
     const start = Date.now();
     while ((await toastRegion.isVisible()) && (Date.now() - start < timeout)) {
+      // Try to forcibly close a toast alert if present and visible
+      const toastAlert = this.page.locator('[role="region"][aria-label="Toast notifications"] [role="alert"]');
+      if (await toastAlert.isVisible().catch(() => false)) {
+        await toastAlert.evaluate(el => {
+          el.style.outline = "4px solid orange";
+          el.style.background = "#fff8cf";
+          el.scrollIntoView({ block: "center", inline: "center" });
+        }).catch(() => {});
+        const closeBtn = toastAlert.locator('button[aria-label*="close"], button[aria-label*="Close"]').first();
+        if (await closeBtn.isVisible().catch(() => false)) {
+          await closeBtn.waitFor({ state: "attached", timeout: 1500 }).catch(() => {});
+          await closeBtn.waitFor({ state: "visible", timeout: 1500 }).catch(() => {});
+          // Wait for enabled
+          for (let t = 0; t < 10; t++) {
+            if (await closeBtn.isEnabled().catch(() => false)) break;
+            await this.page.waitForTimeout(100);
+          }
+          await closeBtn.click({ timeout: 2000 }).catch(() => {});
+          await this.page.waitForTimeout(150);
+        }
+      }
+
       await this.page.waitForTimeout(300);
       // Extra check for pointer-events: none or opacity: 0 (could be animated out)
       const pointerEvents = await toastRegion.evaluate(
@@ -144,8 +204,8 @@ export class HomePage {
       // If any error determining state, bail out safely
       return;
     }
-    // Attempt to click a visible logout control if present (desktop/tablet)
-    const logoutButton = this.page.locator('button, a', { hasText: /logout/i }).first();
+    // Attempt to click a visible logout control if present (universal)
+    const logoutButton = this.page.getByRole('button', { name: /logout/i });
     let canSeeLogout = false;
     try {
       canSeeLogout = await logoutButton.isVisible();
@@ -154,6 +214,7 @@ export class HomePage {
     }
     if (canSeeLogout) {
       try {
+        await logoutButton.scrollIntoViewIfNeeded();
         await logoutButton.click({ trial: true });
         await logoutButton.click();
       } catch {

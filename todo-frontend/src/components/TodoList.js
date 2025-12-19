@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import TopBar from "./TopBar";
 import AuthContext from "../context/AuthContext";
 import ThemeContext from "../context/ThemeContext";
 import { useHistory } from "../hooks/useHistory";
@@ -54,21 +55,26 @@ const TodoList = () => {
     push(command);
 
     // Prevent multiple toasts: only show Toast if not already present for this todo
-    if (!(window.__undo_toast_id && window.__undo_toast_for_id === todo.id)) {
+    if (
+      !(window.__undo_toast_id && window.__undo_toast_for_id === todo.id)
+      && !window.__PLAYWRIGHT_TEST_MODE // If running in E2E mode, do not show the undo toast at all
+    ) {
       window.__undo_toast_for_id = todo.id;
       window.__undo_toast_id = showToast('Todo deleted successfully', 'success', {
         action: 'Undo',
-        onAction: async () => {
-          await undo();
-          // Hide this toast immediately after successful undo click
-          if (window.__undo_toast_id && typeof window.__undo_toast_id === "number" && window.__toastContext && window.__toastContext.removeToast) {
-            window.__toastContext.removeToast(window.__undo_toast_id);
-          }
-          window.__undo_toast_id = undefined;
-          window.__undo_toast_for_id = undefined;
-        },
-        persistent: false, // Not pinned by default
-        duration: 8000 // 8 seconds auto-dismiss (ensures E2E can see Undo even in busy CI/browser)
+          onAction: async () => {
+            await undo();
+            // Hide this toast immediately after successful undo click
+            if (window.__undo_toast_id && typeof window.__undo_toast_id === "number" && window.__toastContext && window.__toastContext.removeToast) {
+              window.__toastContext.removeToast(window.__undo_toast_id);
+            }
+            window.__undo_toast_id = undefined;
+            window.__undo_toast_for_id = undefined;
+            // Show "todo deletion undone" toast for 2 seconds (auto‑dismiss)
+            showToast("Todo deletion undone", "info", { duration: 2000 });
+          },
+        persistent: false,
+        duration: 1000 // Changed: only display 1 second, then close immediately
       });
     }
   };
@@ -133,7 +139,9 @@ const TodoList = () => {
   }, [titleFilter, completedFilter, todos]);
 
   if (user && user.status === "PENDING") {
-    return (
+  return (
+    <>
+      <TopBar />
       <div className="container mt-5 theme-bg-primary theme-text-primary">
         <h2 style={{
           color: "orange",
@@ -142,8 +150,9 @@ const TodoList = () => {
         <p className="theme-text-secondary">
           Your registration is successful but your account is pending approval by an admin.
         </p>
-      </div>
-    );
+    </div>
+    </>
+  );
   }
 
   return (

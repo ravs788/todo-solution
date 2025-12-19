@@ -130,6 +130,42 @@ export class UpdateTodoPage {
 
     // Submit (update)
     await this.updateButton.waitFor({ state: 'visible', timeout: 3000 });
+    // Same mobile bug workaround: blur all, collapse tag lists, scroll.
+    await this.page.evaluate(() => {
+      function blurAll() {
+        const active = document.activeElement as HTMLElement;
+        if (active && typeof active.blur === "function") active.blur();
+        Array.from(document.querySelectorAll("input, textarea, select")).forEach((el: any) => {
+          if (typeof el.blur === "function") el.blur();
+        });
+      }
+      blurAll();
+      // Special: blur date and tag input explicitly
+      const tagInput = document.querySelector('input[aria-label="Tag input"]') as HTMLElement;
+      if (tagInput && typeof tagInput.blur === "function") tagInput.blur();
+      const dateInput = document.querySelector('input[type="datetime-local"]') as HTMLElement;
+      if (dateInput && typeof dateInput.blur === "function") dateInput.blur();
+      const tagList = document.querySelector('.taginput-tag-list');
+      if (tagList) (tagList as HTMLElement).style.display = 'none';
+    });
+
+    await this.page.evaluate((btn) => {
+      if (btn && typeof btn.scrollIntoView === "function") {
+        btn.scrollIntoView({ behavior: "instant", block: "center", inline: "center" });
+      }
+    }, await this.updateButton.elementHandle());
+    await this.page.waitForTimeout(700);
+
+    const isOccluded = await this.page.evaluate((btn) => {
+        if (!btn) return true; // If the button is null, treat as occluded/unavailable
+        const rect = btn.getBoundingClientRect();
+        const docEl = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        return docEl !== btn;
+    }, await this.updateButton.elementHandle());
+    if (isOccluded) {
+      throw new Error('Update button is occluded by another element after all scroll/blur attempts. Check floating UI, virtual keyboard, and overlays.');
+    }
+
     await Promise.all([
       this.page.waitForURL('**/'),
       this.updateButton.click()
