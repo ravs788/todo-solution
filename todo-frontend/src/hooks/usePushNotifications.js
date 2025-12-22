@@ -62,10 +62,8 @@ const usePushNotifications = () => {
       await pushService.registerWithBackend();
 
       setIsSubscribed(true);
-      console.log('Push notifications enabled successfully');
-
+      
     } catch (err) {
-      console.error('Failed to enable push notifications:', err);
       setError(err.message);
       throw err;
     } finally {
@@ -86,8 +84,7 @@ const usePushNotifications = () => {
       await pushService.unsubscribe();
 
       setIsSubscribed(false);
-      console.log('Push notifications disabled successfully');
-
+      
     } catch (err) {
       console.error('Failed to disable push notifications:', err);
       setError(err.message);

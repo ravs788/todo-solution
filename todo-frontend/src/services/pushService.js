@@ -28,8 +28,7 @@ class PushNotificationService {
         scope: '/'
       });
 
-      console.log('Service Worker registered successfully');
-
+     
       // Wait for the service worker to be ready
       await navigator.serviceWorker.ready;
 
@@ -37,7 +36,6 @@ class PushNotificationService {
       this.subscription = await this.registration.pushManager.getSubscription();
 
       if (this.subscription) {
-        console.log('Existing push subscription found');
       }
 
       return true;
@@ -78,8 +76,7 @@ class PushNotificationService {
         applicationServerKey: applicationServerKey
       });
 
-      console.log('Push subscription created:', this.subscription);
-
+      
       return this.subscription;
     } catch (error) {
       console.error('Failed to subscribe to push notifications:', error);
@@ -96,7 +93,6 @@ class PushNotificationService {
     try {
       const result = await this.subscription.unsubscribe();
       this.subscription = null;
-      console.log('Successfully unsubscribed from push notifications');
       return result;
     } catch (error) {
       console.error('Failed to unsubscribe from push notifications:', error);
@@ -140,7 +136,6 @@ class PushNotificationService {
       }
 
       const result = await response.json();
-      console.log('Subscription registered with backend:', result);
       return result;
     } catch (error) {
       console.error('Failed to register subscription with backend:', error);
@@ -169,7 +164,6 @@ class PushNotificationService {
         const error = await response.json();
         console.warn('Failed to unregister from backend:', error.error);
       } else {
-        console.log('Subscription unregistered from backend');
       }
     } catch (error) {
       console.error('Failed to unregister from backend:', error);

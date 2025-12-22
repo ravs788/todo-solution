@@ -50,6 +50,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("jwtToken");
+    sessionStorage.removeItem("undoRedoHistory");
     setUser(null);
   };
 

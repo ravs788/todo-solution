@@ -58,28 +58,19 @@ test('should register a new user, approve using admin, and login as the new user
       await page.getByRole('button', { name: /login/i }).click();
     }
   }
-  // Debug: Check what page we're on before login attempt
-  console.log('Before login attempt - URL:', page.url());
+  // Debug removed
   const loginSuccess = await loginPage.login(username, password);
-  console.log('Login success result:', loginSuccess);
-  console.log('After login attempt - URL:', page.url());
 
   // Wait for React app to fully load after login
   await page.waitForLoadState('networkidle');
   await page.waitForTimeout(3000); // Give React time to initialize
 
-  // Debug: Check what elements are visible on the page
+  // Debug output removed
   const todoListHeading = page.locator('h2.todo-list-title', { hasText: 'Todo List' });
   const loginForm = page.locator('#login-username');
   const errorMessage = page.locator('.alert-error');
   const pageTitle = page.locator('h1');
   const anyText = page.locator('body');
-
-  console.log('Todo list heading visible:', await todoListHeading.isVisible().catch(() => false));
-  console.log('Login form visible:', await loginForm.isVisible().catch(() => false));
-  console.log('Error message visible:', await errorMessage.isVisible().catch(() => false));
-  console.log('Page title text:', await pageTitle.textContent().catch(() => 'N/A') || 'N/A');
-  console.log('Body text (first 200 chars):', ((await anyText.textContent().catch(() => '')) || '').substring(0, 200));
 
   expect(loginSuccess).toBe(true);
 

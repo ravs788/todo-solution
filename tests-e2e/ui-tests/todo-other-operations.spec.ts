@@ -76,18 +76,22 @@ test.describe("Todo Other Operations", () => {
   });
 });
 
-// Ensure we always logout at end of each test
+/**
+ * Ensure we always logout at end of each test.
+ * Use a fast, UI-independent cleanup to avoid mobile flakiness in afterEach.
+ */
 test.afterEach(async ({ page }) => {
-  const homePage = new HomePage(page, config.baseUrl);
-  // Set a reasonable timeout for logout to avoid hanging the test suite
-  const logoutPromise = homePage.logout();
-  const timeoutPromise = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('Logout timeout')), 20000)
-  );
-
+  // Clear auth-related storage
   try {
-    await Promise.race([logoutPromise, timeoutPromise]);
-  } catch (error) {
-    console.warn('Logout failed or timed out, continuing test cleanup');
-  }
+    await page.evaluate(() => {
+      try { localStorage.removeItem('jwtToken'); } catch {}
+      try { sessionStorage.clear(); } catch {}
+    });
+  } catch {}
+
+  // Detach from SPA to avoid route guards/websocket hangs
+  try { await page.goto('about:blank'); } catch {}
+
+  // Navigate to login route without waiting on specific UI selectors
+  try { await page.goto(config.baseUrl + '/login', { waitUntil: 'domcontentloaded' }); } catch {}
 });

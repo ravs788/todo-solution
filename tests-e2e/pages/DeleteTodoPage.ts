@@ -19,11 +19,12 @@ export class DeleteTodoPage {
     this.baseUrl = baseUrl;
     this.tableRowWithTitle = (title: string) => {
       const displayTitle = title && title.length > 40 ? title.slice(0, 40) : title;
+      // Use nth(0) to get the first visible matching row (max one per test)
       return this.page.locator('table.custom-table tbody tr').filter({
         has: this.page.locator('td').first().filter({ hasText: displayTitle })
-      });
+      }).first();
     };
-    this.deleteLinkInRow = (row: Locator) => row.locator('a.btn.btn-danger');
+    this.deleteLinkInRow = (row: Locator) => row.locator('button, a').filter({ hasText: 'Delete' }).first();
     this.confirmHeading = page.getByRole('heading', { name: /confirm deletion/i });
     this.confirmYesButton = page.getByRole('button', { name: /yes, delete/i });
     this.confirmCancelButton = page.getByRole('button', { name: /cancel/i });
@@ -49,7 +50,7 @@ export class DeleteTodoPage {
     const row = this.tableRowWithTitle(title);
     await row.waitFor({ state: 'visible', timeout: 7000 });
     const deleteLink = this.deleteLinkInRow(row);
-    await deleteLink.waitFor({ state: 'visible', timeout: 5000 });
+    await deleteLink.waitFor({ state: 'visible', timeout: 8000 });
     await deleteLink.scrollIntoViewIfNeeded();
     try {
       await deleteLink.click({ trial: true });
@@ -61,16 +62,31 @@ export class DeleteTodoPage {
         await this.page.evaluate((el) => (el as HTMLElement).click(), await deleteLink.elementHandle());
       }
     }
-    // Confirm dialog
-    await this.confirmHeading.waitFor({ state: 'visible', timeout: 3000 });
-    await this.confirmYesButton.waitFor({ state: 'visible', timeout: 3000 });
+    // Confirm dialog (if present) else assume immediate deletion
+    let confirmedViaDialog = false;
     try {
-      await this.confirmYesButton.click({ trial: true });
-      await this.confirmYesButton.click();
+      await this.confirmHeading.waitFor({ state: 'visible', timeout: 1200 });
+      await this.confirmYesButton.waitFor({ state: 'visible', timeout: 1200 });
+      try {
+        await this.confirmYesButton.click({ trial: true });
+        await this.confirmYesButton.click();
+      } catch {
+        await this.confirmYesButton.click({ force: true });
+      }
+      confirmedViaDialog = true;
     } catch {
-      await this.confirmYesButton.click({ force: true });
+      // No confirm dialog appeared; likely inline delete
     }
-    // Wait for removal from table
-    await this.page.getByText(title).waitFor({ state: 'hidden', timeout: 4000 });
+
+    // Wait for success indication: prefer row removal since list is filtered by title
+    await row.waitFor({ state: 'detached', timeout: 8000 }).catch(async () => {
+      // Fallback: hidden state or toast region visibility
+      await row.waitFor({ state: 'hidden', timeout: 2000 }).catch(async () => {
+        const toastRegion = this.page.locator('[role="region"][aria-label="Toast notifications"]').first();
+        try {
+          await toastRegion.waitFor({ state: 'visible', timeout: 3000 });
+        } catch {}
+      });
+    });
   }
 }

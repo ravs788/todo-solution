@@ -27,9 +27,10 @@ export class CreateTodoPage {
     this.activityTypeOptionDefinite = page.locator('option[value="definite"]');
     this.activityTypeOptionRegular = page.locator('option[value="regular"]');
     this.completedCheckbox = page.locator('#completedInput');
-    this.startDateInput = page.locator('input[type="datetime-local"][required]');
-    this.reminderAtInput = page.locator('input[type="datetime-local"]:not([required])');
-    this.createButton = page.getByRole('button', { name: /^Create Todo$/ });
+    // Narrow datetime-local fields by accessible name to avoid strict mode violations
+    this.startDateInput = page.getByRole('textbox', { name: 'Start Date' });
+    this.reminderAtInput = page.getByRole('textbox', { name: /Reminder At/i });
+    this.createButton = page.getByRole('button', { name: /create/i });
     this.backButton = page.getByRole('button', { name: /^Back$/ });
   }
 
@@ -72,6 +73,52 @@ export class CreateTodoPage {
     if (req.startDate) {
       await this.startDateInput.fill(req.startDate);
     }
+    // On mobile: blur active element, blur/tag-collapse specialized
+    await this.page.evaluate(() => {
+      function blurAll() {
+        const active = document.activeElement as HTMLElement;
+        if (active && typeof active.blur === "function") active.blur();
+        Array.from(document.querySelectorAll("input, textarea, select")).forEach((el: any) => {
+          if (typeof el.blur === "function") el.blur();
+        });
+      }
+      blurAll();
+      // Special: blur date and tag input explicitly
+      const tagInput = document.querySelector('input[aria-label="Tag input"]') as HTMLElement;
+      if (tagInput && typeof tagInput.blur === "function") tagInput.blur();
+      const dateInput = document.querySelector('input[type="datetime-local"]') as HTMLElement;
+      if (dateInput && typeof dateInput.blur === "function") dateInput.blur();
+      // Hide any open tag list/dropdown (if possible)
+      const tagList = document.querySelector('.taginput-tag-list');
+      if (tagList) (tagList as HTMLElement).style.display = 'none';
+    });
+
+    // Robustly scroll Create button node (not selector guess)
+    const btnHandle = await this.createButton.elementHandle();
+    if (btnHandle) {
+      await this.page.evaluate((btn) => {
+        if (btn && typeof (btn as any).scrollIntoView === "function") {
+          (btn as any).scrollIntoView({ behavior: "instant", block: "center", inline: "center" });
+        }
+      }, btnHandle);
+    }
+
+    await this.page.waitForTimeout(700);
+
+    // Extra: check the Create button is really visible and not occluded
+    let isOccluded = false;
+    const btnHandle2 = await this.createButton.elementHandle();
+    if (btnHandle2) {
+      isOccluded = await this.page.evaluate((btn) => {
+        const rect = (btn as HTMLElement).getBoundingClientRect();
+        const docEl = document.elementFromPoint(rect.left + rect.width/2, rect.top + rect.height/2);
+        return docEl !== btn;
+      }, btnHandle2);
+    }
+    if (isOccluded) {
+      throw new Error('Create button is occluded by another element after all scroll/blur attempts. Check floating UI, virtual keyboard, and overlays.');
+    }
+
     await this.createButton.click();
   }
 

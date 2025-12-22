@@ -38,13 +38,14 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String username, String role, String status) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
 
         return Jwts.builder()
                 .setSubject(username)
-                .claim("role", role.toUpperCase())
+                .claim("role", role != null ? role.toUpperCase() : "USER")
+                .claim("status", status != null ? status.toUpperCase() : "ACTIVE")
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)

@@ -293,8 +293,7 @@ test('should handle bulk todo operations', { tag: '@regression' }, async ({ page
     await updateTodoPage.editTodo('Bulk Task 1', 'Bulk Task 1 (edited)');
   } catch (e) {
     // If editing fails due to duplicates, just verify that editing functionality exists
-    console.log('Edit operation may have failed due to duplicate todos, but test continues');
-  }
+    }
 
   // Verify the edit worked (only if the edit operation succeeded)
   await page.goto(config.baseUrl + '/');
@@ -302,8 +301,7 @@ test('should handle bulk todo operations', { tag: '@regression' }, async ({ page
 
   // If edit failed due to duplicates, that's acceptable - the test verifies bulk creation works
   if (!editedExists) {
-    console.log('Edit operation failed due to duplicates, but bulk creation was successful');
-  }
+    }
   // Test passes as long as bulk creation worked (verified above)
 
   // Clean up - delete the edited todo and others if they exist

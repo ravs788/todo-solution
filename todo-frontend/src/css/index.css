@@ -111,6 +111,10 @@ code {
   padding: 0.75rem;
   vertical-align: top;
   border: 1px solid var(--table-border);
+  /* Allow long text to wrap on smaller screens */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .custom-table thead th {
@@ -153,3 +157,138 @@ h2 { font-size: var(--font-size-h2); margin: 0 0 var(--space-3); }
 /* Ensure nearby elements don't overlay the table on small screens */
 .todo-list-title { position: static; z-index: auto; pointer-events: none; }
 .filters-row { position: static; z-index: auto; margin-bottom: var(--space-4); }
+
+/* Responsive sizing by UI mode (mobile/tablet/desktop) */
+
+/* Mobile (ui-mobile project) */
+@media (max-width: 480px) {
+  :root {
+    /* Slightly larger body text for readability on small screens */
+    --font-size-body: 15px;
+    --font-size-h1: 22px;
+    --font-size-h2: 18px;
+  }
+
+  /* Make table scrollable horizontally if needed and use fixed layout to wrap cells */
+  .custom-table {
+    display: block;
+    overflow-x: auto;
+    table-layout: fixed;
+  }
+
+  /* Reduce header size and cell padding to fit better */
+  .custom-table thead th {
+    font-size: 0.85rem;
+    padding: 0.5rem;
+  }
+  .custom-table th,
+  .custom-table td {
+    padding: 0.5rem;
+  }
+
+  /* Smaller table body text on small screens */
+  .custom-table tbody td {
+    font-size: 0.85rem;
+    line-height: 1.25;
+  }
+
+  /* Inputs and buttons sized for touch targets */
+  .app-input,
+  input,
+  select,
+  textarea {
+    font-size: 1rem;
+  }
+  button,
+  .btn,
+  .app-button-primary,
+  .app-button-secondary {
+    font-size: 0.95rem;
+    padding: 0.5rem 0.75rem;
+    min-height: 36px;
+  }
+
+  /* Filter row spacing on mobile */
+  .filters-row {
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+}
+
+/* Tablet (ui-tablet project) */
+@media (min-width: 481px) and (max-width: 768px) {
+  :root {
+    --font-size-body: 15px;
+    --font-size-h1: 24px;
+    --font-size-h2: 20px;
+  }
+  .custom-table thead th {
+    font-size: 1rem;
+  }
+  button,
+  .btn,
+  .app-button-primary,
+  .app-button-secondary {
+    font-size: 1rem;
+    padding: 0.55rem 0.9rem;
+    min-height: 38px;
+  }
+}
+
+/* Desktop (ui/ui-desktop projects) */
+@media (min-width: 769px) {
+  :root {
+    --font-size-body: 16px;
+    --font-size-h1: 30px;
+    --font-size-h2: 24px;
+  }
+}
+
+/* Mobile admin panel density overrides */
+@media (max-width: 480px) {
+  .admin-panel {
+    align-items: flex-start !important;
+    padding-top: 8px !important;
+  }
+  .admin-panel-card {
+    max-width: 100% !important;   /* fill full viewport width */
+    width: 100% !important;
+    max-height: 90vh !important;
+    padding: 12px 8px !important;
+    overflow-y: auto !important;
+    overflow-x: auto !important;  /* enable sideways scrolling if needed */
+  }
+  .admin-panel-card h2 {
+    font-size: 1.05rem !important;
+    letter-spacing: .01em !important;
+    margin-bottom: 12px !important;
+  }
+  .admin-panel-card label {
+    font-size: 0.78rem !important;
+  }
+  .admin-panel-card select {
+    font-size: 0.8rem !important;
+    padding: 4px 8px !important;
+  }
+  .admin-panel-card table thead th {
+    font-size: 0.78rem !important;
+    padding: 6px 4px !important;
+  }
+  .admin-panel-card table td {
+    font-size: 0.78rem !important;
+    padding: 5px 6px !important;
+  }
+  .admin-panel-card button {
+    font-size: 0.78rem !important;
+    padding: 5px 8px !important;
+    min-height: 28px !important;
+  }
+  .admin-panel-card img {
+    width: 34px !important;
+  }
+  /* Reduce overall body fonts slightly when admin panel present */
+  .admin-panel-card,
+  .admin-panel-card * {
+    line-height: 1.2 !important;
+  }
+}

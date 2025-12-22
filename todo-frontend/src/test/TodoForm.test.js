@@ -2,9 +2,9 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import TodoForm from "../components/TodoForm";
-// Add this line to import axios
 import axios from 'axios';
 import AuthContext from "../context/AuthContext";
+
 // Mock useNavigate
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
@@ -12,6 +12,7 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
+// Mock axios properly
 jest.mock("axios", () => ({
   __esModule: true,
   default: {
@@ -21,6 +22,11 @@ jest.mock("axios", () => ({
 }));
 
 describe("TodoForm", () => {
+  beforeAll(() => {
+    // Set up environment variables
+    process.env.REACT_APP_API_BASE_URL = 'http://localhost:8080';
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });

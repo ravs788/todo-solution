@@ -19,6 +19,34 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* Responsive for mobile: let it fit viewport minus safe padding */
+  max-height: 97vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Responsive styles for truly small screens */
+@media (max-width: 700px) {
+  .todoform-container {
+    max-width: 99vw;
+    min-width: 0;
+    padding: 14px 7vw 14px 7vw;
+    max-height: calc(100svh - 16px);
+    font-size: 0.97em;
+  }
+  .todoform-form {
+    gap: 0.73rem;
+    margin-top: 8px;
+  }
+  .todoform-heading {
+    font-size: 1.35rem;
+    word-break: break-word;
+  }
+  .todoform-btn-primary,
+  .todoform-btn-secondary {
+    font-size: 0.95rem;
+    padding: 11px;
+  }
 }
 
 /* Logo Image Section */
@@ -48,6 +76,10 @@
   flex-direction: column;
   gap: 1.23rem;
   margin-top: 18px;
+  /* Allow scroll in mobile so button isn't occluded by keyboard/footer */
+  overflow-y: auto;
+  scroll-padding-bottom: 60px;
+  max-height: 68vh;
 }
 
 /* Label */
@@ -98,6 +130,7 @@
 .todoform-button-row {
   display: flex;
   gap: 7px;
+  width: 100%;
 }
 
 /* Primary Button */

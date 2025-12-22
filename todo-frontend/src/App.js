@@ -12,15 +12,21 @@ import AdminPanel from "./components/AdminPanel";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import ThemeToggle from "./components/ThemeToggle";
+import HistoryControls from "./components/HistoryControls";
+import ToastContainer from "./components/ToastContainer";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { ToastProvider } from "./context/ToastContext";
+import { UndoRedoProvider } from "./context/UndoRedoContext";
+import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import AuthContext from "./context/AuthContext";
-import ToastContainer from "./components/ToastContainer";
 
 function AllRoutes({ authToken, handleLogin, handleLogout, loginMessage, setLoginMessage }) {
   const { user } = useContext(AuthContext) || {};
   const navigate = useNavigate();
+
+  // Enable keyboard shortcuts
+  useKeyboardShortcuts();
 
   return (
     <Routes>
@@ -122,6 +128,7 @@ function AllRoutes({ authToken, handleLogin, handleLogout, loginMessage, setLogi
                   </Link>
                 )}
                 <span style={{ flexGrow: 1 }}></span>
+                <HistoryControls />
                 <ThemeToggle />
                 <button
                   onClick={handleLogout}
@@ -202,18 +209,20 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <ToastProvider>
-          <Router>
-            <AllRoutes
-              authToken={authToken}
-              handleLogin={handleLogin}
-              handleLogout={handleLogout}
-              loginMessage={loginMessage}
-              setLoginMessage={setLoginMessage}
-            />
-            <ToastContainer />
-          </Router>
-        </ToastProvider>
+        <UndoRedoProvider>
+          <ToastProvider>
+            <Router>
+              <AllRoutes
+                authToken={authToken}
+                handleLogin={handleLogin}
+                handleLogout={handleLogout}
+                loginMessage={loginMessage}
+                setLoginMessage={setLoginMessage}
+              />
+              <ToastContainer />
+            </Router>
+          </ToastProvider>
+        </UndoRedoProvider>
       </AuthProvider>
     </ThemeProvider>
   );
