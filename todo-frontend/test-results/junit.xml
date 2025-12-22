@@ -1,6 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="37" failures="4" errors="0" time="5.032">
-  <testsuite name="TodoUpdate" errors="0" failures="0" skipped="4" timestamp="2025-12-19T08:35:40" time="2.128" tests="4">
+<testsuites name="jest tests" tests="71" failures="0" errors="0" time="7.644">
+  <testsuite name="useCommands" errors="0" failures="0" skipped="0" timestamp="2025-12-22T09:25:35" time="3.339" tests="7">
+    <testcase classname="useCommands createTodoCommand should create a todo and update state" name="useCommands createTodoCommand should create a todo and update state" time="0.006">
+    </testcase>
+    <testcase classname="useCommands createTodoCommand should undo create by deleting the todo" name="useCommands createTodoCommand should undo create by deleting the todo" time="0.003">
+    </testcase>
+    <testcase classname="useCommands updateTodoCommand should update a todo and revert on undo" name="useCommands updateTodoCommand should update a todo and revert on undo" time="0.008">
+    </testcase>
+    <testcase classname="useCommands deleteTodoCommand should delete a todo and restore on undo" name="useCommands deleteTodoCommand should delete a todo and restore on undo" time="0.004">
+    </testcase>
+    <testcase classname="useCommands toggleCompleteCommand should toggle completion status" name="useCommands toggleCompleteCommand should toggle completion status" time="0.003">
+    </testcase>
+    <testcase classname="useCommands error handling should handle create errors" name="useCommands error handling should handle create errors" time="0.079">
+    </testcase>
+    <testcase classname="useCommands error handling should handle undo errors" name="useCommands error handling should handle undo errors" time="0.003">
+    </testcase>
+  </testsuite>
+  <testsuite name="useHistory Hook" errors="0" failures="0" skipped="0" timestamp="2025-12-22T09:25:35" time="3.232" tests="10">
+    <testcase classname="useHistory Hook should initialize with empty history" name="useHistory Hook should initialize with empty history" time="0.049">
+    </testcase>
+    <testcase classname="useHistory Hook should push commands to undo stack" name="useHistory Hook should push commands to undo stack" time="0.007">
+    </testcase>
+    <testcase classname="useHistory Hook should undo commands correctly" name="useHistory Hook should undo commands correctly" time="0.011">
+    </testcase>
+    <testcase classname="useHistory Hook should redo commands correctly" name="useHistory Hook should redo commands correctly" time="0.006">
+    </testcase>
+    <testcase classname="useHistory Hook should clear redo stack when new command is pushed" name="useHistory Hook should clear redo stack when new command is pushed" time="0.033">
+    </testcase>
+    <testcase classname="useHistory Hook should enforce maximum stack size" name="useHistory Hook should enforce maximum stack size" time="0.009">
+    </testcase>
+    <testcase classname="useHistory Hook should persist history to sessionStorage" name="useHistory Hook should persist history to sessionStorage" time="0.006">
+    </testcase>
+    <testcase classname="useHistory Hook should restore history from sessionStorage on mount" name="useHistory Hook should restore history from sessionStorage on mount" time="0.005">
+    </testcase>
+    <testcase classname="useHistory Hook should clear history" name="useHistory Hook should clear history" time="0.007">
+    </testcase>
+    <testcase classname="useHistory Hook should handle undo errors gracefully" name="useHistory Hook should handle undo errors gracefully" time="0.016">
+    </testcase>
+  </testsuite>
+  <testsuite name="TodoUpdate" errors="0" failures="0" skipped="4" timestamp="2025-12-22T09:25:35" time="3.33" tests="4">
     <testcase classname="TodoUpdate shows correct initial values for id=1, including activity type and completed checkbox" name="TodoUpdate shows correct initial values for id=1, including activity type and completed checkbox" time="0">
       <skipped/>
     </testcase>
@@ -14,256 +52,122 @@
       <skipped/>
     </testcase>
   </testsuite>
-  <testsuite name="unit" errors="0" failures="4" skipped="0" timestamp="2025-12-19T08:35:40" time="2.291" tests="4">
-    <testcase classname="unit AdminPanel renders and shows no users pending approval" name="unit AdminPanel renders and shows no users pending approval" time="0.073">
-      <failure>Error: useNavigate() may be used only in the context of a &lt;Router&gt; component.
-    at Object.invariant [as UNSAFE_invariant] (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@remix-run\router\history.ts:494:11)
-    at useNavigateUnstable (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-router\lib\hooks.tsx:189:3)
-    at useNavigate (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-router\lib\hooks.tsx:185:46)
-    at TopBar (C:\Learning\System Design\todo-solution\todo-frontend\src\components\TopBar.js:5:31)
-    at Object.react_stack_bottom_frame (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:23863:20)
-    at renderWithHooks (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:5529:22)
-    at updateFunctionComponent (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:8897:19)
-    at beginWork (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:10522:18)
-    at runWithFiberInDEV (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:1522:13)
-    at performUnitOfWork (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:15140:22)
-    at workLoopSync (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:14956:41)
-    at renderRootSync (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:14936:11)
-    at performWorkOnRoot (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:14462:44)
-    at performWorkOnRootViaSchedulerTask (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:16216:7)
-    at flushActQueue (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:566:34)
-    at Object.&lt;anonymous&gt;.process.env.NODE_ENV.exports.act (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:860:10)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\act-compat.js:47:25
-    at renderRoot (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:190:26)
-    at render (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:292:10)
-    at C:\Learning\System Design\todo-solution\todo-frontend\src\test\AdminPanel.test.js:40:13
-    at Generator.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regenerator.js:52:51)
-    at Generator.next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regeneratorDefine.js:11:21)
-    at asyncGeneratorStep (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
-    at _next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:22:7
-    at new Promise (&lt;anonymous&gt;)
-    at Object.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:14:12)
-    at Promise.then.completed (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:391:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:316:10)
-    at _callCircusTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:218:40)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at _runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:155:3)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:66:9)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:60:9)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:60:9)
-    at run (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:25:3)
-    at runAndTransformResultsToJestFormat (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:170:21)
-    at jestAdapter (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:82:19)
-    at runTestInternal (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:389:16)
-    at runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:475:34)
-    at Object.worker (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\testWorker.js:133:12)</failure>
+  <testsuite name="useKeyboardShortcuts" errors="0" failures="0" skipped="0" timestamp="2025-12-22T09:25:35" time="3.307" tests="11">
+    <testcase classname="useKeyboardShortcuts should call undo on Ctrl+Z" name="useKeyboardShortcuts should call undo on Ctrl+Z" time="0.046">
     </testcase>
-    <testcase classname="unit AdminPanel renders a list of pending users with approve buttons" name="unit AdminPanel renders a list of pending users with approve buttons" time="0.004">
-      <failure>Error: useNavigate() may be used only in the context of a &lt;Router&gt; component.
-    at Object.invariant [as UNSAFE_invariant] (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@remix-run\router\history.ts:494:11)
-    at useNavigateUnstable (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-router\lib\hooks.tsx:189:3)
-    at useNavigate (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-router\lib\hooks.tsx:185:46)
-    at TopBar (C:\Learning\System Design\todo-solution\todo-frontend\src\components\TopBar.js:5:31)
-    at Object.react_stack_bottom_frame (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:23863:20)
-    at renderWithHooks (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:5529:22)
-    at updateFunctionComponent (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:8897:19)
-    at beginWork (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:10522:18)
-    at runWithFiberInDEV (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:1522:13)
-    at performUnitOfWork (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:15140:22)
-    at workLoopSync (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:14956:41)
-    at renderRootSync (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:14936:11)
-    at performWorkOnRoot (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:14462:44)
-    at performWorkOnRootViaSchedulerTask (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:16216:7)
-    at flushActQueue (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:566:34)
-    at Object.&lt;anonymous&gt;.process.env.NODE_ENV.exports.act (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:860:10)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\act-compat.js:47:25
-    at renderRoot (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:190:26)
-    at render (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:292:10)
-    at C:\Learning\System Design\todo-solution\todo-frontend\src\test\AdminPanel.test.js:61:13
-    at Generator.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regenerator.js:52:51)
-    at Generator.next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regeneratorDefine.js:11:21)
-    at asyncGeneratorStep (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
-    at _next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:22:7
-    at new Promise (&lt;anonymous&gt;)
-    at Object.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:14:12)
-    at Promise.then.completed (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:391:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:316:10)
-    at _callCircusTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:218:40)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at _runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:155:3)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:66:9)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:60:9)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:60:9)
-    at run (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:25:3)
-    at runAndTransformResultsToJestFormat (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:170:21)
-    at jestAdapter (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:82:19)
-    at runTestInternal (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:389:16)
-    at runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:475:34)
-    at Object.worker (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\testWorker.js:133:12)</failure>
+    <testcase classname="useKeyboardShortcuts should call redo on Ctrl+Shift+Z" name="useKeyboardShortcuts should call redo on Ctrl+Shift+Z" time="0.008">
     </testcase>
-    <testcase classname="unit AdminPanel shows loading while fetching" name="unit AdminPanel shows loading while fetching" time="0.004">
-      <failure>Error: useNavigate() may be used only in the context of a &lt;Router&gt; component.
-    at Object.invariant [as UNSAFE_invariant] (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@remix-run\router\history.ts:494:11)
-    at useNavigateUnstable (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-router\lib\hooks.tsx:189:3)
-    at useNavigate (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-router\lib\hooks.tsx:185:46)
-    at TopBar (C:\Learning\System Design\todo-solution\todo-frontend\src\components\TopBar.js:5:31)
-    at Object.react_stack_bottom_frame (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:23863:20)
-    at renderWithHooks (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:5529:22)
-    at updateFunctionComponent (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:8897:19)
-    at beginWork (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:10522:18)
-    at runWithFiberInDEV (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:1522:13)
-    at performUnitOfWork (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:15140:22)
-    at workLoopSync (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:14956:41)
-    at renderRootSync (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:14936:11)
-    at performWorkOnRoot (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:14462:44)
-    at performWorkOnRootViaSchedulerTask (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:16216:7)
-    at flushActQueue (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:566:34)
-    at Object.&lt;anonymous&gt;.process.env.NODE_ENV.exports.act (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:860:10)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\act-compat.js:47:25
-    at renderRoot (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:190:26)
-    at render (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:292:10)
-    at C:\Learning\System Design\todo-solution\todo-frontend\src\test\AdminPanel.test.js:77:13
-    at Generator.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regenerator.js:52:51)
-    at Generator.next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regeneratorDefine.js:11:21)
-    at asyncGeneratorStep (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
-    at _next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:22:7
-    at new Promise (&lt;anonymous&gt;)
-    at Object.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:14:12)
-    at Promise.then.completed (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:391:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:316:10)
-    at _callCircusTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:218:40)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at _runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:155:3)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:66:9)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:60:9)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:60:9)
-    at run (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:25:3)
-    at runAndTransformResultsToJestFormat (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:170:21)
-    at jestAdapter (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:82:19)
-    at runTestInternal (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:389:16)
-    at runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:475:34)
-    at Object.worker (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\testWorker.js:133:12)</failure>
+    <testcase classname="useKeyboardShortcuts should call redo on Ctrl+Y" name="useKeyboardShortcuts should call redo on Ctrl+Y" time="0.007">
     </testcase>
-    <testcase classname="unit AdminPanel approves user and removes from list" name="unit AdminPanel approves user and removes from list" time="0.006">
-      <failure>Error: useNavigate() may be used only in the context of a &lt;Router&gt; component.
-    at Object.invariant [as UNSAFE_invariant] (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@remix-run\router\history.ts:494:11)
-    at useNavigateUnstable (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-router\lib\hooks.tsx:189:3)
-    at useNavigate (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-router\lib\hooks.tsx:185:46)
-    at TopBar (C:\Learning\System Design\todo-solution\todo-frontend\src\components\TopBar.js:5:31)
-    at Object.react_stack_bottom_frame (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:23863:20)
-    at renderWithHooks (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:5529:22)
-    at updateFunctionComponent (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:8897:19)
-    at beginWork (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:10522:18)
-    at runWithFiberInDEV (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:1522:13)
-    at performUnitOfWork (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:15140:22)
-    at workLoopSync (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:14956:41)
-    at renderRootSync (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:14936:11)
-    at performWorkOnRoot (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:14462:44)
-    at performWorkOnRootViaSchedulerTask (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react-dom\cjs\react-dom-client.development.js:16216:7)
-    at flushActQueue (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:566:34)
-    at Object.&lt;anonymous&gt;.process.env.NODE_ENV.exports.act (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\react\cjs\react.development.js:860:10)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\act-compat.js:47:25
-    at renderRoot (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:190:26)
-    at render (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@testing-library\react\dist\pure.js:292:10)
-    at C:\Learning\System Design\todo-solution\todo-frontend\src\test\AdminPanel.test.js:99:13
-    at Generator.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regenerator.js:52:51)
-    at Generator.next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\regeneratorDefine.js:11:21)
-    at asyncGeneratorStep (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
-    at _next (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
-    at C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:22:7
-    at new Promise (&lt;anonymous&gt;)
-    at Object.&lt;anonymous&gt; (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\@babel\runtime\helpers\asyncToGenerator.js:14:12)
-    at Promise.then.completed (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:391:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\utils.js:316:10)
-    at _callCircusTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:218:40)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at _runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:155:3)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:66:9)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:60:9)
-    at _runTestsForDescribeBlock (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:60:9)
-    at run (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\run.js:25:3)
-    at runAndTransformResultsToJestFormat (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:170:21)
-    at jestAdapter (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:82:19)
-    at runTestInternal (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:389:16)
-    at runTest (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\runTest.js:475:34)
-    at Object.worker (C:\Learning\System Design\todo-solution\todo-frontend\node_modules\jest-runner\build\testWorker.js:133:12)</failure>
+    <testcase classname="useKeyboardShortcuts should not call undo when in input field" name="useKeyboardShortcuts should not call undo when in input field" time="0.007">
+    </testcase>
+    <testcase classname="useKeyboardShortcuts should not call undo when in textarea" name="useKeyboardShortcuts should not call undo when in textarea" time="0.006">
+    </testcase>
+    <testcase classname="useKeyboardShortcuts should not call undo when in select element" name="useKeyboardShortcuts should not call undo when in select element" time="0.004">
+    </testcase>
+    <testcase classname="useKeyboardShortcuts should not call undo when in contenteditable element" name="useKeyboardShortcuts should not call undo when in contenteditable element" time="0.003">
+    </testcase>
+    <testcase classname="useKeyboardShortcuts should work with Cmd key on Mac (metaKey)" name="useKeyboardShortcuts should work with Cmd key on Mac (metaKey)" time="0.003">
+    </testcase>
+    <testcase classname="useKeyboardShortcuts should not call undo when canUndo is false" name="useKeyboardShortcuts should not call undo when canUndo is false" time="0.005">
+    </testcase>
+    <testcase classname="useKeyboardShortcuts should not call redo when canRedo is false" name="useKeyboardShortcuts should not call redo when canRedo is false" time="0.005">
+    </testcase>
+    <testcase classname="useKeyboardShortcuts should ignore other key combinations" name="useKeyboardShortcuts should ignore other key combinations" time="0.003">
     </testcase>
   </testsuite>
-  <testsuite name="TodoList" errors="0" failures="0" skipped="2" timestamp="2025-12-19T08:35:40" time="2.194" tests="2">
+  <testsuite name="HistoryControls" errors="0" failures="0" skipped="0" timestamp="2025-12-22T09:25:35" time="3.46" tests="9">
+    <testcase classname="HistoryControls should render undo and redo buttons" name="HistoryControls should render undo and redo buttons" time="0.084">
+    </testcase>
+    <testcase classname="HistoryControls should enable undo button when canUndo is true" name="HistoryControls should enable undo button when canUndo is true" time="0.1">
+    </testcase>
+    <testcase classname="HistoryControls should disable undo button when canUndo is false" name="HistoryControls should disable undo button when canUndo is false" time="0.021">
+    </testcase>
+    <testcase classname="HistoryControls should enable redo button when canRedo is true" name="HistoryControls should enable redo button when canRedo is true" time="0.012">
+    </testcase>
+    <testcase classname="HistoryControls should disable redo button when canRedo is false" name="HistoryControls should disable redo button when canRedo is false" time="0.012">
+    </testcase>
+    <testcase classname="HistoryControls should call undo when undo button is clicked" name="HistoryControls should call undo when undo button is clicked" time="0.04">
+    </testcase>
+    <testcase classname="HistoryControls should call redo when redo button is clicked" name="HistoryControls should call redo when redo button is clicked" time="0.016">
+    </testcase>
+    <testcase classname="HistoryControls should have correct tooltips" name="HistoryControls should have correct tooltips" time="0.008">
+    </testcase>
+    <testcase classname="HistoryControls should have correct ARIA labels" name="HistoryControls should have correct ARIA labels" time="0.006">
+    </testcase>
+  </testsuite>
+  <testsuite name="ToastContext" errors="0" failures="0" skipped="0" timestamp="2025-12-22T09:25:35" time="3.475" tests="5">
+    <testcase classname="ToastContext should show and auto-remove toasts" name="ToastContext should show and auto-remove toasts" time="0.144">
+    </testcase>
+    <testcase classname="ToastContext should handle toast with action" name="ToastContext should handle toast with action" time="0.023">
+    </testcase>
+    <testcase classname="ToastContext should manually remove toast" name="ToastContext should manually remove toast" time="0.023">
+    </testcase>
+    <testcase classname="ToastContext should clear all toasts" name="ToastContext should clear all toasts" time="0.026">
+    </testcase>
+    <testcase classname="ToastContext should handle action click" name="ToastContext should handle action click" time="0.018">
+    </testcase>
+  </testsuite>
+  <testsuite name="Login Component" errors="0" failures="0" skipped="0" timestamp="2025-12-22T09:25:35" time="3.508" tests="3">
+    <testcase classname="Login Component renders username and password inputs and login button" name="Login Component renders username and password inputs and login button" time="0.241">
+    </testcase>
+    <testcase classname="Login Component calls onLogin with a token when valid credentials are entered" name="Login Component calls onLogin with a token when valid credentials are entered" time="0.072">
+    </testcase>
+    <testcase classname="Login Component shows error with invalid credentials" name="Login Component shows error with invalid credentials" time="0.084">
+    </testcase>
+  </testsuite>
+  <testsuite name="unit" errors="0" failures="0" skipped="0" timestamp="2025-12-22T09:25:35" time="3.555" tests="7">
+    <testcase classname="unit ForgotPassword renders form fields and back button" name="unit ForgotPassword renders form fields and back button" time="0.141">
+    </testcase>
+    <testcase classname="unit ForgotPassword shows error when required fields missing" name="unit ForgotPassword shows error when required fields missing" time="0.036">
+    </testcase>
+    <testcase classname="unit ForgotPassword shows error if passwords do not match" name="unit ForgotPassword shows error if passwords do not match" time="0.037">
+    </testcase>
+    <testcase classname="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" name="unit ForgotPassword shows message after successful password reset and calls switchToLogin after delay" time="0.056">
+    </testcase>
+    <testcase classname="unit ForgotPassword shows error if server returns !ok" name="unit ForgotPassword shows error if server returns !ok" time="0.032">
+    </testcase>
+    <testcase classname="unit ForgotPassword shows error on network/server failure" name="unit ForgotPassword shows error on network/server failure" time="0.027">
+    </testcase>
+    <testcase classname="unit ForgotPassword calls switchToLogin when Back to Login clicked" name="unit ForgotPassword calls switchToLogin when Back to Login clicked" time="0.011">
+    </testcase>
+  </testsuite>
+  <testsuite name="unit" errors="0" failures="0" skipped="0" timestamp="2025-12-22T09:25:35" time="3.684" tests="4">
+    <testcase classname="unit AdminPanel renders and shows no users pending approval" name="unit AdminPanel renders and shows no users pending approval" time="0.264">
+    </testcase>
+    <testcase classname="unit AdminPanel renders a list of pending users with approve buttons" name="unit AdminPanel renders a list of pending users with approve buttons" time="0.055">
+    </testcase>
+    <testcase classname="unit AdminPanel shows loading while fetching" name="unit AdminPanel shows loading while fetching" time="0.036">
+    </testcase>
+    <testcase classname="unit AdminPanel approves user and removes from list" name="unit AdminPanel approves user and removes from list" time="0.1">
+    </testcase>
+  </testsuite>
+  <testsuite name="TodoList" errors="0" failures="0" skipped="2" timestamp="2025-12-22T09:25:35" time="3.677" tests="3">
     <testcase classname="TodoList renders pagination controls when there are multiple pages" name="TodoList renders pagination controls when there are multiple pages" time="0">
       <skipped/>
     </testcase>
     <testcase classname="TodoList updates pagination when next button is clicked" name="TodoList updates pagination when next button is clicked" time="0">
       <skipped/>
     </testcase>
-  </testsuite>
-  <testsuite name="HistoryControls" errors="0" failures="0" skipped="0" timestamp="2025-12-19T08:35:40" time="2.338" tests="9">
-    <testcase classname="HistoryControls should render undo and redo buttons" name="HistoryControls should render undo and redo buttons" time="0.046">
-    </testcase>
-    <testcase classname="HistoryControls should enable undo button when canUndo is true" name="HistoryControls should enable undo button when canUndo is true" time="0.036">
-    </testcase>
-    <testcase classname="HistoryControls should disable undo button when canUndo is false" name="HistoryControls should disable undo button when canUndo is false" time="0.012">
-    </testcase>
-    <testcase classname="HistoryControls should enable redo button when canRedo is true" name="HistoryControls should enable redo button when canRedo is true" time="0.006">
-    </testcase>
-    <testcase classname="HistoryControls should disable redo button when canRedo is false" name="HistoryControls should disable redo button when canRedo is false" time="0.007">
-    </testcase>
-    <testcase classname="HistoryControls should call undo when undo button is clicked" name="HistoryControls should call undo when undo button is clicked" time="0.016">
-    </testcase>
-    <testcase classname="HistoryControls should call redo when redo button is clicked" name="HistoryControls should call redo when redo button is clicked" time="0.009">
-    </testcase>
-    <testcase classname="HistoryControls should have correct tooltips" name="HistoryControls should have correct tooltips" time="0.005">
-    </testcase>
-    <testcase classname="HistoryControls should have correct ARIA labels" name="HistoryControls should have correct ARIA labels" time="0.005">
+    <testcase classname="TodoList displays reminder status indicators correctly" name="TodoList displays reminder status indicators correctly" time="0.499">
     </testcase>
   </testsuite>
-  <testsuite name="useCommands" errors="0" failures="0" skipped="0" timestamp="2025-12-19T08:35:40" time="2.246" tests="7">
-    <testcase classname="useCommands createTodoCommand should create a todo and update state" name="useCommands createTodoCommand should create a todo and update state" time="0.004">
+  <testsuite name="TodoForm" errors="0" failures="0" skipped="0" timestamp="2025-12-22T09:25:35" time="3.788" tests="8">
+    <testcase classname="TodoForm handles tag input correctly" name="TodoForm handles tag input correctly" time="0.3">
     </testcase>
-    <testcase classname="useCommands createTodoCommand should undo create by deleting the todo" name="useCommands createTodoCommand should undo create by deleting the todo" time="0.002">
+    <testcase classname="TodoForm uses existing tag suggestions correctly" name="TodoForm uses existing tag suggestions correctly" time="0.044">
     </testcase>
-    <testcase classname="useCommands updateTodoCommand should update a todo and revert on undo" name="useCommands updateTodoCommand should update a todo and revert on undo" time="0.002">
+    <testcase classname="TodoForm renders the Create Todo form" name="TodoForm renders the Create Todo form" time="0.018">
     </testcase>
-    <testcase classname="useCommands deleteTodoCommand should delete a todo and restore on undo" name="useCommands deleteTodoCommand should delete a todo and restore on undo" time="0.001">
+    <testcase classname="TodoForm shows pending approval message if user.status is PENDING" name="TodoForm shows pending approval message if user.status is PENDING" time="0.006">
     </testcase>
-    <testcase classname="useCommands toggleCompleteCommand should toggle completion status" name="useCommands toggleCompleteCommand should toggle completion status" time="0.001">
+    <testcase classname="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" name="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" time="0.016">
     </testcase>
-    <testcase classname="useCommands error handling should handle create errors" name="useCommands error handling should handle create errors" time="0.021">
+    <testcase classname="TodoForm submits form, calls axios.post and navigates to /" name="TodoForm submits form, calls axios.post and navigates to /" time="0.05">
     </testcase>
-    <testcase classname="useCommands error handling should handle undo errors" name="useCommands error handling should handle undo errors" time="0.002">
+    <testcase classname="TodoForm includes reminderAt in payload when set" name="TodoForm includes reminderAt in payload when set" time="0.021">
     </testcase>
-  </testsuite>
-  <testsuite name="ToastContext" errors="0" failures="0" skipped="0" timestamp="2025-12-19T08:35:40" time="2.214" tests="5">
-    <testcase classname="ToastContext should show and auto-remove toasts" name="ToastContext should show and auto-remove toasts" time="0.081">
-    </testcase>
-    <testcase classname="ToastContext should handle toast with action" name="ToastContext should handle toast with action" time="0.015">
-    </testcase>
-    <testcase classname="ToastContext should manually remove toast" name="ToastContext should manually remove toast" time="0.015">
-    </testcase>
-    <testcase classname="ToastContext should clear all toasts" name="ToastContext should clear all toasts" time="0.018">
-    </testcase>
-    <testcase classname="ToastContext should handle action click" name="ToastContext should handle action click" time="0.009">
-    </testcase>
-  </testsuite>
-  <testsuite name="TodoForm" errors="0" failures="0" skipped="0" timestamp="2025-12-19T08:35:40" time="2.431" tests="6">
-    <testcase classname="TodoForm handles tag input correctly" name="TodoForm handles tag input correctly" time="0.155">
-    </testcase>
-    <testcase classname="TodoForm uses existing tag suggestions correctly" name="TodoForm uses existing tag suggestions correctly" time="0.023">
-    </testcase>
-    <testcase classname="TodoForm renders the Create Todo form" name="TodoForm renders the Create Todo form" time="0.01">
-    </testcase>
-    <testcase classname="TodoForm submits form, calls axios.post and navigates to /" name="TodoForm submits form, calls axios.post and navigates to /" time="0.047">
-    </testcase>
-    <testcase classname="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" name="TodoForm calls navigate(&apos;/&apos;) when Back button is clicked" time="0.011">
-    </testcase>
-    <testcase classname="TodoForm submits form, calls axios.post and navigates to /" name="TodoForm submits form, calls axios.post and navigates to /" time="0.039">
+    <testcase classname="TodoForm does not include reminderAt in payload when not set" name="TodoForm does not include reminderAt in payload when not set" time="0.026">
     </testcase>
   </testsuite>
 </testsuites>

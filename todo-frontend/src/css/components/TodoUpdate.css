@@ -3,8 +3,13 @@
   min-height: 100vh;
   background: linear-gradient(120deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: auto;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 /* Form Container */
@@ -18,6 +23,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-height: 90vh;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 /* Logo Image Section */
@@ -47,6 +55,8 @@
   flex-direction: column;
   gap: 1.23rem;
   margin-top: 18px;
+  overflow: auto;
+  padding-bottom: 12px; /* ensure content doesn't hide behind sticky buttons */
 }
 
 /* Label */
@@ -97,6 +107,12 @@
 .todoupdate-button-row {
   display: flex;
   gap: 7px;
+  position: sticky;
+  bottom: 0;
+  background: var(--bg-secondary);
+  padding-top: 8px;
+  padding-bottom: 8px;
+  z-index: 10; /* keep above form content */
 }
 
 /* Primary Button (Update) */

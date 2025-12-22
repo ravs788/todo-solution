@@ -20,7 +20,6 @@ import { ToastProvider } from "./context/ToastContext";
 import { UndoRedoProvider } from "./context/UndoRedoContext";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import AuthContext from "./context/AuthContext";
-import ToastContainer from "./components/ToastContainer";
 
 function AllRoutes({ authToken, handleLogin, handleLogout, loginMessage, setLoginMessage }) {
   const { user } = useContext(AuthContext) || {};

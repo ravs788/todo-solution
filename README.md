@@ -114,7 +114,8 @@ todo-solution/
 
 - **Cross-browser** E2E for Chromium, Firefox, WebKit
 - **Page Object Model (POM):** LoginPage, HomePage, TodoPage, etc.
-- **Fully headless/parallel or headed runs**
+- Headless by default; pass `--headed` locally to debug with UI
+- Retries: 2 on failure (configured in Playwright)
 - **Data-driven:** Loads sample users/todos from `test-data/`
 - **Parameterized tests:** Data-driven per-user and per-scenario runs
 - **Tag & grep:** Add `@smoke`, `@regression`, etc. in test titles and filter with `--grep`
@@ -250,7 +251,7 @@ These scripts handle changing to the right directory and (on Windows) also handl
   ```
   bat-scripts\run_frontend_tests.bat
   ```
-- **All Tests (backend + frontend):**  
+- **All Tests (backend + frontend + E2E):**  
   ```
   bat-scripts\run_all_tests.bat
   ```
@@ -284,6 +285,10 @@ These scripts handle changing to the right directory and (on Windows) also handl
 - ```
   bat-scripts\run_playwright_tests.bat
   ```
+Headless by default; add `--headed` to run with UI:
+```
+bat-scripts\run_playwright_tests.bat --headed
+```
 
 #### Mac/Linux
 
@@ -328,6 +333,10 @@ PRs and suggestions are welcome! Please open issues or submit pull requests. Run
 ### Pagination and Page Size Selection
 - The Todo List UI now supports a "Rows per page" dropdown with options for 5, 10 (default), and 25.
 - The dropdown is displayed to the far right of the pagination controls below the table, while the Prev/Next controls remain centered.
+
+### Test Runner Updates
+- Windows unified test runner now includes Playwright E2E: `bat-scripts\run_all_tests.bat` (backend + frontend + E2E)
+- Playwright defaults: headless by default and 2 retries on failure (override with `--headed` when needed)
 
 ## 📄 License
 

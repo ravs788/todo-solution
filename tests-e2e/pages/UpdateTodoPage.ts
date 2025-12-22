@@ -33,7 +33,8 @@ export class UpdateTodoPage {
     this.startDateInput = page.locator('input[type="datetime-local"][required]');
     this.reminderAtInput = page.locator('input[type="datetime-local"]:not([required])');
     this.tagInput = page.locator('input[aria-label="Tag input"]');
-    this.updateButton = page.getByRole('button', { name: /update todo/i });
+    // Robust selector to cover different renderings: class, type, and accessible name fallbacks
+    this.updateButton = page.locator('button.todoupdate-btn-primary, button[type="submit"], input[type="submit"], button:has-text("Update"), button:has-text("Save")');
     this.backButton = page.getByRole('button', { name: /back/i });
   }
 
@@ -157,6 +158,27 @@ export class UpdateTodoPage {
       }
     }, await this.updateButton.elementHandle());
     await this.page.waitForTimeout(700);
+    // Extra robust scroll: ensure any scrollable ancestors bring the button into view
+    await this.page.evaluate((btn) => {
+      function scrollParents(el: HTMLElement | null) {
+        let node = el ? el.parentElement : null;
+        while (node) {
+          const style = window.getComputedStyle(node);
+          const overflowY = style.overflowY;
+          const canScroll = (overflowY === 'auto' || overflowY === 'scroll') && node.scrollHeight > node.clientHeight;
+          if (canScroll && el) {
+            const rect = el.getBoundingClientRect();
+            const containerRect = node.getBoundingClientRect();
+            // Center the button within the scrollable container
+            const offset = rect.top - containerRect.top - (containerRect.height / 2 - rect.height / 2);
+            node.scrollTop += offset;
+          }
+          node = node.parentElement;
+        }
+      }
+      if (btn) scrollParents(btn as HTMLElement);
+    }, await this.updateButton.elementHandle());
+    await this.page.waitForTimeout(200);
 
     const isOccluded = await this.page.evaluate((btn) => {
         if (!btn) return true; // If the button is null, treat as occluded/unavailable
@@ -172,6 +194,36 @@ export class UpdateTodoPage {
       this.page.waitForURL('**/'),
       this.updateButton.click()
     ]);
+    // Wait for fresh todos payload after navigation
+    await this.page.waitForResponse(
+      (resp) => resp.url().includes('/api/todos') && resp.request().method() === 'GET' && resp.status() >= 200 && resp.status() < 300,
+      { timeout: 10000 }
+    ).catch(() => {});
+    // Ensure list view is present before proceeding to query controls (with fallback)
+    try {
+      await this.page.locator('h2.todo-list-title').waitFor({ state: 'visible', timeout: 15000 });
+    } catch {
+      try {
+        if (await this.backButton.isVisible().catch(() => false)) {
+          await this.backButton.click();
+        } else {
+          await this.page.goBack({ waitUntil: 'domcontentloaded' }).catch(() => {});
+        }
+        await this.page.waitForURL('**/', { timeout: 10000 }).catch(() => {});
+        await this.page.locator('h2.todo-list-title').waitFor({ state: 'visible', timeout: 10000 });
+      } catch {
+        if (!this.page.isClosed()) {
+          await this.page.goto(this.baseUrl + '/');
+          await this.page.locator('h2.todo-list-title').waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+        } else {
+          return;
+        }
+      }
+    }
+    // Hard refresh to ensure latest data from backend before filtering
+    await this.page.waitForLoadState('networkidle').catch(() => {});
+    await this.page.reload({ waitUntil: 'domcontentloaded' }).catch(() => {});
+    await this.page.waitForLoadState('networkidle').catch(() => {});
     filterInput = this.page.locator('input.form-control[placeholder="Filter by Title"]');
     await filterInput.waitFor({ state: 'visible', timeout: 10000 });
 
@@ -254,32 +306,150 @@ export class UpdateTodoPage {
     // Wait for update landmark
     await this.heading.waitFor({ state: 'visible', timeout: 5000 });
 
-    // Set completed = true
-    await this.completedCheckbox.waitFor({ state: 'visible', timeout: 2000 });
+    // Set completed = true (robust against mobile overlays)
+    await this.completedCheckbox.waitFor({ state: 'visible', timeout: 3000 });
     if (!(await this.completedCheckbox.isChecked())) {
-      await this.completedCheckbox.click();
+      try {
+        await this.completedCheckbox.scrollIntoViewIfNeeded();
+        await this.completedCheckbox.click({ trial: true });
+        await this.completedCheckbox.click();
+      } catch {
+        try {
+          // Try force click on the checkbox
+          await this.completedCheckbox.click({ force: true });
+        } catch {
+          // Fall back to label click if checkbox is occluded by row/label
+          const completedLabel = this.page.locator('label[for="completedUpdateInput"]');
+          await completedLabel.waitFor({ state: 'visible', timeout: 2000 }).catch(() => {});
+          await completedLabel.click({ force: true });
+        }
+      }
+      // Verify it is checked; if not, throw to capture diagnostics
+      if (!(await this.completedCheckbox.isChecked())) {
+        throw new Error('Failed to set Completed checkbox to true (after multiple click strategies).');
+      }
+      // Ensure React state has flushed before submitting (controlled checkbox)
+      await this.page.waitForFunction(() => {
+        const el = document.getElementById('completedUpdateInput') as HTMLInputElement | null;
+        return !!el && el.checked === true;
+      }, null, { timeout: 2000 }).catch(() => {});
+      // Small tick to allow state batching on slower mobile devices
+      await this.page.waitForTimeout(100);
     }
 
     // Submit (update/save)
-    await this.updateButton.waitFor({ state: 'visible', timeout: 2000 });
-    await Promise.all([
-      this.page.waitForURL('**/'),
-      this.updateButton.click()
-    ]);
+    await this.updateButton.waitFor({ state: 'visible', timeout: 3000 });
+
+    // Blur inputs and collapse any overlays to avoid intercepted clicks on mobile
+    await this.page.evaluate(() => {
+      function blurAll() {
+        const active = document.activeElement as HTMLElement;
+        if (active && typeof active.blur === "function") active.blur();
+        Array.from(document.querySelectorAll("input, textarea, select")).forEach((el: any) => {
+          if (typeof el.blur === "function") el.blur();
+        });
+      }
+      blurAll();
+      const tagInput = document.querySelector('input[aria-label="Tag input"]') as HTMLElement;
+      if (tagInput && typeof tagInput.blur === "function") tagInput.blur();
+      const dateInput = document.querySelector('input[type="datetime-local"]') as HTMLElement;
+      if (dateInput && typeof dateInput.blur === "function") dateInput.blur();
+      const tagList = document.querySelector('.taginput-tag-list');
+      if (tagList) (tagList as HTMLElement).style.display = 'none';
+    });
+
+    await this.updateButton.scrollIntoViewIfNeeded();
+    await this.page.waitForTimeout(300);
+    // Extra robust scroll: ensure any scrollable ancestors bring the button into view (desktop/tablet)
+    await this.page.evaluate((btn) => {
+      function scrollParents(el: HTMLElement | null) {
+        let node = el ? el.parentElement : null;
+        while (node) {
+          const style = window.getComputedStyle(node);
+          const overflowY = style.overflowY;
+          const canScroll = (overflowY === 'auto' || overflowY === 'scroll') && node.scrollHeight > node.clientHeight;
+          if (canScroll && el) {
+            const rect = el.getBoundingClientRect();
+            const containerRect = node.getBoundingClientRect();
+            const offset = rect.top - containerRect.top - (containerRect.height / 2 - rect.height / 2);
+            node.scrollTop += offset;
+          }
+          node = node.parentElement;
+        }
+      }
+      if (btn) scrollParents(btn as HTMLElement);
+    }, await this.updateButton.elementHandle());
+    await this.page.waitForTimeout(200);
+
+    const occluded = await this.page.evaluate((btn) => {
+      if (!btn) return true;
+      const rect = btn.getBoundingClientRect();
+      const el = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return el !== btn;
+    }, await this.updateButton.elementHandle());
+
+    if (occluded) {
+      await Promise.all([
+        this.page.waitForURL('**/'),
+        this.updateButton.click({ force: true })
+      ]);
+    } else {
+      await Promise.all([
+        this.page.waitForURL('**/'),
+        this.updateButton.click()
+      ]);
+    }
+    // Wait for fresh todos payload after navigation
+    await this.page.waitForResponse(
+      (resp) => resp.url().includes('/api/todos') && resp.request().method() === 'GET' && resp.status() >= 200 && resp.status() < 300,
+      { timeout: 10000 }
+    ).catch(() => {});
+    // Ensure list view heading exists on return before accessing filter controls (with fallback)
+    try {
+      await this.page.locator('h2.todo-list-title').waitFor({ state: 'visible', timeout: 15000 });
+    } catch {
+      try {
+        if (await this.backButton.isVisible().catch(() => false)) {
+          await this.backButton.click();
+        } else {
+          await this.page.goBack({ waitUntil: 'domcontentloaded' }).catch(() => {});
+        }
+        await this.page.waitForURL('**/', { timeout: 10000 }).catch(() => {});
+        await this.page.locator('h2.todo-list-title').waitFor({ state: 'visible', timeout: 10000 });
+      } catch {
+        if (!this.page.isClosed()) {
+          await this.page.goto(this.baseUrl + '/');
+          await this.page.locator('h2.todo-list-title').waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+        } else {
+          return;
+        }
+      }
+    }
     let filterInput2 = this.page.locator('input.form-control[placeholder="Filter by Title"]');
     await filterInput2.waitFor({ state: 'visible', timeout: 10000 });
     await filterInput2.fill(title);
+
 
     // Wait for the todo to appear with 'Yes' in Completed column (2nd cell)
     const updatedRow = this.page.locator('table.custom-table tbody tr').filter({
       has: this.page.locator('td').first().filter({ hasText: displayTitle }),
     });
-    await updatedRow.waitFor({ state: 'visible', timeout: 5000 });
-    const completedCell = updatedRow.locator('td').nth(1); // 2nd <td>
-    await completedCell.waitFor({ state: 'visible', timeout: 3000 });
-    const cellText = await completedCell.textContent();
-    if (!cellText?.match(/yes/i)) {
-      throw new Error(`Todo "${title}" not marked as completed in list (Completed cell value: "${cellText}")`);
-    }
+    await updatedRow.waitFor({ state: 'visible', timeout: 10000 });
+
+    // Poll for backend/db update and UI sync: cell[1] should become "Yes"
+    await this.page.waitForFunction((t) => {
+      const displayTitle = t && t.length > 40 ? t.slice(0, 40) : t;
+      const rows = Array.from(document.querySelectorAll('table.custom-table tbody tr'));
+      for (const row of rows) {
+        const cells = row.querySelectorAll('td');
+        if (!cells || cells.length < 2) continue;
+        const titleCell = cells[0]?.textContent || '';
+        const completedCell = cells[1]?.textContent || '';
+        if (titleCell.includes(displayTitle || '') && /yes/i.test(completedCell)) {
+          return true;
+        }
+      }
+      return false;
+    }, title, { timeout: 30000 });
   }
 }

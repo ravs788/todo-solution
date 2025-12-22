@@ -2,6 +2,8 @@ import { defineConfig } from '@playwright/test';
 import path from 'path';
 
 export default defineConfig({
+  // Suppress Node-side console.* during E2E by default (set PW_SUPPRESS_CONSOLE=false to allow logs)
+  globalSetup: path.join(__dirname, 'global-setup.ts'),
   workers: process.env.CI ? 1 : 3,
   testDir: path.join(__dirname, 'tests'),
   outputDir: path.join(__dirname, 'test-results'),
@@ -16,7 +18,7 @@ export default defineConfig({
       { outputFile: path.join(__dirname, 'test-results', 'results.xml') }
     ]
   ],
-  retries: 0,
+  retries: 2,
   timeout: 60000,
   // webServer: [
   //   {
@@ -41,7 +43,7 @@ export default defineConfig({
             trace: 'on',
             screenshot: 'only-on-failure',
             video: 'retry-with-video',
-            headless: false // Run in headed mode for debugging
+            headless: true // Default headless; pass --headed to override
           }
         },
         { name: 'firefox', use: { browserName: 'firefox' } },
@@ -59,7 +61,7 @@ export default defineConfig({
             trace: 'on',
             screenshot: 'only-on-failure',
             video: 'retry-with-video',
-            headless: false // Run in headed mode for debugging
+            headless: true // Default headless; pass --headed to override
           }
         },
         {

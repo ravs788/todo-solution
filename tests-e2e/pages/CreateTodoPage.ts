@@ -27,7 +27,9 @@ export class CreateTodoPage {
     this.activityTypeOptionDefinite = page.locator('option[value="definite"]');
     this.activityTypeOptionRegular = page.locator('option[value="regular"]');
     this.completedCheckbox = page.locator('#completedInput');
-    this.startDateInput = page.locator('input[type="datetime-local"]');
+    // Narrow datetime-local fields by accessible name to avoid strict mode violations
+    this.startDateInput = page.getByRole('textbox', { name: 'Start Date' });
+    this.reminderAtInput = page.getByRole('textbox', { name: /Reminder At/i });
     this.createButton = page.getByRole('button', { name: /create/i });
     this.backButton = page.getByRole('button', { name: /^Back$/ });
   }
@@ -92,20 +94,27 @@ export class CreateTodoPage {
     });
 
     // Robustly scroll Create button node (not selector guess)
-    await this.page.evaluate((btn) => {
-      if (btn && typeof btn.scrollIntoView === "function") {
-        btn.scrollIntoView({ behavior: "instant", block: "center", inline: "center" });
-      }
-    }, await this.createButton.elementHandle());
+    const btnHandle = await this.createButton.elementHandle();
+    if (btnHandle) {
+      await this.page.evaluate((btn) => {
+        if (btn && typeof (btn as any).scrollIntoView === "function") {
+          (btn as any).scrollIntoView({ behavior: "instant", block: "center", inline: "center" });
+        }
+      }, btnHandle);
+    }
 
     await this.page.waitForTimeout(700);
 
     // Extra: check the Create button is really visible and not occluded
-    const isOccluded = await this.page.evaluate((btn) => {
-        const rect = btn.getBoundingClientRect();
+    let isOccluded = false;
+    const btnHandle2 = await this.createButton.elementHandle();
+    if (btnHandle2) {
+      isOccluded = await this.page.evaluate((btn) => {
+        const rect = (btn as HTMLElement).getBoundingClientRect();
         const docEl = document.elementFromPoint(rect.left + rect.width/2, rect.top + rect.height/2);
         return docEl !== btn;
-    }, await this.createButton.elementHandle());
+      }, btnHandle2);
+    }
     if (isOccluded) {
       throw new Error('Create button is occluded by another element after all scroll/blur attempts. Check floating UI, virtual keyboard, and overlays.');
     }

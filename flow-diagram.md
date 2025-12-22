@@ -196,6 +196,8 @@ classDiagram
 
 - **Unit** and **integration tests** are present and require an accessible SQL Server.
 - **All GitHub Actions pipelines are currently commented out** - see `.github/workflows/`.
+- Playwright E2E runs headless by default with 2 retries on failure; pass `--headed` locally to debug the UI.
+- On Windows, `bat-scripts\run_all_tests.bat` runs backend, frontend, and E2E tests in one command.
 
 ---
 
