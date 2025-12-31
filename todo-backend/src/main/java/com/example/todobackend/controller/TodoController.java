@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import com.example.todobackend.model.Tag;
+import com.example.todobackend.model.Priority;
 import java.time.LocalDateTime;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -97,7 +98,8 @@ public class TodoController {
         // Handle tags update: if tags list provided in request, update tags accordingly
         if (todoRequest.getTags() != null) {
             Set<Tag> tags = todoService.resolveTagsFromNames(todoRequest.getTags());
-            // Replace existing tag links properly to avoid duplicate key errors in join table
+            // Replace existing tag links properly to avoid duplicate key errors in join
+            // table
             if (up.getTags() == null) {
                 up.setTags(new java.util.HashSet<>());
             }
@@ -113,8 +115,13 @@ public class TodoController {
             up.setReminderAt(null);
             up.setReminderStatus(null);
         }
+
+        // Handle priority update
+        if (todoRequest.getPriority() != null) {
+            up.setPriority(Priority.valueOf(todoRequest.getPriority().toUpperCase()));
+        }
         // Auto set endDate if marking completed (transition from false->true)
-        if ((wasCompleted == null || !wasCompleted) && willBeCompleted) {
+        if ((wasCompleted == null || !wasCompleted) && willBeCompleted && todoRequest.getEndDate() == null) {
             up.setEndDate(LocalDateTime.now());
         }
         Todo updated = todoService.save(up);
@@ -129,5 +136,15 @@ public class TodoController {
         }
         todoService.deleteByIdAndUsername(id, username);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/reorder")
+    public ResponseEntity<List<Todo>> reorderTodos(@RequestBody List<Integer> orderedIds) {
+        String username = getCurrentUsername();
+        if (username == null || username.trim().isEmpty()) {
+            return ResponseEntity.status(401).body(java.util.List.of());
+        }
+        List<Todo> ordered = todoService.reorderTodos(username, orderedIds);
+        return ResponseEntity.ok(ordered);
     }
 }

@@ -184,7 +184,6 @@ const doDelete = async () => {
         // Make a safe copy/hermetic, with only the backend-required fields
         const {
           title,
-          description,
           completed,
           startDate,
           endDate,

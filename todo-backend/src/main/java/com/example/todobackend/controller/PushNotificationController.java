@@ -4,7 +4,6 @@ import com.example.todobackend.model.PushSubscription;
 import com.example.todobackend.model.User;
 import com.example.todobackend.repository.UserRepository;
 import com.example.todobackend.service.PushNotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,7 +22,6 @@ public class PushNotificationController {
     private final PushNotificationService pushService;
     private final UserRepository userRepository;
 
-    @Autowired
     public PushNotificationController(PushNotificationService pushService, UserRepository userRepository) {
         this.pushService = pushService;
         this.userRepository = userRepository;
@@ -56,13 +54,14 @@ public class PushNotificationController {
         }
 
         try {
-            // Extract subscription data from the request
+            // Extract subscription data from the request safely
+            Object keysObj = subscriptionData.get("keys");
             @SuppressWarnings("unchecked")
-            Map<String, Object> keys = (Map<String, Object>) subscriptionData.get("keys");
+            Map<String, Object> keys = (keysObj instanceof Map) ? (Map<String, Object>) keysObj : null;
 
             String endpoint = (String) subscriptionData.get("endpoint");
-            String p256dhKey = (String) keys.get("p256dh");
-            String authKey = (String) keys.get("auth");
+            String p256dhKey = (keys == null) ? null : (String) keys.get("p256dh");
+            String authKey = (keys == null) ? null : (String) keys.get("auth");
 
             if (endpoint == null || p256dhKey == null || authKey == null) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Invalid subscription data"));

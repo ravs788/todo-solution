@@ -26,6 +26,8 @@ public class TodoRequest {
     // Due date reminders
     private LocalDateTime reminderAt;
 
+    private String priority; // "HIGH", "MEDIUM", "LOW" or null
+
     // Convenience constructor matching older tests (without reminderAt)
     public TodoRequest(String title, Boolean completed, LocalDateTime startDate, String activityType,
             LocalDateTime endDate, List<String> tags) {
@@ -36,5 +38,6 @@ public class TodoRequest {
         this.endDate = endDate;
         this.tags = tags;
         this.reminderAt = null;
+        this.priority = null;
     }
 }

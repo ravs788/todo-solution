@@ -12,12 +12,10 @@ import com.example.todobackend.dto.TodoRequest;
 import com.example.todobackend.model.Todo;
 import com.example.todobackend.repository.TodoRepository;
 import com.example.todobackend.repository.UserRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.nio.file.Paths;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -56,7 +54,8 @@ public class TodoIntegrationTest {
 
     private <T> T loadTestData(String fileName, Class<T> clazz) throws IOException {
         try (java.io.InputStream is = getClass().getClassLoader().getResourceAsStream("test-data/" + fileName)) {
-            if (is == null) throw new java.io.FileNotFoundException("test-data/" + fileName + " not found in classpath");
+            if (is == null)
+                throw new java.io.FileNotFoundException("test-data/" + fileName + " not found in classpath");
             return objectMapper.readValue(is, clazz);
         }
     }
@@ -82,17 +81,15 @@ public class TodoIntegrationTest {
         adminLogin.setUsername("admin");
         adminLogin.setPassword("password");
         String adminToken = restTemplate.postForEntity(
-            "/api/auth/login",
-            adminLogin,
-            String.class
-        ).getBody();
+                "/api/auth/login",
+                adminLogin,
+                String.class).getBody();
         HttpHeaders adminHeaders = new HttpHeaders();
         adminHeaders.set("Authorization", "Bearer " + adminToken);
         restTemplate.postForEntity(
-            "/api/auth/approve/" + testUser,
-            new HttpEntity<>(adminHeaders),
-            String.class
-        );
+                "/api/auth/approve/" + testUser,
+                new HttpEntity<>(adminHeaders),
+                String.class);
 
         // Now login as test user and get token
         String loginUrl = "/api/auth/login";
@@ -181,27 +178,32 @@ public class TodoIntegrationTest {
         ResponseEntity<Todo[]> testUserTodosResp = restTemplate.exchange(
                 todosUrl, HttpMethod.GET, new HttpEntity<>(testUserHeaders), Todo[].class);
         Assertions.assertNotNull(testUserTodosResp.getBody());
-        // Ensure visibility is isolated: created todo for testUser is present, and user2's todo is not
+        // Ensure visibility is isolated: created todo for testUser is present, and
+        // user2's todo is not
         Assertions.assertTrue(java.util.Arrays.stream(testUserTodosResp.getBody())
-            .anyMatch(t -> (testUser + "'s todo").equals(t.getTitle())), "Created todo must be present for testUser");
+                .anyMatch(t -> (testUser + "'s todo").equals(t.getTitle())),
+                "Created todo must be present for testUser");
         Assertions.assertFalse(java.util.Arrays.stream(testUserTodosResp.getBody())
-            .anyMatch(t -> (user2 + "'s todo").equals(t.getTitle())), "No todos from other users should be visible");
+                .anyMatch(t -> (user2 + "'s todo").equals(t.getTitle())),
+                "No todos from other users should be visible");
 
         // user2 only sees their own todo
         ResponseEntity<Todo[]> user2TodosResp = restTemplate.exchange(
                 todosUrl, HttpMethod.GET, new HttpEntity<>(user2Headers), Todo[].class);
         Assertions.assertNotNull(user2TodosResp.getBody());
-        // Ensure visibility is isolated: created todo for user2 is present, and testUser's todo is not
+        // Ensure visibility is isolated: created todo for user2 is present, and
+        // testUser's todo is not
         Assertions.assertTrue(java.util.Arrays.stream(user2TodosResp.getBody())
-            .anyMatch(t -> (user2 + "'s todo").equals(t.getTitle())), "Created todo must be present for user2");
+                .anyMatch(t -> (user2 + "'s todo").equals(t.getTitle())), "Created todo must be present for user2");
         Assertions.assertFalse(java.util.Arrays.stream(user2TodosResp.getBody())
-            .anyMatch(t -> (testUser + "'s todo").equals(t.getTitle())), "No todos from other users should be visible");
+                .anyMatch(t -> (testUser + "'s todo").equals(t.getTitle())),
+                "No todos from other users should be visible");
 
         // CLEANUP for user2 as well
         todoRepository.findAllByUsername(user2)
-            .forEach(todo -> todoRepository.deleteById(todo.getId()));
+                .forEach(todo -> todoRepository.deleteById(todo.getId()));
         userRepository.findByUsername(user2)
-            .ifPresent(user -> userRepository.deleteById(user.getId()));
+                .ifPresent(user -> userRepository.deleteById(user.getId()));
     }
 
     @Test
@@ -221,17 +223,15 @@ public class TodoIntegrationTest {
         adminLogin.setUsername("admin");
         adminLogin.setPassword("password");
         String adminToken = restTemplate.postForEntity(
-            "/api/auth/login",
-            adminLogin,
-            String.class
-        ).getBody();
+                "/api/auth/login",
+                adminLogin,
+                String.class).getBody();
         HttpHeaders adminHeaders = new HttpHeaders();
         adminHeaders.set("Authorization", "Bearer " + adminToken);
         restTemplate.postForEntity(
-            "/api/auth/approve/" + uniqueUser,
-            new HttpEntity<>(adminHeaders),
-            String.class
-        );
+                "/api/auth/approve/" + uniqueUser,
+                new HttpEntity<>(adminHeaders),
+                String.class);
         // Login as test user
         String token = restTemplate.postForEntity("/api/auth/login", loginRequest, String.class).getBody();
         HttpHeaders headers = new HttpHeaders();
@@ -261,11 +261,11 @@ public class TodoIntegrationTest {
         Todo[] todos = allTodosResp.getBody();
         Assertions.assertNotNull(todos);
         Assertions.assertTrue(java.util.Arrays.stream(todos)
-            .anyMatch(t -> t.getTags() != null && t.getTags().size() == 2));
+                .anyMatch(t -> t.getTags() != null && t.getTags().size() == 2));
 
         // Test tag suggestion endpoint
         ResponseEntity<String[]> suggestResp = restTemplate.exchange(
-            "/api/tags?search=wor", HttpMethod.GET, null, String[].class);
+                "/api/tags?search=wor", HttpMethod.GET, null, String[].class);
         Assertions.assertEquals(HttpStatus.OK, suggestResp.getStatusCode());
         String[] suggestions = suggestResp.getBody();
         Assertions.assertNotNull(suggestions);
@@ -289,17 +289,15 @@ public class TodoIntegrationTest {
         adminLogin.setUsername("admin");
         adminLogin.setPassword("password");
         String adminToken = restTemplate.postForEntity(
-            "/api/auth/login",
-            adminLogin,
-            String.class
-        ).getBody();
+                "/api/auth/login",
+                adminLogin,
+                String.class).getBody();
         HttpHeaders adminHeaders = new HttpHeaders();
         adminHeaders.set("Authorization", "Bearer " + adminToken);
         restTemplate.postForEntity(
-            "/api/auth/approve/" + uniqueUser,
-            new HttpEntity<>(adminHeaders),
-            String.class
-        );
+                "/api/auth/approve/" + uniqueUser,
+                new HttpEntity<>(adminHeaders),
+                String.class);
         // Login as test user
         String token = restTemplate.postForEntity("/api/auth/login", loginRequest, String.class).getBody();
         HttpHeaders headers = new HttpHeaders();
@@ -327,11 +325,10 @@ public class TodoIntegrationTest {
         HttpEntity<TodoRequest> updateReq = new HttpEntity<>(updateRequest, headers);
 
         ResponseEntity<Todo> updateResponse = restTemplate.exchange(
-            "/api/todos/" + created.getId(),
-            HttpMethod.PUT,
-            updateReq,
-            Todo.class
-        );
+                "/api/todos/" + created.getId(),
+                HttpMethod.PUT,
+                updateReq,
+                Todo.class);
         Assertions.assertEquals(HttpStatus.OK, updateResponse.getStatusCode());
         Todo updated = updateResponse.getBody();
         Assertions.assertNotNull(updated);
@@ -342,15 +339,96 @@ public class TodoIntegrationTest {
         updateRequest.setReminderAt(java.time.LocalDateTime.now().plusHours(2));
         updateReq = new HttpEntity<>(updateRequest, headers);
         ResponseEntity<Todo> updateResponse2 = restTemplate.exchange(
-            "/api/todos/" + created.getId(),
-            HttpMethod.PUT,
-            updateReq,
-            Todo.class
-        );
+                "/api/todos/" + created.getId(),
+                HttpMethod.PUT,
+                updateReq,
+                Todo.class);
         Assertions.assertEquals(HttpStatus.OK, updateResponse2.getStatusCode());
         Todo updated2 = updateResponse2.getBody();
         Assertions.assertNotNull(updated2);
         Assertions.assertNotNull(updated2.getReminderAt());
         Assertions.assertEquals(com.example.todobackend.model.ReminderStatus.PENDING, updated2.getReminderStatus());
+    }
+
+    @Test
+    @Story("Reorder Todos")
+    @Description("Verify that PUT /api/todos/reorder persists new ordering and GET /api/todos returns items in the new order")
+    @Severity(SeverityLevel.CRITICAL)
+    public void reorder_todos_persists_order_for_user() throws IOException {
+        // Prepare unique test user and login
+        String uniqueUser = "reorder_" + System.currentTimeMillis();
+
+        LoginRequest loginRequest = loadTestData("login-request.json", LoginRequest.class);
+        loginRequest.setUsername(uniqueUser);
+
+        // Register and approve
+        restTemplate.postForEntity("/api/auth/register", loginRequest, String.class);
+
+        LoginRequest adminLogin = new LoginRequest();
+        adminLogin.setUsername("admin");
+        adminLogin.setPassword("password");
+        String adminToken = restTemplate.postForEntity(
+                "/api/auth/login",
+                adminLogin,
+                String.class).getBody();
+        HttpHeaders adminHeaders = new HttpHeaders();
+        adminHeaders.set("Authorization", "Bearer " + adminToken);
+        restTemplate.postForEntity(
+                "/api/auth/approve/" + uniqueUser,
+                new HttpEntity<>(adminHeaders),
+                String.class);
+
+        // Login as test user
+        String token = restTemplate.postForEntity("/api/auth/login", loginRequest, String.class).getBody();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Create three todos in default order
+        TodoRequest r1 = new TodoRequest();
+        r1.setTitle("First");
+        r1.setCompleted(false);
+        Todo t1 = restTemplate.postForEntity("/api/todos", new HttpEntity<>(r1, headers), Todo.class).getBody();
+        TodoRequest r2 = new TodoRequest();
+        r2.setTitle("Second");
+        r2.setCompleted(false);
+        Todo t2 = restTemplate.postForEntity("/api/todos", new HttpEntity<>(r2, headers), Todo.class).getBody();
+        TodoRequest r3 = new TodoRequest();
+        r3.setTitle("Third");
+        r3.setCompleted(false);
+        Todo t3 = restTemplate.postForEntity("/api/todos", new HttpEntity<>(r3, headers), Todo.class).getBody();
+
+        Assertions.assertNotNull(t1);
+        Assertions.assertNotNull(t2);
+        Assertions.assertNotNull(t3);
+
+        // Reorder to [t3, t1, t2]
+        java.util.List<Integer> newOrder = java.util.Arrays.asList(t3.getId(), t1.getId(), t2.getId());
+        ResponseEntity<Todo[]> reorderResp = restTemplate.exchange(
+                "/api/todos/reorder",
+                HttpMethod.PUT,
+                new HttpEntity<>(newOrder, headers),
+                Todo[].class);
+        Assertions.assertEquals(HttpStatus.OK, reorderResp.getStatusCode());
+        Todo[] orderedAfter = reorderResp.getBody();
+        Assertions.assertNotNull(orderedAfter);
+        Assertions.assertEquals(3, orderedAfter.length);
+        Assertions.assertEquals(newOrder.get(0), orderedAfter[0].getId());
+        Assertions.assertEquals(newOrder.get(1), orderedAfter[1].getId());
+        Assertions.assertEquals(newOrder.get(2), orderedAfter[2].getId());
+
+        // GET should return the same order
+        ResponseEntity<Todo[]> listResp = restTemplate.exchange(
+                "/api/todos",
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                Todo[].class);
+        Assertions.assertEquals(HttpStatus.OK, listResp.getStatusCode());
+        Todo[] listed = listResp.getBody();
+        Assertions.assertNotNull(listed);
+        Assertions.assertEquals(3, listed.length);
+        Assertions.assertEquals(newOrder.get(0), listed[0].getId());
+        Assertions.assertEquals(newOrder.get(1), listed[1].getId());
+        Assertions.assertEquals(newOrder.get(2), listed[2].getId());
     }
 }

@@ -15,6 +15,7 @@ const TodoUpdate = () => {
   const [startDate, setStartDate] = useState("");
   const [reminderAt, setReminderAt] = useState("");
   const [tags, setTags] = useState([]);
+  const [priority, setPriority] = useState("MEDIUM");
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
@@ -40,6 +41,7 @@ const TodoUpdate = () => {
         if (response.data.tags) {
           setTags(response.data.tags.map(tag => tag.name));
         }
+        setPriority(response.data.priority || "MEDIUM");
       })
       .catch((error) => {
         // Error fetching todo
@@ -73,6 +75,7 @@ const TodoUpdate = () => {
     }
 
     payload.tags = tags;
+    payload.priority = priority;
     if (reminderAt) {
       payload.reminderAt = reminderAt;
     }
@@ -228,6 +231,20 @@ const TodoUpdate = () => {
                 onChange={setTags}
                 apiBase={process.env.REACT_APP_API_BASE_URL}
               />
+            </label>
+          </div>
+          <div>
+            <label className="todoupdate-label">
+              Priority
+              <select
+                className="todoupdate-select"
+                value={priority}
+                onChange={(e) => setPriority(e.target.value)}
+              >
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+              </select>
             </label>
           </div>
           <div className="todoupdate-button-row">

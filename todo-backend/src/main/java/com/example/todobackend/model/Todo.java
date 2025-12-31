@@ -41,11 +41,7 @@ public class Todo {
     private LocalDateTime endDate;
 
     @ManyToMany
-    @JoinTable(
-        name = "todo_tags",
-        joinColumns = @JoinColumn(name = "todo_id"),
-        inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
+    @JoinTable(name = "todo_tags", joinColumns = @JoinColumn(name = "todo_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags;
 
     // DUE DATE REMINDERS FIELDS:
@@ -56,4 +52,10 @@ public class Todo {
     @Column(nullable = true)
     private ReminderStatus reminderStatus;
 
+    @Column(nullable = true)
+    private Integer sortIndex;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    private Priority priority;
 }

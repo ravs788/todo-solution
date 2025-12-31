@@ -15,6 +15,7 @@ const TodoForm = () => {
   const [startDate, setStartDate] = useState(currentDateTime);
   const [reminderAt, setReminderAt] = useState("");
   const [tags, setTags] = useState([]);
+  const [priority, setPriority] = useState("MEDIUM");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -38,6 +39,7 @@ const TodoForm = () => {
       payload.endDate = null;
     }
     payload.tags = tags;
+    payload.priority = priority;
     if (reminderAt) {
       payload.reminderAt = reminderAt;
     }
@@ -194,6 +196,20 @@ const TodoForm = () => {
                 onChange={setTags}
                 apiBase={process.env.REACT_APP_API_BASE_URL}
               />
+            </label>
+          </div>
+          <div>
+            <label className="todoform-label">
+              Priority
+              <select
+                className="todoform-select"
+                value={priority}
+                onChange={(e) => setPriority(e.target.value)}
+              >
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+              </select>
             </label>
           </div>
           <div className="todoform-button-row">

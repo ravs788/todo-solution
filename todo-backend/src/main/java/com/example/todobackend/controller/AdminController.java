@@ -3,7 +3,6 @@ package com.example.todobackend.controller;
 import com.example.todobackend.model.User;
 import com.example.todobackend.repository.UserRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +15,11 @@ import java.util.Optional;
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public AdminController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     // Get all users with status PENDING
     @GetMapping("/pending-users")

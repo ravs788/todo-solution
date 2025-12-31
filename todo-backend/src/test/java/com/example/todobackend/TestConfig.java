@@ -1,7 +1,5 @@
 package com.example.todobackend;
 
-import com.example.todobackend.model.PushSubscription;
-import com.example.todobackend.model.User;
 import com.example.todobackend.repository.PushSubscriptionRepository;
 import com.example.todobackend.service.PushNotificationService;
 import org.mockito.Mockito;

@@ -2,7 +2,6 @@ package com.example.todobackend.config;
 
 import com.example.todobackend.repository.UserRepository;
 import com.example.todobackend.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +13,6 @@ public class DefaultUserConfig {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
     public DefaultUserConfig(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;

@@ -30,6 +30,7 @@ This document outlines proposed user-friendly features to enhance the Todo Manag
 
 ### 4. Drag & Drop Todo Reordering
 - **Description**: Allow users to reorder todos by dragging and dropping
+- **Status**: ✅ **Fully Implemented** - HTML5 drag-and-drop in TodoList, persisted via sortIndex and PUT /api/todos/reorder
 - **Features**: Priority levels (High/Medium/Low) with color coding, visual feedback during drag operations
 - **Priority**: Medium
 - **Complexity**: Medium
@@ -52,6 +53,7 @@ This document outlines proposed user-friendly features to enhance the Todo Manag
 
 ### 7. Due Date Reminders
 - **Description**: Set due dates with time picker and notification system
+- **Status**: ✅ **Fully Implemented** - Backend scheduler sends Web Push notifications (VAPID), service worker displays notifications; UI shows reminder toasts (snooze) and overdue highlighting
 - **Features**: Browser notifications for upcoming deadlines, overdue todo highlighting
 - **Priority**: High
 - **Complexity**: Medium
@@ -180,9 +182,9 @@ This document outlines proposed user-friendly features to enhance the Todo Manag
 7. ✅ Enhanced tag management (robust editing, chip validation)
 
 ### Phase 2: Medium Priority (Enhanced Productivity)
-8. ⏳ Due date reminders
+8. ✅ Due date reminders (Completed)
 9. ⏳ Categories/tags system (expanded with custom categories)
-10. ⏳ Undo/redo functionality
+10. ✅ Undo/redo functionality (Completed)
 11. ⏳ Todo templates
 
 ### Phase 3: Low Priority (Advanced Features)

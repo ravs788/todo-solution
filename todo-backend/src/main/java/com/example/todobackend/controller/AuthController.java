@@ -9,7 +9,6 @@ import com.example.todobackend.security.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,7 +30,6 @@ public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
     public AuthController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider,
             UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;

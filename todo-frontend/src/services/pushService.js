@@ -195,4 +195,5 @@ class PushNotificationService {
 }
 
 // Export singleton instance
-export default new PushNotificationService();
+const pushNotificationService = new PushNotificationService();
+export default pushNotificationService;

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useRef } from "react";
+import React, { createContext, useContext } from "react";
 import { useHistory } from "../hooks/useHistory";
 
 // Provides a singleton HistoryManager (undo/redo) context

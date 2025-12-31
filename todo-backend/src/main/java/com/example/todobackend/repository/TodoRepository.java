@@ -10,7 +10,15 @@ import java.util.List;
 public interface TodoRepository extends JpaRepository<Todo, Integer> {
     // Basic CRUD supported out of the box
     java.util.List<Todo> findAllByUsername(String username);
+
     java.util.Optional<Todo> findByIdAndUsername(Integer id, String username);
+
+    // Ordered retrieval for drag & drop
+    java.util.List<Todo> findAllByUsernameOrderBySortIndexAsc(String username);
+
+    java.util.Optional<Todo> findTopByUsernameOrderBySortIndexDesc(String username);
+
+    java.util.List<Todo> findByIdInAndUsername(java.util.List<Integer> ids, String username);
 
     // Push notification related queries
     List<Todo> findByReminderAtBeforeAndReminderStatus(LocalDateTime reminderAt, String reminderStatus);
