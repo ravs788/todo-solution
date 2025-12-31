@@ -26,7 +26,7 @@ export class UpdateTodoPage {
     this.baseUrl = baseUrl;
     this.heading = page.getByRole('heading', { name: /update todo/i });
     this.titleInput = page.locator('input[type="text"]');
-    this.activityTypeSelect = page.locator('select');
+    this.activityTypeSelect = page.getByLabel('Activity Type');
     this.activityTypeOptionDefinite = page.locator('option[value="definite"]');
     this.activityTypeOptionRegular = page.locator('option[value="regular"]');
     this.completedCheckbox = page.locator('#completedUpdateInput');

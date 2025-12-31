@@ -5,4 +5,5 @@ export interface UpdateTodoRequest {
   startDate?: string;
   completed?: boolean;
   endDate?: string;
+  priority?: "LOW" | "MEDIUM" | "HIGH";
 }

@@ -1,18 +1,26 @@
-# CLINE Universal Rules
+# .clinerules
 
-These rules must always be followed by Cline (AI assistant) in all projects where this file is present.  
-They are enforced standards for automation, shell execution, documentation, and workflow.
+Global rules for Cline AI assistant across all projects. These ensure consistent, efficient, and safe automation.
 
 ## Rules
 
-1. When running multiple shell/CLI statements, separate them by semicolon (`;`), not double-ampersand (`&&`).
-2. Update project documentation whenever code changes are committed to any branch.
+1. **Tool Usage**: Always analyze the task in <thinking> tags before invoking tools. Use one tool per message, waiting for results before proceeding.
+
+2. **File Editing**: Prefer `replace_in_file` for targeted changes to existing files. Use `write_to_file` only for new files or complete overwrites. Base SEARCH blocks on the exact final content after auto-formatting.
+
+3. **Task Progress**: Include `task_progress` checklists in tool calls to track milestones. Update checkboxes after each step: - [ ] for pending, - [x] for complete.
+
+4. **Testing**: When verifying code changes, run specific tests (e.g., `npm test -- file.test.js`) rather than full suites to isolate issues.
+
+5. **Mocking and Imports**: In tests, hoist mocks before imports and use dynamic requires (e.g., `require()`) to ensure mocks apply correctly, avoiding static import conflicts.
+
+6. **Error Handling**: If a tool fails (e.g., read_file returns nothing), confirm file existence with `list_files` or ask for clarification before proceeding.
+
+7. **Documentation**: After significant changes, update relevant docs (e.g., README.md) and commit with clear messages.
+
+8. **CLI Commands**: Separate multiple commands with semicolons (;). Tailor to the OS (Windows uses cmd.exe). Avoid harmful operations.
+
+These rules can be extended per project via local .clinerules files.
 
 ---
-_You may extend or revise these rules as your team's workflow evolves._
-
-## Reference docs
-
-See:
-- [README.md](README.md): Overall workflow and automation integration of rules
-- [flow-diagram.md](flow-diagram.md): Where Cline rules enforcement fits in application/user flows
+*Last updated: 12/31/2025*

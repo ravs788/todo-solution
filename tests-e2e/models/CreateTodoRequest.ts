@@ -4,4 +4,5 @@ export interface CreateTodoRequest {
   startDate?: string; // YYYY-MM-DDTHH:mm
   completed?: boolean;
   endDate?: string;
+  priority?: "LOW" | "MEDIUM" | "HIGH";
 }
