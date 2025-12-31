@@ -88,3 +88,40 @@ classDiagram
 - Arrow direction indicates main test-to-POM/model interactions.
 
 _Both diagrams use Mermaid syntax, compatible with GitHub preview and VS Code extensions._
+
+## Drag & Drop E2E Test Diagram
+
+```mermaid
+flowchart TD
+    subgraph DragDrop_E2E
+        drag["todo-drag-drop.spec.ts"]
+        dragTag["@regression"]
+        drag --> dragTag
+    end
+
+    subgraph Pages
+        homePage["HomePage.ts"]
+        createTodoPage["CreateTodoPage.ts"]
+        loginPage["LoginPage.ts"]
+    end
+
+    drag --> loginPage
+    drag --> createTodoPage
+    drag --> homePage
+```
+
+- The drag-and-drop spec logs in, creates two todos using `CreateTodoPage`, then reorders rows on the list using `HomePage`.
+- Tests rely on the displayed title returned by `CreateTodoPage.createTodoFromModel(...)` because the backend appends a timestamp suffix to titles.
+- HTML5 drag-and-drop is performed using `locator.dragTo`, and the test waits for `PUT /api/todos/reorder` to confirm persistence.
+
+## Headed Debug Quickstart
+
+- Windows (Batch):
+```
+bat-scripts\run_playwright_tests.bat --headed --project=ui ui-tests\todo-drag-drop.spec.ts -g "should drag and drop to reorder todos and verify new order"
+```
+
+- Mac/Linux (Shell):
+```
+bash sh-scripts/run_playwright_tests.sh --headed --project=ui ui-tests/todo-drag-drop.spec.ts -g "should drag and drop to reorder todos and verify new order"
+```

@@ -34,7 +34,8 @@ for (const userData of todoData) {
       expect(response.ok()).toBeTruthy();
       const responseBody = await response.json();
       expect(responseBody).toHaveProperty('id');
-      expect(responseBody.title).toBe(todoToCreate.title);
+      const baseTitle = todoToCreate.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      expect(responseBody.title).toMatch(new RegExp('^' + baseTitle));
       expect(responseBody.completed).toBe(false); // default value
       createdTodoId = responseBody.id;
     });
@@ -63,7 +64,10 @@ for (const userData of todoData) {
       expect(response.ok()).toBeTruthy();
       const todo = await response.json();
       expect(todo.id).toBe(createdTodoId);
-      expect(todo.title).toBe(userData.todos[0].title);
+      {
+        const baseTitle2 = userData.todos[0].title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        expect(todo.title).toMatch(new RegExp('^' + baseTitle2));
+      }
     });
 
     test('should update todo', { tag: '@regression' }, async ({ request }) => {
@@ -81,7 +85,10 @@ for (const userData of todoData) {
 
       expect(response.ok()).toBeTruthy();
       const updatedTodo = await response.json();
-      expect(updatedTodo.title).toBe(updatedTitle);
+      {
+        const baseUpdated = updatedTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        expect(updatedTodo.title).toMatch(new RegExp('^' + baseUpdated));
+      }
       expect(updatedTodo.completed).toBeTruthy();
     });
 

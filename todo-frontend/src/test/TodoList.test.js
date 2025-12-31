@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, act } from "@testing-library/react";
+import { render, screen, act, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import { ThemeProvider } from "../context/ThemeContext";
@@ -23,36 +23,48 @@ const mockTodos = [
   },
 ];
 
-let mockedData = mockTodos;
 
-jest.mock("axios", () => ({
-  create: jest.fn(() => ({
-    get: jest.fn(() => Promise.resolve({ data: mockedData })),
+jest.mock("axios", () => {
+  const mockGet = jest.fn();
+  const instance = {
+    get: (...args) => mockGet(...args),
     interceptors: {
-      request: { use: jest.fn() }
-    }
-  }))
-}));
+      request: { use: jest.fn() },
+    },
+  };
+  const create = jest.fn(() => instance);
+  return {
+    __esModule: true,
+    default: { create },
+    create,
+    __mockGet: mockGet,
+  };
+});
 
 describe("TodoList", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
+  beforeEach(() => {
+    const axiosModule = require("axios");
+    axiosModule.__mockGet.mockReset();
+  });
+
   // ... existing tests ...
 
-  it.skip("renders pagination controls when there are multiple pages", async () => {
+  it("renders pagination controls when there are multiple pages", async () => {
     // Create enough todos to trigger pagination
-    const manyTodos = Array(15).fill().map((_, index) => ({
+    const manyTodos = Array.from({ length: 15 }, (_, index) => ({
       id: index + 1,
       title: `Todo ${index + 1}`,
       completed: false,
       startDate: "2023-08-12T10:00:00Z",
     }));
-    require("axios")._getMock.mockImplementationOnce(() => {
-      return Promise.resolve({ data: manyTodos });
-    });
 
+    // Configure mock per test with fresh module instances
+    const axiosModule = require("axios");
+    axiosModule.__mockGet.mockResolvedValue({ data: manyTodos });
     const TodoList = require("../components/TodoList").default;
 
     render(
@@ -68,14 +80,20 @@ describe("TodoList", () => {
     );
 
     await screen.findByText(/Todo List/i);
-    expect(screen.getByText(/Page 1 of/i)).toBeInTheDocument();
-    const prevButton = screen.getByText(/Prev/i);
-    const nextButton = screen.getByText(/Next/i);
+    // Force a refresh event to trigger fetchTodos in case initial effect timing differs
+    await act(async () => {
+      await Promise.resolve();
+      window.dispatchEvent(new Event("refresh-todos"));
+    });
+    await screen.findByRole("row", { name: /Todo:\s*Todo 1,/i });
+    await screen.findByText(/Page 1 of/i);
+    const prevButton = screen.getByRole("button", { name: /Previous/i });
+    const nextButton = screen.getByRole("button", { name: /Next/i });
     expect(prevButton).toBeDisabled();
     expect(nextButton).not.toBeDisabled();
   });
 
-  it.skip("updates pagination when next button is clicked", async () => {
+  it("updates pagination when next button is clicked", async () => {
     // Create enough todos to trigger pagination
     const manyTodos = Array(15).fill().map((_, index) => ({
       id: index + 1,
@@ -84,16 +102,9 @@ describe("TodoList", () => {
       startDate: "2023-08-12T10:00:00Z",
     }));
 
-    // Mock axios instance for this test
-    const mockAxiosInstance = {
-      get: jest.fn(() => Promise.resolve({ data: manyTodos })),
-      interceptors: {
-        request: { use: jest.fn() }
-      }
-    };
-
-    require("axios").create.mockReturnValueOnce(mockAxiosInstance);
-
+    // Configure mock per test with fresh module instances
+    const axiosModule = require("axios");
+    axiosModule.__mockGet.mockResolvedValue({ data: manyTodos });
     const TodoList = require("../components/TodoList").default;
 
     render(
@@ -109,8 +120,14 @@ describe("TodoList", () => {
     );
 
     await screen.findByText(/Todo List/i);
+    // Force a refresh event to trigger fetchTodos in case initial effect timing differs
+    await act(async () => {
+      await Promise.resolve();
+      window.dispatchEvent(new Event("refresh-todos"));
+    });
+    await screen.findByRole("row", { name: /Todo:\s*Todo 1,/i });
     await screen.findByText(/Page 1 of/i); // Ensure pagination is rendered and page count is present
-    const nextButton = screen.getByText(/Next/i);
+    const nextButton = screen.getByRole("button", { name: /Next/i });
     // Important: Use act and then waitFor the DOM to update to page 2
     await act(async () => {
       nextButton.click();
@@ -145,13 +162,9 @@ describe("TodoList", () => {
       },
     ];
 
-    // Ensure axios returns our reminder-specific data for this render
-    mockedData = todosWithReminders;
-    require("axios").create.mockReturnValueOnce({
-      get: jest.fn(() => Promise.resolve({ data: todosWithReminders })),
-      interceptors: { request: { use: jest.fn() } }
-    });
-
+    // Configure mock per test with fresh module instances
+    const axiosModule = require("axios");
+    axiosModule.__mockGet.mockResolvedValue({ data: todosWithReminders });
     const TodoList = require("../components/TodoList").default;
 
     render(
@@ -167,15 +180,22 @@ describe("TodoList", () => {
     );
 
     await screen.findByText(/Todo List/i);
+    // Force a refresh event to trigger fetchTodos in case initial effect timing differs
+    await act(async () => {
+      await Promise.resolve();
+      window.dispatchEvent(new Event("refresh-todos"));
+    });
+    // Wait for one of the todo titles to appear to confirm data rendered
+    await screen.findByText("Overdue Task");
 
     // Wait for rows by accessible name to ensure fetch/render completed
-    const overdueRow = await screen.findByRole("row", { name: /Todo:\s*Overdue Task.*reminder overdue/i });
+    const overdueRow = await screen.findByRole("row", { name: /Todo:\s*Overdue Task,\s*not completed,\s*reminder\s*overdue/i });
     expect(overdueRow).toBeInTheDocument();
 
-    const upcomingRow = await screen.findByRole("row", { name: /Todo:\s*Upcoming Task.*reminder upcoming/i });
+    const upcomingRow = await screen.findByRole("row", { name: /Todo:\s*Upcoming Task,\s*not completed,\s*reminder\s*upcoming/i });
     expect(upcomingRow).toBeInTheDocument();
 
-    const noneRow = await screen.findByRole("row", { name: /Todo:\s*No Reminder Task.*reminder none/i });
+    const noneRow = await screen.findByRole("row", { name: /Todo:\s*No Reminder Task,\s*not completed,\s*reminder\s*none/i });
     expect(noneRow).toBeInTheDocument();
   });
 });

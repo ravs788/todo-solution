@@ -1,23 +1,62 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import axios from "axios";
 import TodoUpdate from "../components/TodoUpdate";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 
-// Mock axios properly
-jest.mock("axios", () => ({
-  __esModule: true,
-  default: {
-    get: jest.fn(),
-    put: jest.fn(() => Promise.resolve({})),
-  },
-}));
+/* Mock axios to always return Promises on get/put and for created instances */
+jest.mock("axios", () => {
+  // Make axios callable (axios(config)) and provide get/put methods.
+  // Also ensure axios.create() returns an instance whose get/put are Promises
+  // and are linked to the top-level mocks so tests can inspect calls.
+  const instance = {
+    get: jest.fn().mockResolvedValue({ data: {} }),
+    put: jest.fn().mockResolvedValue({}),
+    interceptors: {
+      request: { use: jest.fn() },
+      response: { use: jest.fn() }
+    }
+  };
 
-const mockAxios = require('axios');
+  const mockAxios = Object.assign(
+    jest.fn(() => Promise.resolve({ data: {} })), // axios(...)
+    instance
+  );
 
-// Set up axios.get to return different data based on URL
-mockAxios.default.get.mockImplementation((url) => {
+  mockAxios.create = jest.fn(() => ({
+    ...instance,
+    // Link to top-level so overrides (e.g., mockImplementation) propagate
+    get: mockAxios.get,
+    put: mockAxios.put,
+    interceptors: instance.interceptors
+  }));
+
+  return {
+    __esModule: true,
+    default: mockAxios,
+    // Also expose named exports in case any code uses require('axios').get, etc.
+    get: mockAxios.get,
+    put: mockAxios.put,
+    create: mockAxios.create,
+    interceptors: instance.interceptors
+  };
+});
+
+const axiosModule = require("axios");
+const axios = axiosModule.default || axiosModule;
+// Ensure CJS and ESM imports both see the same mock functions
+axiosModule.get = axios.get;
+axiosModule.put = axios.put;
+axiosModule.create = axios.create;
+axiosModule.interceptors = axios.interceptors;
+/* Set up axios.get to return different data based on URL.
+   Ensure every call returns a proper Promise to avoid `.then` on undefined. */
+axios.get.mockImplementation((url = "") => {
+  // Tag suggestions endpoint should return an array of strings
+  if (/\/api\/tags\?search=/.test(url)) {
+    return Promise.resolve({ data: [] });
+  }
+  // Todo details endpoint
   const match = url.match(/\/api\/todos\/(\d+)/);
   const id = match ? parseInt(match[1], 10) : 1;
   return Promise.resolve({
@@ -30,10 +69,34 @@ mockAxios.default.get.mockImplementation((url) => {
     },
   });
 });
+// Default successful PUT to avoid `.then` on undefined during submit
+axios.put.mockResolvedValue({});
 
-// Ensure API base URL is set for tests
+/* Ensure API base URL is set for tests */
 beforeAll(() => {
   process.env.REACT_APP_API_BASE_URL = "";
+});
+
+/* Re-apply axios mock implementations before each test in case Jest resetMocks is enabled */
+beforeEach(() => {
+  // Re-establish implementations so axios.get(...) always returns a Promise
+  axios.get.mockImplementation((url = "") => {
+    if (/\/api\/tags\?search=/.test(url)) {
+      return Promise.resolve({ data: [] });
+    }
+    const match = url.match(/\/api\/todos\/(\d+)/);
+    const id = match ? parseInt(match[1], 10) : 1;
+    return Promise.resolve({
+      data: {
+        id,
+        title: `Task ${id}`,
+        activityType: id === 1 ? "definite" : "regular",
+        completed: id === 1,
+        startDate: "2023-08-15T10:00",
+      },
+    });
+  });
+  axios.put.mockResolvedValue({});
 });
 
 describe("TodoUpdate", () => {
@@ -52,25 +115,33 @@ describe("TodoUpdate", () => {
     );
   }
 
-  it.skip("shows correct initial values for id=1, including activity type and completed checkbox", async () => {
+  it("renders initial values (id=1): title, activity type 'definite', and completed checked", async () => {
     renderUpdate();
-    expect(await screen.findByDisplayValue("Task 1")).toBeInTheDocument();
-    expect(await screen.findByLabelText(/Activity Type/i)).toHaveValue("definite");
-    expect(await screen.findByLabelText(/Completed/i)).toBeInTheDocument();
-    expect((await screen.findByLabelText(/Completed/i)).checked).toBe(true);
-  });
-
-  it.skip("hides completed checkbox when activity type is switched to 'regular'", async () => {
-    renderUpdate();
-    // Wait for data to load
+    // Wait for initial data to populate the form
     await screen.findByDisplayValue("Task 1");
-    fireEvent.change(screen.getByLabelText(/Activity Type/i), {
-      target: { value: "regular" },
-    });
-    expect(screen.queryByLabelText(/Completed/i)).not.toBeInTheDocument();
+    const activitySelect = await screen.findByLabelText(/Activity Type/i);
+    expect(activitySelect).toHaveValue("definite");
+  
+    const completedCheckbox = await screen.findByLabelText(/Completed/i);
+    expect(completedCheckbox).toBeInTheDocument();
+    expect(completedCheckbox).toBeChecked();
   });
 
-  it.skip("allows changing title and activity type, submits update and sends correct payload", async () => {
+  it("removes the completed checkbox when switching activity type to 'regular'", async () => {
+    renderUpdate();
+    // Ensure initial load
+    await screen.findByDisplayValue("Task 1");
+  
+    const activitySelect = await screen.findByLabelText(/Activity Type/i);
+    fireEvent.change(activitySelect, { target: { value: "regular" } });
+  
+    // Disappearance is async due to state update; wait for it
+    await waitFor(() => {
+      expect(screen.queryByLabelText(/Completed/i)).not.toBeInTheDocument();
+    });
+  });
+
+  it("allows changing title and activity type, submits update and sends correct payload", async () => {
     renderUpdate();
     await screen.findByDisplayValue("Task 1");
     fireEvent.change(screen.getByLabelText(/Title/i), { target: { value: "Changed Task" } });
@@ -90,7 +161,7 @@ describe("TodoUpdate", () => {
     });
   });
 
-  it.skip("shows error message if update fails", async () => {
+  it("shows error message if update fails", async () => {
     axios.put.mockRejectedValueOnce(new Error("Network error"));
     renderUpdate();
     await screen.findByDisplayValue("Task 1");

@@ -2,12 +2,12 @@ package com.example.todobackend.service;
 
 import com.example.todobackend.model.Todo;
 import com.example.todobackend.model.Tag;
+import com.example.todobackend.model.Priority;
 import com.example.todobackend.dto.TodoRequest;
 import com.example.todobackend.repository.TodoRepository;
 import com.example.todobackend.repository.TagRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +22,6 @@ public class TodoService {
     private final TodoRepository repo;
     private final TagRepository tagRepo;
 
-    @Autowired
     public TodoService(TodoRepository repo, TagRepository tagRepo) {
         this.repo = repo;
         this.tagRepo = tagRepo;
@@ -33,7 +32,7 @@ public class TodoService {
     }
 
     public List<Todo> findAllByUsername(String username) {
-        return repo.findAllByUsername(username);
+        return repo.findAllByUsernameOrderBySortIndexAsc(username);
     }
 
     public Optional<Todo> findById(Integer id) {
@@ -52,17 +51,25 @@ public class TodoService {
 
     public Todo saveFromRequest(TodoRequest dto, String username) {
         Set<Tag> tags = resolveTags(dto.getTags());
+        // Determine next sort index for this user
+        Integer nextIndex = repo.findTopByUsernameOrderBySortIndexDesc(username)
+                .map(t -> t.getSortIndex() == null ? 0 : t.getSortIndex() + 1)
+                .orElse(0);
+
         Todo todo = Todo.builder()
-            .title(dto.getTitle())
-            .completed(dto.getCompleted() != null ? dto.getCompleted() : false)
-            .startDate(dto.getStartDate())
-            .username(username)
-            .activityType(dto.getActivityType())
-            .endDate(dto.getEndDate())
-            .tags(tags)
-            .reminderAt(dto.getReminderAt())
-            .reminderStatus(dto.getReminderAt() != null ? com.example.todobackend.model.ReminderStatus.PENDING : null)
-            .build();
+                .title(dto.getTitle())
+                .completed(dto.getCompleted() != null ? dto.getCompleted() : false)
+                .startDate(dto.getStartDate())
+                .username(username)
+                .activityType(dto.getActivityType())
+                .endDate(dto.getEndDate())
+                .tags(tags)
+                .reminderAt(dto.getReminderAt())
+                .reminderStatus(
+                        dto.getReminderAt() != null ? com.example.todobackend.model.ReminderStatus.PENDING : null)
+                .sortIndex(nextIndex)
+                .priority(dto.getPriority() != null ? Priority.valueOf(dto.getPriority().toUpperCase()) : null)
+                .build();
         Todo savedTodo = repo.save(todo);
         log.info("Saved Todo with id: {} (with tags and reminders)", savedTodo.getId());
         return savedTodo;
@@ -73,18 +80,42 @@ public class TodoService {
         if (tagNames != null) {
             for (String rawName : tagNames) {
                 String normName = rawName == null ? null : rawName.trim().toLowerCase();
-                if (normName == null || normName.isEmpty()) continue;
+                if (normName == null || normName.isEmpty())
+                    continue;
                 Tag tag = tagRepo.findByNameIgnoreCase(normName)
                         .orElseGet(() -> tagRepo.save(Tag.builder().name(normName).build()));
                 tags.add(tag);
             }
         }
-    return tags;
+        return tags;
     }
 
-    // Exposed method for controllers to resolve tag names without creating a new Todo
+    // Exposed method for controllers to resolve tag names without creating a new
+    // Todo
     public Set<Tag> resolveTagsFromNames(List<String> tagNames) {
         return resolveTags(tagNames);
+    }
+
+    // Reorder todos for a user according to the provided list of ids.
+    // Only ids belonging to the user will be updated; others are ignored.
+    public List<Todo> reorderTodos(String username, List<Integer> orderedIds) {
+        if (orderedIds == null || orderedIds.isEmpty()) {
+            return findAllByUsername(username);
+        }
+        // Fetch only the todos that belong to the user and are in the provided list
+        List<Todo> candidates = repo.findByIdInAndUsername(orderedIds, username);
+        // Assign indices in the order provided
+        int index = 0;
+        for (Integer id : orderedIds) {
+            for (Todo t : candidates) {
+                if (t.getId().equals(id)) {
+                    t.setSortIndex(index++);
+                    break;
+                }
+            }
+        }
+        repo.saveAll(candidates);
+        return repo.findAllByUsernameOrderBySortIndexAsc(username);
     }
 
     public void deleteById(Integer id) {

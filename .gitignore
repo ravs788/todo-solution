@@ -29,3 +29,21 @@ node_modules/
 todo-backend/todo-backend.log
 
 # Ignore Allure report output
+**/allure-report/
+
+# Ignore Playwright HTML report output
+playwright-report/
+**/playwright-report/
+
+# Ignore frontend build and coverage artifacts
+todo-frontend/build/
+**/build/
+todo-frontend/coverage/
+**/coverage/
+
+# Ignore common backup/temporary file patterns
+*.bak
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db

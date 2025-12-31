@@ -8,7 +8,6 @@ import nl.martijndwars.webpush.PushService;
 import nl.martijndwars.webpush.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +24,6 @@ public class PushNotificationService {
     private final PushSubscriptionRepository subscriptionRepository;
     private PushService pushService;
 
-    @Autowired
     public PushNotificationService(
             PushSubscriptionRepository subscriptionRepository,
             @Value("${push.vapid.public.key:}") String vapidPublicKey,

@@ -33,15 +33,48 @@ const TodoList = () => {
   const { push, undo } = useHistory();
   const { showToast } = useToast();
 
+  // Drag-and-drop state and handlers
+  const [dragId, setDragId] = useState(null);
+
+  const handleDragStart = (id) => {
+    setDragId(id);
+  };
+
+  const handleDragOver = (e) => {
+    // Needed to allow dropping
+    e.preventDefault();
+  };
+
+  const handleDrop = async (targetId) => {
+    if (dragId == null || dragId === targetId) return;
+
+    const prevTodos = todos;
+    const fromIndex = prevTodos.findIndex((t) => t.id === dragId);
+    const toIndex = prevTodos.findIndex((t) => t.id === targetId);
+    if (fromIndex === -1 || toIndex === -1) {
+      setDragId(null);
+      return;
+    }
+
+    // Optimistically reorder locally
+    const newTodos = [...prevTodos];
+    const [moved] = newTodos.splice(fromIndex, 1);
+    newTodos.splice(toIndex, 0, moved);
+    setTodos(newTodos);
+    setDragId(null);
+
+    // Persist new order (by ids) to backend
+    try {
+      await api.put("/todos/reorder", newTodos.map((t) => t.id));
+    } catch (error) {
+      // Revert on failure
+      setTodos(prevTodos);
+    }
+  };
+
   // Create command factory
   const commands = createCommands(setTodos, showToast);
 
-  // Handlers for undo/redo actions
-  const handleToggleComplete = async (todo) => {
-    const command = commands.toggleCompleteCommand(todo.id, todo.completed);
-    await command.do();
-    push(command);
-  };
 
   const handleDelete = async (todo) => {
     const command = commands.deleteTodoCommand(todo.id, {
@@ -250,6 +283,7 @@ const TodoList = () => {
               <th style={{ fontSize: "1rem", textTransform: "capitalize" }}>Completed</th>
               <th style={{ fontSize: "1rem", textTransform: "capitalize" }}>Start Date</th>
               <th style={{ fontSize: "1rem", textTransform: "capitalize" }}>End Date</th>
+              <th style={{ fontSize: "1rem", textTransform: "capitalize" }}>Priority</th>
               <th style={{ fontSize: "1rem", textTransform: "capitalize" }}>Tags</th>
               <th style={{ fontSize: "1rem", textTransform: "capitalize" }}>Actions</th>
             </tr>
@@ -277,6 +311,10 @@ const TodoList = () => {
                   style={{ borderBottom: "1px solid var(--table-border)" }}
                   role="row"
                   aria-label={`Todo: ${todo.title}, ${todo.completed ? "completed" : "not completed"}, reminder ${reminderStatus}`}
+                  draggable={true}
+                  onDragStart={() => handleDragStart(todo.id)}
+                  onDragOver={handleDragOver}
+                  onDrop={() => handleDrop(todo.id)}
                 >
                   {/* Title */}
                   <td
@@ -337,6 +375,34 @@ const TodoList = () => {
                     }}
                   >
                     {todo.endDate ? new Date(todo.endDate).toLocaleString() : "-"}
+                  </td>
+
+                  {/* Priority */}
+                  <td
+                    style={{
+                      borderRight: "1px solid var(--table-border)",
+                      padding: "8px",
+                    }}
+                  >
+                    {todo.priority ? (
+                      <span
+                        className="badge"
+                        style={{
+                          fontSize: "0.85em",
+                          backgroundColor:
+                            todo.priority === "HIGH" ? "#dc3545" :
+                            todo.priority === "MEDIUM" ? "#fd7e14" :
+                            "#198754",
+                          color: "white",
+                        }}
+                      >
+                        {todo.priority}
+                      </span>
+                    ) : (
+                      <span className="theme-text-secondary" style={{ fontSize: "0.9em" }}>
+                        No priority
+                      </span>
+                    )}
                   </td>
 
                   {/* Tags */}
@@ -452,7 +518,7 @@ const TodoList = () => {
             {pagedTodos.length === 0 && (
               <tr>
                 <td
-                  colSpan={8}
+                  colSpan={7}
                   style={{ textAlign: "center" }}
                   className="theme-text-secondary"
                 >

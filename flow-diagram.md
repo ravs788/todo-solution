@@ -95,6 +95,23 @@ sequenceDiagram
     F->>U: Redirect to login, show "Password has been reset"
 ```
 
+## Todo Reorder (Drag & Drop) Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend (React)
+    participant B as Backend (Spring Boot)
+
+    U->>F: Drag "Todo A" above "Todo B"
+    Note right of F: HTML5 DnD events: dragstart/dragover/drop
+    F->>F: Optimistically reorder rows in memory
+    F->>B: PUT /api/todos/reorder<br/>[id_A, id_B, id_C, ...]
+    B->>B: Persist new order (e.g., sortIndex)
+    B-->>F: 200 OK
+    F->>U: Show updated order (persists across refresh)
+```
+
 ### Notes
 
 - **SQL Server required** for backend in all environments.
@@ -198,6 +215,10 @@ classDiagram
 - **All GitHub Actions pipelines are currently commented out** - see `.github/workflows/`.
 - Playwright E2E runs headless by default with 2 retries on failure; pass `--headed` locally to debug the UI.
 - On Windows, `bat-scripts\run_all_tests.bat` runs backend, frontend, and E2E tests in one command.
+- Headed DnD quickstart (Windows):
+  ```
+  bat-scripts\run_playwright_tests.bat --headed --project=ui ui-tests\todo-drag-drop.spec.ts -g "should drag and drop to reorder todos and verify new order"
+  ```
 
 ---
 

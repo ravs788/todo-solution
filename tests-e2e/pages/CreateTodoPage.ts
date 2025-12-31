@@ -23,7 +23,7 @@ export class CreateTodoPage {
     this.baseUrl = baseUrl;
     this.logoImg = page.getByAltText('Logo');
     this.titleInput = page.getByPlaceholder('Enter todo title');
-    this.activityTypeSelect = page.locator('select');
+    this.activityTypeSelect = page.getByLabel('Activity Type');
     this.activityTypeOptionDefinite = page.locator('option[value="definite"]');
     this.activityTypeOptionRegular = page.locator('option[value="regular"]');
     this.completedCheckbox = page.locator('#completedInput');

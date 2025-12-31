@@ -37,6 +37,7 @@
 - **React Context API** for user/auth state management
 - **Bootstrap styling** throughout
 - **Accessibility**: ARIA labels, keyboard navigation, screen reader support
+- **Drag & Drop Reordering**: Reorder todos by dragging rows; persisted via PUT /api/todos/reorder; covered by Playwright headed test
 
 ---
 
@@ -122,6 +123,39 @@ todo-solution/
 - **CI artifacts:** HTML + traces uploaded after every run for debugging
 
 ---
+
+## ☕ Java versions (Local vs CI)
+
+This project supports running Java 21 locally while compiling against Java 17 on CI.
+
+How it works:
+- pom.xml defaults to Java 21 locally:
+  - <java.version>21</java.version>
+  - maven-compiler-plugin uses <release>${maven.compiler.release}</release>
+- Two Maven profiles switch to Java 17 automatically when needed:
+  - jdk17 profile: auto-activates when the running JDK is 17 (activation: [17,18)) and sets release=17
+  - ci profile: auto-activates when env.CI=true (typical on GitHub Actions) and sets release=17
+
+Practical usage:
+- Local (Java 21): just run mvn normally
+  - mvn clean verify
+  - mvn spring-boot:run
+- Local override to 17 (if you only have JDK 17 installed): 
+  - mvn -P jdk17 clean verify
+- Force a specific target explicitly (advanced):
+  - mvn -Djava.version=21 -Dmaven.compiler.release=21 clean verify
+
+GitHub Actions example (ensures JDK 17 toolchain and triggers ci profile):
+```yaml
+- uses: actions/setup-java@v4
+  with:
+    distribution: temurin
+    java-version: '17'
+- name: Build
+  run: mvn -q -e -B -DskipTests package
+```
+
+Note: If CI uses a JDK other than 17 but sets CI=true, the ci profile will still force the compiler release to 17 so the bytecode remains Java 17 compatible.
 
 ## 📣 CI/CD Workflows
 
@@ -290,6 +324,18 @@ Headless by default; add `--headed` to run with UI:
 bat-scripts\run_playwright_tests.bat --headed
 ```
 
+Examples:
+- Run a single UI spec in headed mode (Chromium project):
+```
+bat-scripts\run_playwright_tests.bat --headed --project=ui ui-tests\todo-drag-drop.spec.ts -g "should drag and drop to reorder todos and verify new order"
+```
+- Run API spec only:
+```
+bat-scripts\run_playwright_tests.bat --project=api api-tests\api-todos.spec.ts
+```
+
+Note: On Windows batch, run commands separately; avoid chaining commands with `&&`.
+
 #### Mac/Linux
 
 - ```
@@ -327,6 +373,9 @@ PRs and suggestions are welcome! Please open issues or submit pull requests. Run
 - Page Object and backend flows for tag editing and chip validation were improved to ensure tags are properly saved.
 
 ### E2E Test Improvements
+- Added robust HTML5 drag-and-drop for row reordering in E2E using `locator.dragTo` and `waitForResponse` on `PUT /api/todos/reorder`
+- CreateTodoPage.createTodoFromModel now returns the displayed title so specs can select exact rows even if the backend appends a timestamp suffix
+- API tests updated to accept backend title suffixes by prefix-matching titles
 - The update tags E2E flow was unified to open the edit form, set tags, and submit, matching real user actions.
 - Test logic now avoids selector ambiguity, removes debug code, and ensures assertions are properly scoped.
 
