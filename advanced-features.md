@@ -30,10 +30,31 @@ This document outlines proposed user-friendly features to enhance the Todo Manag
 
 ### 4. Drag & Drop Todo Reordering
 - **Description**: Allow users to reorder todos by dragging and dropping
-- **Status**: ✅ **Fully Implemented** - HTML5 drag-and-drop in TodoList, persisted via sortIndex and PUT /api/todos/reorder
-- **Features**: Priority levels (High/Medium/Low) with color coding, visual feedback during drag operations
+- **Status**: ✅ **Fully Implemented** — HTML5 drag-and-drop in `TodoList`, persisted with `PUT /api/todos/reorder`
+- **Features**: Priority levels (High/Medium/Low) with color coding; visual feedback during drag; persisted order across refresh
 - **Priority**: Medium
 - **Complexity**: Medium
+
+- **Implementation**:
+  - Rows (`<tr>`) are `draggable={true}` with `onDragStart`, `onDragOver`, and `onDrop` handlers.
+  - On drop, the UI reorders optimistically and sends `PUT /api/todos/reorder` with an array of todo IDs in the new order.
+  - On failure, the UI reverts to the previous order.
+  - Pagination and filtering are respected in view; persistence is global (across pages/filters).
+
+- **Testing Notes (Playwright)**:
+  - Use Playwright’s HTML5 DnD: `await sourceLocator.dragTo(targetLocator)` to generate proper `DataTransfer` events.
+  - Wait for persistence: `page.waitForResponse(r => r.url().includes('/api/todos/reorder') && r.request().method() === 'PUT')`.
+  - Creation helper returns the displayed title to handle backend title suffixes:
+    - `CreateTodoPage.createTodoFromModel(...) -> Promise<string>` returns the exact table cell text.
+    - Specs should query rows using the returned string, not the raw input.
+  - Headed run on Windows:
+    ```
+    bat-scripts\run_playwright_tests.bat --headed --project=ui ui-tests\todo-drag-drop.spec.ts -g "should drag and drop to reorder todos and verify new order"
+    ```
+
+- **Accessibility**:
+  - Rows expose ARIA table semantics; drag-and-drop includes visual feedback.
+  - Future enhancement: add keyboard-accessible reordering (e.g., move up/down buttons) for non-pointer users.
 
 ## 🚀 Productivity Features
 
